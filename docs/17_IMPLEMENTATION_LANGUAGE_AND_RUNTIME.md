@@ -152,7 +152,62 @@ The Golden Core keeps zero mandatory third-party runtime dependencies.
 Dependencies used by applications or research tooling remain outside the
 normative and conformance boundary.
 
-## 9. Implementation sequence
+## 9. Commenting and debug-readability contract
+
+Comments are part of the engineering interface. They MUST maximize useful
+debugging information for both human contributors and AI agents without
+turning source files into prose.
+
+### Required comments
+
+- Every public C ABI symbol, externally visible type, and non-obvious module
+  has a concise contract: inputs, outputs, ownership, lifetime, thread-safety,
+  error behavior, and resource bounds.
+- Every normative kernel cites the applicable specification clause and states
+  fixed-point format, accumulator width, rounding, saturation, overflow, and
+  aliasing assumptions.
+- Every state mutation explains its preconditions, atomic commit point,
+  rollback behavior, and the invariant preserved after failure.
+- Every concurrency, SIMD, shader, and platform-specific block explains why it
+  is bit-exact with the scalar path.
+- Every security boundary states what has already been validated and what
+  remains untrusted.
+- A non-trivial function is divided into a few named logical phases when this
+  makes control flow visibly easier to debug, for example:
+
+  ```cpp
+  // 1. Validate the complete event before touching persistent state.
+  // 2. Materialize the candidate Cell in bounded staging memory.
+  // 3. Commit atomically and publish the new state hash.
+  ```
+
+### Noise is prohibited
+
+- Do not restate syntax, types, or operations already obvious from the code.
+- Do not comment every line, use decorative ASCII banners, or duplicate the
+  specification inside source files.
+- Remove dead commented-out code; version control already preserves history.
+- A `TODO`, `FIXME`, temporary approximation, or unexplained constant MUST
+  include a tracked issue or decision identifier and an explicit removal gate.
+- Comments MUST be updated in the same commit as the behavior they describe.
+  A stale comment is treated as a defect.
+
+### Debug visibility
+
+- Complex pipelines expose optional structured trace events with stable IDs
+  for parse, validate, stage, render, commit, fallback, and reject phases.
+- Trace output is deterministic for a deterministic input, carries timestamps
+  and object IDs, and can be compared across CPU/GPU backends.
+- Logging is compiled out or disabled by default in real-time loops and never
+  changes scheduling, allocation, state, or decoded output.
+- Assertions document internal invariants; malformed external input follows
+  checked error paths rather than assertions.
+
+Comment quantity is never a quality metric. Review evaluates whether a new
+contributor can identify the contract, invariants, state transition, numerical
+rules, and failure path without reading unrelated code.
+
+## 10. Implementation sequence
 
 1. Keep Python paper/oracle experiments fast to modify.
 2. Freeze the smallest useful Main-0 arithmetic and command subset.

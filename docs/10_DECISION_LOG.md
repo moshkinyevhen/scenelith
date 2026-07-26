@@ -577,3 +577,28 @@ Video(t)=Render(WorldState_t,\ Trajectories_t)
     gates.
 - Canonical engineering document:
   `17_IMPLEMENTATION_LANGUAGE_AND_RUNTIME.md`.
+
+## D-037 — High-signal commenting and deterministic debug visibility
+
+- Date: 2026-07-26
+- Status: **ACCEPTED / ENGINEERING DECISION**
+- Decision:
+  - source comments are a maintained engineering interface for human and AI
+    debugging;
+  - public APIs, normative kernels, state transitions, security boundaries,
+    concurrency, and non-obvious numerical behavior require concise contract
+    comments;
+  - complex functions use a few named logical phases when this makes the
+    pipeline visibly easier to inspect;
+  - comments that merely restate code, line-by-line narration, decorative
+    banners, duplicated specifications, and dead commented-out code are
+    prohibited;
+  - every `TODO`, `FIXME`, approximation, and unexplained constant carries a
+    tracked issue or decision identifier and a removal gate;
+  - deterministic structured traces expose parse, validate, stage, render,
+    commit, fallback, and reject phases, but are disabled by default in
+    real-time loops;
+  - stale comments fail review and must be updated with behavior in the same
+    commit.
+- Canonical contract:
+  section 9 of `17_IMPLEMENTATION_LANGUAGE_AND_RUNTIME.md`.

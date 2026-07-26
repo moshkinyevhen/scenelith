@@ -65,6 +65,22 @@ Never present a **TARGET** or **HYPOTHESIS** as a measured result.
 - Preserve the distinction between the standalone SceneLith codec, standalone
   Resonith codec, and the separate SceneLith AV Bridge.
 
+## Source-comment contract
+
+- Comment intent, invariants, numerical rules, ownership, state transitions,
+  security boundaries, and non-obvious tradeoffs.
+- Divide complex functions into a few named logical phases when this materially
+  improves navigation and debugging.
+- Do not narrate obvious syntax, comment every line, add decorative banners,
+  or leave dead code commented out.
+- Public APIs and normative kernels require concise contract comments and a
+  link to the relevant specification clause.
+- `TODO` and `FIXME` comments require a tracked issue or decision identifier
+  and a removal gate.
+- Comment drift is a defect: behavior and comments change in the same commit.
+- Structured debug traces must be deterministic, optional, and absent from the
+  real-time hot path by default.
+
 ## Validation
 
 After a change, verify:
@@ -76,4 +92,5 @@ After a change, verify:
 5. absence of secrets, unnecessary personal data, and undocumented external
    dependencies;
 6. zero Cyrillic text in tracked public files;
-7. relevant tests, conformance hashes, and cross-platform build checks.
+7. relevant tests, conformance hashes, and cross-platform build checks;
+8. source comments satisfy the signal-to-noise and debug-readability contract.
