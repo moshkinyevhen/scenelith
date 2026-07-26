@@ -1,13 +1,13 @@
-# Архив исходных материалов
+# Archive of source materials
 
-Файлы в этом каталоге являются историческими источниками и не редактируются.
-Они могут содержать решения, позднее помеченные как SUPERSEDED.
+The files in this directory are historical sources and are not edited.
+They may contain solutions later marked as SUPERSEDED.
 
-Актуальное состояние проекта определяется:
+The current state of the project is determined by:
 
 1. `../docs/10_DECISION_LOG.md`;
-2. тематическими файлами в `../docs/`;
+2. thematic files in `../docs/`;
 3. `../spec/SCENELITH-0.md`.
 
-Исходный текст первого полного архитектурного брейншторма сохранён как
+The source text of the first complete architectural brainstorm is saved as
 `2026-07-26_initial-concept.txt`.

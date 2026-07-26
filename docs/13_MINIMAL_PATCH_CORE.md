@@ -1,67 +1,67 @@
 # Baseline A: Minimal Decoded Patch Memory
 
-Статус: DPM experiment **ACCEPTED**, роль основного SceneLith core
-**SUPERSEDED** решением D-017, точный syntax **RESEARCH**, compression claims
-**HYPOTHESIS/TARGET**.  
-Дата: 2026-07-26
+Status: DPM experiment **ACCEPTED**, role of the main SceneLith core
+**SUPERSEDED** by solution D-017, exact syntax **RESEARCH**, compression claims
+**HYPOTHESIS/TARGET**.
+Date: 2026-07-26
 
-DPM остаётся обязательным falsification baseline и возможным compact-content
-компонентом `MOSAIC Cell`, но больше не определяет time/state architecture.
-Текущий кандидат:
+DPM remains mandatory falsification baseline and possible compact-content
+component `MOSAIC Cell`, but no longer defines time/state architecture.
+Current Candidate:
 [14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).
 
-Рабочие названия:
+Working titles:
 
-- **Decoded Patch Memory (DPM)** — нормативный механизм;
-- **PROMOTE memory** — ключевое отличие;
-- **geometric visual dictionary** — encoder-side интерпретация.
+- **Decoded Patch Memory (DPM)** — normative mechanism;
+- **PROMOTE memory** is the key difference;
+- **geometric visual dictionary** — encoder-side interpretation.
 
-## 1. Жёсткий пересмотр
+## 1. Hard revision
 
 Background mosaic, progressive sprite, arbitrary-shape object, atlas packing,
-long-term reference и layered 2D representation уже предпринимались.
+long-term reference and layered 2D representation have already been attempted.
 
-Следовательно, SceneLith не должен объявлять революцией:
+Therefore, SceneLith should not be declared a revolution:
 
-- сбор стены из разных кадров;
-- сохранение sprite/patch;
-- warp старой texture;
+- collecting a wall from different frames;
+- saving sprite/patch;
+- warp old texture;
 - progressive reveal;
-- обычный atlas или scene graph.
+- regular atlas or scene graph.
 
-Полная Observed Surface Memory из `12_OBSERVED_SURFACE_MEMORY.md` слишком рано
-ввела `Domain/Known`, depth, 2.5D, lifecycle и другие недоказанные механизмы.
-Для DPM-0 experiment она заменена более строгим вопросом:
+Full Observed Surface Memory from `12_OBSERVED_SURFACE_MEMORY.md` too early
+introduced `Domain/Known`, depth, 2.5D, lifecycle and other unproven mechanisms.
+For DPM-0 experiment it is replaced by a more strict question:
 
-> Может ли компактная reference-память уже декодированных patches при том же
-> числе bytes существенно обогнать хранение целых long-term frames?
+> Can a compact reference memory of already decoded patches at the same time
+> in number of bytes significantly outperform the storage of entire long-term frames?
 
-Если ответ отрицательный даже для oracle, дальнейшая scene complexity не
-оправдана.
+If the answer is negative even for oracle, there is no further scene complexity
+justified.
 
-## 2. Парадокс простоты
+## 2. The paradox of simplicity
 
-DPM-0 меняет только единицу reference memory:
+DPM-0 changes only the reference memory unit:
 
-- conventional codec хранит целые reconstructed frames;
-- DPM хранит только выбранные reconstructed rectangles;
-- patch больше не привязан к координатам и lifetime исходного frame;
-- один slot можно размещать в prediction canvas сколько угодно раз;
-- новые pixels кодируются обычной Truth Innovation;
-- никогда не показанная область вообще не существует в state.
+- conventional codec stores entire reconstructed frames;
+- DPM stores only selected reconstructed rectangles;
+- patch is no longer tied to the coordinates and lifetime of the original frame;
+- one slot can be placed in the prediction canvas as many times as desired;
+- new pixels are encoded by the usual Truth Innovation;
+- the never shown area does not exist at all in the state.
 
-Это можно понимать как двумерный Lempel–Ziv с геометрическим размещением:
+This can be understood as a two-dimensional Lempel–Ziv with geometric placement:
 
 ```text
-NEW INFORMATION -> один раз восстановить
-PROMOTE         -> сохранить полезный decoded rectangle
-PLACE           -> многократно сослаться на него
-INNOVATION      -> исправить несовпадение
+NEW INFORMATION -> restore once
+PROMOTE -> save useful decoded rectangle
+PLACE -> refer to it multiple times
+INNOVATION -> correct mismatch
 ```
 
-Decoder не знает, является patch домом, лицом, фоном или текстом.
+The decoder doesn't know whether the patch is a house, a face, a background, or text.
 
-## 3. Единственное состояние
+## 3. Single state
 
 ```text
 PatchSlot {
@@ -73,17 +73,15 @@ PatchSlot {
 
 **DPM-0:**
 
-- фиксированный bounded bank;
+- fixed bounded bank;
 - candidate sizes: `16×16`, `32×32`, `64×64`;
-- максимум slots и bytes задаются profile;
-- pixels являются post-filter reconstructed Truth samples;
-- нет persistent mask, depth, alpha, object ID, world coordinates или
-  confidence.
+- maximum slots and bytes are set by profile;
+- pixels are post-filter reconstructed Truth samples;
+- no persistent mask, depth, alpha, object ID, world coordinates or
+  confidence.The first fair comparison uses exactly the same physical state-memory budget,
+same as anchor DPB/LTR.
 
-Первая fair comparison использует ровно тот же physical state-memory budget,
-что и anchor DPB/LTR.
-
-## 4. Четыре opcodes
+## 4. Four opcodes
 
 ```text
 PM_RESET
@@ -98,10 +96,10 @@ PM_DROP
 PM_RESET {}
 ```
 
-- обязателен в каждом RAP;
-- сбрасывает все slot validity;
-- после reset старый state недоступен;
-- DPM-0 не передаёт atlas snapshot и не делает partial repair.
+- required in every RAP;
+- resets all slot validity;
+- after reset the old state is not available;
+- DPM-0 does not transmit atlas snapshot and does not do partial repair.
 
 ### 4.2 PM_PROMOTE
 
@@ -114,17 +112,17 @@ PM_PROMOTE {
 }
 ```
 
-После завершения и проверки Truth reconstruction команда точно копирует
-integer-aligned rectangle из current post-filter Truth frame в `dst_slot`.
+After completion and verification of Truth reconstruction, the command copies exactly
+integer-aligned rectangle from current post-filter Truth frame in `dst_slot`.
 
-- повторного texture payload нет;
-- partial slot update отсутствует;
-- новое PROMOTE полностью заменяет slot;
-- source должен целиком лежать внутри frame;
-- perceptual или concealment output запрещён.
+- no repeat texture payload;
+- partial slot update missing;
+- new PROMOTE completely replaces slot;
+- source must lie entirely inside frame;
+- perceptual or concealment output is prohibited.
 
-Именно coordinate-free compaction post-filter decoded pixels является
-единственным потенциально отличительным primitive DPM-0.
+It is coordinate-free compaction post-filter decoded pixels that is
+the only potentially distinctive primitive is DPM-0.
 
 ### 4.3 PM_PLACE
 
@@ -136,15 +134,15 @@ PM_PLACE {
 }
 ```
 
-- только integer translation;
-- slot копируется в prediction canvas без resampling;
-- команды исполняются в bitstream order;
-- последняя команда перезаписывает предыдущий prediction;
-- output pixels, не покрытые PLACE, остаются unresolved;
-- prediction всегда исправляется Truth residual/replacement.
+- only integer translation;
+- slot is copied to the prediction canvas without resampling;
+- commands are executed in bitstream order;
+- the last command overwrites the previous prediction;
+- output pixels not covered by PLACE remain unresolved;
+- prediction is always corrected by Truth residual/replacement.
 
-Никаких affine, homography, mesh или bilinear filtering в первом oracle.
-Сложную форму encoder аппроксимирует несколькими rectangles либо не использует
+No affine, homography, mesh or bilinear filtering in the first oracle.
+The encoder approximates a complex form with several rectangles or does not use it
 DPM.
 
 ### 4.4 PM_DROP
@@ -155,159 +153,156 @@ PM_DROP {
 }
 ```
 
-- инвалидирует slots после завершения текущего output;
-- текущая unit читает immutable pre-unit bank;
-- DROP/PROMOTE коммитятся атомарно для следующей unit.
+- invalidates slots after the current output has completed;
+- current unit reads immutable pre-unit bank;
+- DROP/PROMOTE are committed atomically for the next unit.
 
-Технически DROP можно заменить перезаписью slot. Он оставлен как тривиальная
-операция для явной liveness и тестирования; после измерения syntax cost его
-можно удалить.
+Technically, DROP can be replaced by rewriting slot. It's left as trivial
+operation for explicit liveness and testing; after measuring the syntax cost it
+can be deleted.
 
-## 5. Полный decoder loop
+## 5. Full decoder loop
 
 ```text
 for each AccessUnit:
-    1. Parse и validate syntax, counts, offsets, integrity.
-    2. При RAP выполнить PM_RESET; PLACE count MUST быть 0.
-    3. Freeze текущий PatchBank как read-only.
+    1. Parse and validate syntax, counts, offsets, integrity.
+    2. For RAP, perform PM_RESET; PLACE count MUST be 0.
+    3. Freeze the current PatchBank as read-only.
     4. Prediction = 0; ResolvedMask = 0.
-    5. Выполнить PM_PLACE в bitstream order:
+    5. Execute PM_PLACE in bitstream order:
            exact-copy pixels;
-           set ResolvedMask на destination rectangle.
+           set ResolvedMask on destination rectangle.
     6. Decode Truth payload.
-    7. Для каждого pixel:
+    7. For each pixel:
            resolved -> Prediction + objective residual;
            unresolved -> objective replacement/intra.
-    8. Выполнить normative in-loop filters.
-    9. Выдать Truth output.
-   10. В staging применить PM_DROP и PM_PROMOTE только из post-filter Truth.
-   11. Проверить bounds, duplicate writers и memory limit.
-   12. Атомарно commit state для следующей AccessUnit.
-   13. Optional Perceptual Detail применить только к display.
-```
+    8. Run normative in-loop filters.
+    9. Issue Truth output.
+   10. In staging, apply PM_DROP and PM_PROMOTE only from post-filter Truth.
+   11. Check bounds, duplicate writers and memory limit.
+   12. Atomically commit state for the next AccessUnit.
+   13. Optional Perceptual Detail applied only to display.
+```If damaged, the state-dependent unit decoder does not update PatchBank and
+resumes the experimental DPM path only after the next RAP. DPM-0 is not
+contains partial repair.
 
-При повреждении state-dependent unit decoder не обновляет PatchBank и
-возобновляет экспериментальный DPM path только после следующего RAP. DPM-0 не
-содержит partial repair.
+## 6. How the house example is preserved
 
-## 6. Как сохраняется пример с домом
+1. In the first frame, the encoder finds the blank rectangles of the wall around the person.
+2. After reconstruction they end up in slots via `PM_PROMOTE`.
+3. In the following frames, `PM_PLACE` assembles a prediction from already known pieces.
+4. The person and the yet unknown parts are restored by the usual Truth Innovation.
+5. When a new piece of wall becomes visible for the first time, it can be PROMOTE for
+   future reuse.
+6. A piece that has never been opened is not stored or generated.
 
-1. В первом кадре encoder находит чистые прямоугольники стены вокруг человека.
-2. После reconstruction они попадают в slots через `PM_PROMOTE`.
-3. В следующих кадрах `PM_PLACE` собирает prediction из уже известных кусочков.
-4. Человек и ещё не известные части восстанавливаются обычной Truth Innovation.
-5. Когда новый кусок стены впервые становится видим, его можно PROMOTE для
-   будущего reuse.
-6. Никогда не открывшийся кусок не хранится и не генерируется.
+The Arbitrary shape in v0 is the union of rectangles. It's less bit-efficient,
+than an ideal mask, but leaves the decoder extremely simple and gives an honest answer,
+Is there a big win at all?
 
-Arbitrary shape в v0 является объединением rectangles. Это менее bit-efficient,
-чем идеальная mask, но оставляет decoder предельно простым и даёт честный ответ,
-существует ли крупный выигрыш вообще.
+## 7. How is this different from previous approaches?
 
-## 7. Чем это отличается от прошлых подходов
-
-| Подход | Что уже умеет | Узкое возможное отличие DPM |
+| Approach | What can you already do | Narrow Possible DPM Difference |
 |---|---|---|
-| MPEG-4 sprite | Panorama, warp, arbitrary-shape foreground, progressive/online sprite | Не специальный background object, а общий compact bank независимых decoded rectangles |
-| VVC/AV2 LTR | Долгая жизнь reconstructed frames, block/affine prediction | Не оплачивать память за бесполезные pixels целого frame |
-| AV2 BRU/composite reference | Partial update reference picture | Coordinate-free dense packing patches из многих frames при том же byte budget |
-| MPEG Immersive Video | Patches, atlases, geometry, inverse placement | Только original 2D playback; нет multiview/depth/novel view |
-| Layered Neural Atlases | Persistent texture, alpha, learned frame↔atlas mapping | Нет MLP, semantic layer или per-video neural decoder |
+| MPEG-4 sprite | Panorama, warp, arbitrary-shape foreground, progressive/online sprite | Not a special background object, but a common compact bank of independent decoded rectangles |
+| VVC/AV2 LTR | Long life reconstructed frames, block/affine prediction | Don't pay for memory for useless pixels of the whole frame |
+| AV2 BRU/composite reference | Partial update reference picture | Coordinate-free dense packing patches from many frames with the same byte budget |
+| MPEG Immersive Video | Patches, atlases, geometry, inverse placement | Only original 2D playback; no multiview/depth/novel view |
+| Layered Neural Atlases | Persistent texture, alpha, learned frame↔atlas mapping | No MLP, semantic layer or per-video neural decoder |
 
-**Честный статус:** эти различия могут оказаться недостаточными для patent
-novelty. `PM_PROMOTE/PLACE` — сначала compression experiment, а не claim
-изобретения.
+**Honest status:** these differences may not be sufficient for a patent
+novelty. `PM_PROMOTE/PLACE` - first a compression experiment, not a claim
+inventions.
 
-## 8. Почему предыдущие варианты не стали универсальным frame codec
+## 8. Why the previous versions did not become a universal frame codec
 
-- MPEG-4 sprite был специализирован background/object mode и зависел от
-  качественной segmentation/authoring.
-- Whole-frame LTR прост, но тратит память на pixels, которые больше не нужны.
-- MIV решает более тяжёлую задачу 6DoF и платит depth/patch metadata.
-- Neural atlases оптимизировались для editing/view synthesis, требуют тяжёлого
-  per-video fitting и не задают массовый bit-exact decoder.
-- Composite reference approaches уже показывают, что простой memory gain может
-  быть лишь несколько процентов в среднем.
+- MPEG-4 sprite was specialized background/object mode and depended on
+  high-quality segmentation/authoring.
+- Whole-frame LTR is simple, but wastes memory on pixels that are no longer needed.
+- MIV solves the more difficult 6DoF problem and pays depth/patch metadata.
+- Neural atlases have been optimized for editing/view synthesis, requiring heavy
+  per-video fitting and do not specify a massive bit-exact decoder.
+- Composite reference approaches already show that simple memory gain can
+  be only a few percent on average.
 
-DPM потенциально лучше не большей «интеллектуальностью», а тем, что делает
-компактную patch memory единственным новым inter-memory primitive и имеет
-дешёвый per-block fallback.
+DPM is potentially better not because it is more intelligent, but because it doescompact patch memory is the only new inter-memory primitive and has
+cheap per-block fallback.
 
-## 9. Пересмотр задач
+## 9. Revision of tasks
 
-### Немедленно реализовать
+### Immediately implement
 
-1. Сильный anchor:
-   - AV2 v1 с long-term references и Backwards Reference Update;
+1. Strong anchor:
+   - AV2 v1 with long-term references and Backwards Reference Update;
    - VVC/VTM LTR;
    - equal-byte composite/deduplicating patch-cache baseline.
 2. DPM oracle:
    - rectangles `16/32/64`;
    - integer PROMOTE/PLACE;
    - exact full-rate accounting;
-   - одинаковые residual/transform/entropy tools с anchor.
-3. Dataset:
+   - identical residual/transform/entropy tools with anchor.
+3.Dataset:
    - long-gap camera return;
    - moving occluder/background reveal;
    - UI/game/animation sprites;
    - repeated logos/text;
    - negative water/foliage/crowd/grain/cuts.
-4. Метрики:
-   - BD-rate и per-class result;
-   - bytes patch bank и DPB;
+4. Metrics:
+   - BD-rate and per-class result;
+   - bytes patch bank and DPB;
    - cache hit/useful-hit;
    - PROMOTE/PLACE bits;
    - DRAM read/write per output pixel;
    - RAP penalty.
 
-### Не добавлять в DPM-0
+### Do not add to DPM-0
 
 - `DomainMask/KnownMask`;
 - arbitrary-shape persistent masks;
 - canonical surface atlas;
-- depth, z-buffer и owner map;
+- depth, z-buffer and owner map;
 - affine/homography/mesh;
 - trajectories;
-- 2.5D и 3D;
+- 2.5D and 3D;
 - surfels/Gaussians;
 - semantic objects;
 - scene/world reconstruction;
 - generative completion;
 - learned decoder;
-- atlas snapshots и partial repair;
+- atlas snapshots and partial repair;
 - Foundry-router distillation.
 
-Эти механизмы остаются в Research Radar и не получают реализации, пока
-четырёхкомандное ядро не пройдёт gate.
+These mechanisms remain in Research Radar and are not implemented until
+a four-team core will not pass the gate.
 
 ## 10. Go/no-go
 
-Продолжать DPM как core coding tool только если oracle при одинаковых:
+Continue DPM as a core coding tool only if oracle is the same:
 
 - decoder memory bytes;
 - random-access interval;
 - latency/lookahead;
 - objective quality;
 - residual/transform/entropy path;
-- encoder search effort для reported anchor
+- encoder search effort for reported anchor
 
-даёт:
+gives:
 
-- более 15% net bitrate reduction на нескольких разных long-gap категориях;
-- не менее 10–15% на puzzle-friendly natural subset;
-- не менее 5% на mixed corpus;
-- среднюю hostile regression не более 0.5%;
-- memory traffic в пределах будущего hardware profile.
+- more than 15% net bitrate reduction on several different long-gap categories;
+- at least 10–15% for puzzle-friendly natural subset;
+- at least 5% for mixed corpus;
+- average hostile regression no more than 0.5%;
+- memory traffic within the future hardware profile.
 
-Если DPM не проходит gate:
+If DPM fails gate:
 
-- не добавлять masks/depth/3D в попытке спасти идею;
-- оставить его niche screen/sprite tool либо закрыть;
-- вернуться к multi-frame innovation как основному research path.
+- do not add masks/depth/3D in an attempt to save the idea;
+- leave it niche screen/sprite tool or close it;
+- return to multi-frame innovation as the main research path.
 
-## 11. Complexity tax для любого расширения
+## 11. Complexity tax for any extension
 
-После успеха DPM-0 новый tool добавляется только отдельно и по одному:
+After the success of DPM-0, a new tool is added only separately and one at a time:
 
 1. binary `8×8` mask;
 2. subpixel translation;
@@ -315,29 +310,28 @@ DPM потенциально лучше не большей «интеллект
 4. partial slot update;
 5. trajectory parameterization.
 
-Каждое расширение должно:
+Each extension must:
 
-- давать не менее 3% net gain на mixed corpus либо не менее 7% на крупном
-  declared subset сверх предыдущего уровня;
-- не увеличивать disabled-stream syntax более чем на 0.2%;
-- иметь bounded integer implementation;
-- не требовать semantic inference в decoder;
-- проходить отдельную ablation.
+- give at least 3% net gain on mixed corpus or at least 7% on large corpus
+  declared subset above the previous level;
+- do not increase disabled-stream syntax by more than 0.2%;
+- have bounded integer implementation;- do not require semantic inference in the decoder;
+- undergo separate ablation.
 
-Нет измеренного marginal gain — нет syntax.
+No measured marginal gain - no syntax.
 
-## 12. Упрощённый timeline
+## 12. Simplified timeline
 
-При параллельной круглосуточной работе:
+During parallel round-the-clock operation:
 
-| Срок | Результат |
+| Deadline | Result |
 |---|---|
-| 2–4 дня | DPM state machine, synthetic bitstream и bit-exact CPU copy path |
-| 1–2 недели | Oracle на выбранных long-gap sequences |
-| 2–4 недели | Fair comparison с equal-memory LTR/BRU/composite cache |
-| 4–6 недель | Решение: core, niche или kill |
-| 6–10 недель | GPU/conformance work только при положительном решении |
+| 2–4 days | DPM state machine, synthetic bitstream and bit-exact CPU copy path |
+| 1–2 weeks | Oracle on selected long-gap sequences |
+| 2–4 weeks | Fair comparison with equal-memory LTR/BRU/composite cache |
+| 4–6 weeks | Solution: core, niche or kill |
+| 6–10 weeks | GPU/conformance work only if the decision is positive |
 
-Это существенно быстрее и дешевле полной OSM/2.5D ветки. Самое важное:
-SceneLith получает проверяемый ответ до того, как недоказанная сложность
-превратится в архитектурный долг.
+This is significantly faster and cheaper than the full OSM/2.5D branch. The most important:
+SceneLith gets verifiable answer before unproven complexity
+will turn into architectural debt.

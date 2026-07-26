@@ -1,245 +1,252 @@
-# SceneLith-0 — черновик нормативной спецификации
+# SceneLith-0 — Normative Draft
 
-Codec/bitstream family и проект: SceneLith  
-Архитектура: MOSAIC  
-Версия: 0.0.4  
-Статус: **NORMATIVE-DRAFT**  
-Дата: 2026-07-26
+Codec/bitstream family and project: SceneLith
+Architecture: MOSAIC
+Version: 0.0.4
+Status: **NORMATIVE-DRAFT**
+Date: 2026-07-26
 
-Этот документ пока фиксирует семантический контракт, а не окончательную
-битовую раскладку.
+This document currently captures the semantic contract, not the final
+bit layout.
 
 ## 1. Scope
 
-SceneLith-0 определяет self-contained visual-state bitstream и детерминированный
-decoding process для bounded continuous-time MOSAIC Cells и objective
-innovation.
+SceneLith-0 defines a self-contained visual-state bitstream and a
+deterministic decoding process for bounded continuous-time MOSAIC Cells and
+objective Innovation.
 
-Frame не является единицей state mutation, motion или reference memory.
-`Presentation Query` является read-only sample текущего state. Принятая
-implementation architecture — **CBF: Causal Basis Field visual ISA**.
-Первая reference implementation ограничена static/linear translation; syntax
-MAY разрешать bounded profile-gated affine/projective law. Depth, 3D и
-unrestricted learned decoder не входят в Main-0.
+A frame is not a unit of state mutation, motion, or reference memory. A
+`Presentation Query` is a read-only sample of the current state. The accepted
+implementation architecture is the **CBF — Causal Basis Field visual ISA**.
+The first reference implementation is limited to static and linear
+translation. The syntax MAY allow bounded, profile-gated affine and projective
+laws. Depth, 3D primitives, and unrestricted learned decoding are not part of
+Main-0.
 
-## 2. Термины
+## 2. Terms
 
-- **WorldState** — ограниченное нормативное состояние сцены.
-- **Truth Core** — reconstruction path, допустимый для reference/state.
-- **Truth Innovation** — передаваемая объективная поправка к structural render.
-- **Perceptual Detail** — необязательная синтетическая display-only поправка.
-- **Mutation EventBlock** — проверяемый block, содержащий State Events.
-- **Read-only EventBlock** — block, не изменяющий WorldState.
-- **Memory Access Point (MAP)** — точка полного независимого восстановления
-  допустимого WorldState.
-- **Scene Epoch** — ограниченный интервал жизни namespace и state.
-- **MOSAIC Cell** — bounded state record, синтезирующий scalar gate \(g\) и
-  color contribution \(c\) из immutable basis content.
-- **CBF** — Causal Basis Field visual ISA, в котором Cell является bounded
-  spacetime basis atom.
-- **State Event** — атомарное изменение полей одной или нескольких cells в
-  заданный timestamp.
-- **Presentation Query** — чтение и composition state в timestamp без mutation.
-- **Content Bank** — bounded coordinate-independent storage только
-  подтверждённых Truth samples или inline objective payload.
-- **Support** — conservative bounded union разрешённых dyadic microtiles для
-  storage, scheduling и culling; его граница не является visible shape.
-- **Gate** — bounded fixed-point scalar field \(g(p,t)\), определяющий, какая
-  доля предыдущего Canvas сохраняется при применении Cell.
+- **WorldState** — bounded normative scene state.
+- **Truth Core** — reconstruction path eligible for state and reference use.
+- **Truth Innovation** — transmitted objective correction to the structural
+  render.
+- **Perceptual Detail** — optional synthetic display-only correction.
+- **Mutation EventBlock** — validated block containing State Events.
+- **Read-only EventBlock** — block that does not mutate `WorldState`.
+- **Memory Access Point (MAP)** — independent recovery point containing a
+  complete valid `WorldState`.
+- **Scene Epoch** — bounded lifetime of a namespace and its state.
+- **MOSAIC Cell** — bounded state record that synthesizes a scalar Gate \(g\)
+  and color Contribution \(c\) from immutable Basis content.
+- **CBF** — Causal Basis Field visual ISA in which a Cell is a bounded
+  spacetime Basis atom.
+- **State Event** — atomic change to one or more Cells at a given timestamp.
+- **Presentation Query** — read and composition of state at a timestamp
+  without mutation.
+- **Content Bank** — bounded coordinate-independent storage containing only
+  confirmed Truth samples or inline objective payload.
+- **Support** — conservative bounded union of allowed dyadic microtiles for
+  storage, scheduling and culling; its border is not a visible shape.
+- **Gate** — bounded fixed-point scalar field \(g(p,t)\) that determines the
+  fraction of the previous Canvas retained when a Cell is applied.
 - **Contribution** — bounded fixed-point color field \(c(p,t)\).
-- **Affine composition** — единственная композиционная операция
-  \(Canvas'=g\,Canvas+c\) внутри bounded composition layer; clip выполняется
-  на нормативной layer boundary.
-- **MotionLaw** — absolute fixed-point mapping local content coordinates в
-  output coordinates на заданном time interval.
-- **CELL_SET** — создание, обновление либо завершение cell.
-- **STATE_RESET** — очистка state и начало self-contained epoch.
-- **PRESENT** — compatibility Presentation Query с optional objective Truth
+- **Affine composition** — the only composition operation inside a bounded
+  layer: \(Canvas'=g\,Canvas+c\). Clipping occurs at the normative layer
+  boundary.
+- **MotionLaw** — absolute fixed-point mapping from local Content coordinates
+  to output coordinates over a specified time interval.
+- **CELL_SET** — creates, updates, or terminates a Cell.
+- **STATE_RESET** — clears state and begins a self-contained Scene Epoch.
+- **PRESENT** — compatibility Presentation Query with optional objective Truth
   payload.
-- **DPM** — отдельный экспериментальный baseline из
-  `../docs/13_MINIMAL_PATCH_CORE.md`, не time/state architecture Main-0.
+- **DPM** — separate experimental baseline from
+  `../docs/13_MINIMAL_PATCH_CORE.md`, not time/state architecture Main-0.
 
-## 3. Conformance language
+## 3. Conformity language
 
-Слова MUST, MUST NOT, SHOULD, SHOULD NOT и MAY используются в смысле RFC 2119.
+The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are to be
+interpreted as described by RFC 2119 and RFC 8174.
 
-## 4. Основные требования
+## 4. Basic requirements
 
-1. Decoder MUST воспроизводить Truth Core детерминированно.
-2. Perceptual Detail MUST NOT участвовать в reference prediction.
-3. Perceptual Detail MUST NOT менять WorldState.
-4. Повреждённый или непроверенный State Event MUST NOT применяться.
-5. MAP MUST позволять декодирование без пакетов, предшествующих MAP.
-6. Bitstream MUST быть self-contained относительно всех ненормативных
-   параметров декодирования.
-7. Decoder MUST отклонять stream, превышающий profile/level limits.
-8. Все переданные adapters, dictionaries и weights MUST учитываться в bitrate.
-9. Main profile MUST NOT требовать произвольного исполняемого graph.
-10. Main Truth reconstruction MUST NOT зависеть от device floating-point
-    behaviour.
-11. PRESENT MUST NOT менять WorldState.
-12. Отсутствие State Event MUST означать сохранение предыдущего допустимого
-    cell state; per-presentation `HOLD` syntax MUST NOT требоваться.
-13. Main-0 MotionLaw MUST принадлежать profile-defined bounded набору:
-    `STATIC`, absolute fixed-point `LINEAR_TRANSLATION`, `AFFINE` или
-    `PROJECTIVE`; первая reference implementation MUST реализовать как минимум
-    `STATIC` и `LINEAR_TRANSLATION`.
-14. MotionLaw MUST вычисляться относительно immutable cell Content, а не
-    рекурсивным warp предыдущего presentation output.
-15. Main-0 Support MUST быть bounded union profile-defined dyadic microtiles,
-    используемых только как conservative storage/culling bounds.
-16. Main-0 MUST NOT иметь отдельные circle, polygon или arbitrary rasterizer
+1. A decoder MUST reconstruct the Truth Core deterministically.
+2. Perceptual Detail MUST NOT participate in reference prediction.
+3. Perceptual Detail MUST NOT change WorldState.
+4. A damaged or unverified State Event MUST NOT be used.
+5. MAP MUST allow decoding without packets preceding MAP.
+6. A bitstream MUST be self-contained with respect to every parameter required
+   for normative decoding.
+7. A decoder MUST reject streams that exceed profile or level limits.
+8. Every transmitted adapter, dictionary, and weight MUST be counted in the
+   bitrate.
+9. Main profile MUST NOT require an arbitrary executable graph.
+10. Main Truth reconstruction MUST NOT depend on device floating-point
+    behavior.
+11. PRESENT MUST NOT change WorldState.
+12. The absence of a State Event MUST preserve the previous valid Cell state;
+    per-presentation `HOLD` syntax MUST NOT be required.
+13. Main-0 MotionLaw MUST belong to the profile-defined bounded set:
+    `STATIC`, absolute fixed-point `LINEAR_TRANSLATION`, `AFFINE` or
+    `PROJECTIVE`; first reference implementation MUST implement at least
+    `STATIC` and `LINEAR_TRANSLATION`.
+14. MotionLaw MUST be evaluated relative to immutable Cell Content and MUST NOT
+    recursively warp a previous Presentation output.
+15. Main-0 Support MUST be a bounded union of profile-defined dyadic
+    microtiles, used only as conservative storage and culling bounds.
+16. Main-0 MUST NOT define separate circle, polygon, or arbitrary rasterizer
     primitives.
-17. Visible footprint MUST определяться Gate, а не границей Support.
-18. Любой unresolved output region MUST использовать state-independent
-    objective `REPLACE` fallback.
-19. `CAPTURE_TRUTH` MUST читать только завершённый, проверенный post-filter
+17. Visible footprint MUST be determined by the Gate, not the Support boundary.
+18. Any unresolved output region MUST use a state-independent objective
+    `REPLACE` fallback.
+19. `CAPTURE_TRUTH` MUST read only completed, verified post-filter
     Truth output.
-20. Concealment и Perceptual Detail MUST NOT быть source Content Bank.
-21. State Events MUST применяться атомарно только после integrity/bounds checks.
-22. Main-0 MUST NOT требовать depth, отдельный semantic alpha-object,
-    mesh, 2.5D/3D primitives, scene semantics или learned decoder;
-    scalar Gate из требования 26 не считается отдельным object type.
-23. Output в timestamp, отсутствующий среди source-ground-truth timestamps,
-    MUST быть обозначим как interpolated, если его fidelity не подтверждена
-    отдельным Truth payload.
-24. Вне Support decoder MUST использовать identity Cell value \(g=1,c=0\).
-25. Cell application MUST использовать только affine pair
-    \(Canvas'=g\,Canvas+c\) внутри composition layer и profile-defined clip
-    на layer boundary.
-26. Gate MUST позволять binary и fractional coverage с profile-defined
-    precision; rectangular storage boundary MUST NOT проявляться в output.
-27. Каждый interpolation footprint MUST быть полностью определён guard/apron
-    samples либо закрыт objective fallback.
-28. Lossless profile MUST позволять pixel-exact full-output fallback.
-29. Cell evaluation MUST использовать immutable Basis и absolute parameter
-    laws; recursive reference к предыдущему presentation запрещён.
-30. Profile/level MUST задавать absolute maximum non-identity Cell
-    contributions на output pixel и fixed composition layer count.
-31. Main general level TARGET — не более 4 contributions, 4 layers,
-    8 texture samples и порядка 128 simple integer operations/output pixel;
-    финальные числа становятся нормативными после conformance experiment.
-32. При невозможности уложиться в limits encoder MUST использовать objective
-    Innovation fallback; decoder MUST отвергнуть превышающий limits stream.
-33. Внутри composition layer affine pairs MAY объединяться:
+20. Concealment and Perceptual Detail MUST NOT be stored in the Content Bank.
+21. State Events MUST be applied atomically only after integrity and bounds checks.
+22. Main-0 MUST NOT require depth, a separate semantic alpha object, a mesh,
+    2.5D or 3D primitives, scene semantics, or a learned decoder. The scalar
+    Gate in requirement 26 is not a separate object type.
+23. An output sample at a timestamp not present in the source ground truth
+    MUST be marked as interpolated unless a separate Truth payload validates
+    its fidelity.
+24. Outside a Cell's Support, a decoder MUST use the identity Cell value
+    \(g=1,c=0\).
+25. Cell application inside a composition layer MUST use only the affine pair
+    \(Canvas'=g\,Canvas+c\), followed by profile-defined clipping at the layer
+    boundary.
+26. Gate MUST allow binary and fractional coverage with profile-defined
+    precision; rectangular storage boundary MUST NOT appear in output.
+27. Every interpolation footprint MUST be fully defined by guard or apron
+    samples, or be completed by objective fallback.
+28. Lossless profile MUST allow pixel-exact full-output fallback.
+29. Cell evaluation MUST use immutable Basis and absolute parameter
+    laws; recursive reference to a previous presentation is prohibited.
+30. A profile or level MUST define an absolute maximum number of non-identity
+    Cell contributions per output pixel and a fixed composition-layer count.
+31. **TARGET:** the general Main level uses no more than 4 contributions, 4
+    layers, 8 texture samples, and approximately 128 simple integer operations
+    per output pixel. Final normative limits follow conformance experiments.
+32. If a candidate representation exceeds these limits, the encoder MUST use
+    objective Innovation fallback. A decoder MUST reject a stream that exceeds
+    its declared limits.
+33. Inside the composition layer affine pairs MAY merge:
     \[
     (g_2,c_2)\circ(g_1,c_1)=
     (g_2g_1,\ g_2c_1+c_2).
     \]
-    Reduction MUST сохранять coded order и использовать profile-defined wide
+    Reduction MUST preserve coded order and use a profile-defined wide
     accumulator.
-34. Clip MUST выполняться на profile-defined layer boundary. Реализация MUST
-    давать output, независимый от parallel reduction tree.
+34. Clipping MUST occur at a profile-defined layer boundary. An implementation
+    MUST produce output independent of the chosen parallel reduction tree.
 
 ## 5. Abstract decoding process
 
-Decoder обрабатывает records строго в coded order:
+A decoder processes records strictly in coded order:
 
-1. Проверяет Event Block syntax, bounds, resource limits и integrity.
-2. На `STATE_RESET(t)` очищает cells, Content Bank и namespace.
-3. На `CELL_SET(t)`:
-   1. истекает cells с `death_time <= t`;
-   2. строит изменённые content/support/motion fields в staging;
-   3. разрешает `CAPTURE_TRUTH` только после существующего подтверждённого
+1. Validate EventBlock syntax, bounds, resource limits, and integrity.
+2. On `STATE_RESET(t)`, clear all Cells, the Content Bank, and the namespace.
+3. For `CELL_SET(t)`:
+   1. expire Cells with `death_time <= t`;
+   2. build changed Content, Support, and MotionLaw fields in staging;
+   3. allow `CAPTURE_TRUTH` only from an existing confirmed
       Truth output;
-   4. атомарно коммитит новую версию state.
-4. На `PRESENT(t)`:
-   1. истекает cells с `death_time <= t`;
-   2. вычисляет absolute MotionLaw каждой active cell;
-   3. синтезирует Gate \(g_i\) и Contribution \(c_i\) каждой Cell;
-   4. order-preserving объединяет пары \((g_i,c_i)\) внутри фиксированных
-      layers, применяет \(Canvas'=gCanvas+c\) и normative clip на каждой
+   4. atomically commit the new state version.
+4. For `PRESENT(t)`:
+   1. expire Cells with `death_time <= t`;
+   2. evaluate the absolute MotionLaw of each active Cell;
+   3. synthesize Gate \(g_i\) and Contribution \(c_i\) for each Cell;
+   4. combine pairs \((g_i,c_i)\), preserving coded order, inside fixed
+      layers; apply \(Canvas'=gCanvas+c\) and normative clipping at each
       layer boundary;
-   5. state-independent objective fallback полностью определяет unresolved
+   5. use state-independent objective fallback to define all unresolved
       pixels;
-   6. выполняет normative in-loop/output filters;
-   7. сохраняет проверенный Truth output как единственный допустимый future
+   6. apply normative in-loop and output filters;
+   7. save verified Truth output as the only valid future
       capture source;
-   8. отдельно применяет или пропускает Optional Perceptual Detail;
-   9. выдаёт display output, не меняя WorldState.
+   8. independently apply or skip Optional Perceptual Detail;
+   9. produce display output without mutating `WorldState`.
 
-Host MAY запросить дополнительный timestamp в continuous-output profile.
-Такой query использует только уже active state и не создаёт reference.
+A host MAY request an additional timestamp in a continuous-output profile.
+Such a query only uses the already active state and does not create a reference.
 
 ## 6. WorldState limits
 
-Каждый profile/level MUST задавать:
+Each profile or level MUST define:
 
-- максимальный объём state;
-- максимальное число cells;
-- максимальный размер Content Bank;
-- разрешённые microtile sizes и максимальное число support entries;
-- максимальное число active/moving cells на output tile;
-- максимальное число State Events и motion knots на time interval;
-- максимальное число recent references;
-- максимальную длину epoch;
-- максимальный compute class;
-- максимальное число changed/dirty output tiles на compatibility PRESENT.
+- maximum volume of state;
+- maximum number of cells;
+- maximum Content Bank size;
+- allowed microtile sizes and maximum number of support entries;
+- maximum number of active/moving cells per output tile;
+- maximum number of State Events and motion knots per time interval;
+- maximum number of recent references;
+- maximum Scene Epoch duration;
+- maximum compute class;
+- maximum number of changed/dirty output tiles on compatibility PRESENT.
 
 ## 7. Reference graph
 
-- Mutation EventBlock MAY зависеть только от подтверждённого Truth State.
-- Read-only EventBlock MAY зависеть от state и явно перечисленных Truth
+- A Mutation EventBlock MAY depend only on confirmed Truth state.
+- Read-only EventBlock MAY depend on state and explicitly listed Truth
   outputs.
-- Perceptual output MUST NOT появляться в dependency graph.
-- Dependency graph MUST быть ациклическим внутри independently decodable
+- Perceptual output MUST NOT appear in the dependency graph.
+- The dependency graph MUST be acyclic inside an independently decodable
   interval.
-- PRESENT MUST читать snapshot state после всех более ранних State Events с тем
-  же timestamp и до всех более поздних records в coded order.
-- CELL_SET MUST NOT читать partially committed state.
-- Recursive reference на предыдущий interpolated presentation запрещён.
+- `PRESENT` MUST read the state snapshot after every earlier State Event at the
+  same timestamp and before every later record in coded order.
+- CELL_SET MUST NOT read partially committed state.
+- Recursive reference to a previous interpolated presentation is prohibited.
 
 ## 8. Random access
 
 MAP MUST:
 
-- выполнить STATE_RESET;
-- содержать self-contained cells либо full-screen objective fallback;
-- полностью определить первый PRESENT;
-- не использовать KEEP/CAPTURE_TRUTH до определения соответствующего source;
-- не ссылаться на предыдущий epoch.
+- execute `STATE_RESET`;
+- contain self-contained Cells or a full-screen objective fallback;
+- fully define the first `PRESENT`;
+- not use `KEEP` or `CAPTURE_TRUTH` before the corresponding source is defined;
+- not refer to a previous Scene Epoch.
 
-Main-0 не содержит partial state repair. Content Bank строится заново после
-MAP.
+Main-0 does not define partial state repair. The Content Bank is rebuilt after
+a MAP.
 
-## 9. Error behaviour
+## 9. Error behavior
 
-При integrity failure decoder:
+After an integrity failure, a decoder:
 
 - MUST NOT commit State Events;
-- MAY вывести concealment presentation;
-- MUST пометить state/output как degraded;
-- MUST возобновить state-dependent decoding не ранее следующего MAP.
+- MAY display concealment presentation;
+- MUST mark the state and output as degraded;
+- MUST resume state-dependent decoding no earlier than the next MAP.
 
-## 10. Main operator set — NORMATIVE-DRAFT
+## 10. Main operator set - NORMATIVE-DRAFT
 
 - fixed-width add/multiply/accumulate;
 - lifting/wavelet;
 - exact microtile copy;
-- bounded support-list traversal;
-- bounded absolute fixed-point translation/affine/projective coordinate law;
-- deterministic affine-pair composition и order-preserving tree reduction;
-- residual add/replacement, clamp и normative in-loop filter;
+- bounded Support-list traversal;
+- bounded absolute fixed-point translation, affine, or projective coordinate
+  law;
+- deterministic affine-pair composition and order-preserving tree reduction;
+- residual add/replacement, clamp and normative in-loop filter;
 - rANS decode;
-- STATE_RESET, CELL_SET и PRESENT.
+- STATE_RESET, CELL_SET and PRESENT.
 
-Окончательные microtile sizes, precision, saturation и rounding будут
-определены после первых conformance experiments.
+The final microtile sizes, precision, saturation and rounding will be
+determined after the first conformance experiments.
 
 ## 11. Security requirements
 
-Decoder MUST:
+A decoder MUST:
 
-- проверять все размеры до allocation;
-- иметь нормативные пределы cycles/memory;
-- не исполнять код из bitstream;
-- защищаться от integer overflow и malformed entropy state;
-- проверять offsets и tile directories;
-- поддерживать deterministic failure вместо неопределённого поведения.
+- check all sizes before allocation;
+- enforce profile-defined cycle and memory limits;
+- never execute code from the bitstream;
+- protect against integer overflow and malformed entropy state;
+- check offsets and tile directories;
+- fail deterministically instead of invoking undefined behavior.
 
-## 12. Нерешённые разделы
+## 12. Unsolved sections
 
-- окончательный binary syntax;
+- final binary syntax;
 - profile/level table;
 - chroma/HDR processing;
 - reference color conversion;
@@ -247,20 +254,20 @@ Decoder MUST:
 - exact entropy tables;
 - container mapping;
 - decoder capability signaling;
-- точные cell count, Content Bank и microtile limits;
+- exact Cell-count, Content Bank, and microtile limits;
 - binary syntax STATE_RESET/CELL_SET/PRESENT;
-- fixed-point timebase и maximum motion interval;
-- clipping/coverage rule на output bounds;
+- fixed-point timebase and maximum motion interval;
+- clipping/coverage rule on output bounds;
 - exact dirty-tile derivation;
-- точный порядок in-loop filters относительно CAPTURE_TRUTH;
-- continuous-output API и маркировка interpolated timestamps;
-- relationship compatibility PRESENT с container sample tables.
+- exact order of in-loop filters relative to CAPTURE_TRUTH;
+- continuous-output API and interpolated timestamps marking;
+- relationship between compatibility `PRESENT` and container sample tables.
 
-Отложено за пределы Main v0 до measured marginal gain:
+Deferred beyond Main v0 to measured marginal gain:
 
 - pixel-exact persistent masks;
 - partial slot update;
 - depth/2.5D/3D;
 - exposure integration;
 - learned/generative decoder;
-- state snapshots и partial repair.
+- state snapshots and partial repair.

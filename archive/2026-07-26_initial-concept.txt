@@ -1,160 +1,155 @@
-Да. Но после повышения планки я бы вообще отказался от идеи «H.266 плюс нейросетевой фильтр». Это всё равно эволюция.
+Yes. But after raising the bar, I would completely abandon the idea of ​​​​"H.266 plus a neural network filter." It's still evolution.
 
-Нужен другой объект стандартизации: не кодек кадров, а компилятор динамической визуальной сцены. Рабочее название — **SceneLith**, внутреннее имя архитектуры — **MOSAIC: Memory-Oriented Scalable Asymmetric Integer Codec**.
+We need another standardization object: not a frame codec, but a dynamic visual scene compiler. The working title is **SceneLith**, the internal name of the architecture is **MOSAIC: Memory-Oriented Scalable Asymmetric Integer Codec**.
 
-Главная формула:
+Main formula:
 
 \[
 Video(t)=Render(WorldState_t,\ Trajectories_t)+TruthInnovation_t+OptionalPerceptualDetail_t
 \]
 
-То есть передавать не очередную картинку, а изменения уже известного декодеру мира.
+That is, transmit not just another picture, but changes in the world already known to the decoder.
 
-Сразу честная оговорка: сделать открытый стандарт, который конкуренты буквально никогда не догонят, невозможно. Спецификация декодера по определению станет доступна всем. Реалистичная и очень сильная цель звучит так:
+Just a fair disclaimer: it is impossible to make an open standard that competitors will literally never catch up with. The decoder specification will by definition be available to everyone. A realistic and very strong goal sounds like this:
 
-> Любой производитель способен реализовать декодер, но ещё 3–5 лет никто не способен кодировать так же хорошо.
+> Any manufacturer is capable of implementing a decoder, but for another 3-5 years no one will be able to encode as well.
 
-Преимущество должно жить в чудовищно сильном ненормативном encoder-компиляторе, данных, моделях оценки качества, оптимизации под контент и аппаратном стеке.
+The advantage must live in a monstrously strong non-standard encoder compiler, data, quality assessment models, content optimization and hardware stack.
 
-## Почему H.266 и AV1 уже упираются в потолок
+## Why H.266 and AV1 are already hitting the ceiling
 
-Предполагаю, что под VP1 вы имели в виду AV1. Причём ориентироваться теперь надо уже на AV2: финальная спецификация AV2 1.0 опубликована 28 мая 2026 года, а предфинальная версия показывала примерно 30–34% BD-rate выигрыша относительно AV1. Поэтому «сильно обогнать AV1» уже недостаточно — сравниваться надо с лучшим из AV2, VVC и современных learned-кодеков. [AV2 1.0](https://av2.aomedia.org/), [оценка AV2 v13](https://arxiv.org/abs/2605.15800).
+I assume that by VP1 you meant AV1. Moreover, now you need to focus on AV2: the final specification AV2 1.0 was published on May 28, 2026, and the pre-final version showed approximately 30–34% BD-rate gain relative to AV1. Therefore, “strongly overtaking AV1” is no longer enough - you need to compare with the best of AV2, VVC and modern learned codecs. [AV2 1.0](https://av2.aomedia.org/), [AV2 v13 rating](https://arxiv.org/abs/2605.15800).
 
-AV1 и VVC — выдающиеся, но всё ещё гибридные блочные кодеки: дерево разбиений, локальные предсказания, motion vectors, трансформы, квантование, контекстное энтропийное кодирование и фильтры. [Обзор VVC](https://arxiv.org/abs/2005.10801), [обзор AV1](https://arxiv.org/abs/2008.06091).
+AV1 and VVC are outstanding, but still hybrid block codecs: partitioning tree, local predictions, motion vectors, transforms, quantization, context entropy coding and filters. [VVC review](https://arxiv.org/abs/2005.10801), [AV1 review](https://arxiv.org/abs/2008.06091).
 
-Их фундаментальные ограничения:
+Their fundamental limitations:
 
-- Они кодируют в основном прямоугольные участки кадров, а не устойчивые объекты и поверхности. Дом, лицо или логотип после длительного исчезновения часто приходится передавать заново.
-- Motion compensation описывает связь кадров, но не строит долговременную память мира.
-- Рост эффективности достигается разрастанием меню режимов. Энкодер перебирает огромное количество комбинаций, а декодер получает ветвящийся граф с нерегулярными обращениями к памяти.
-- CABAC и другие адаптивные entropy-механизмы содержат последовательные зависимости, плохо загружающие GPU.
-- Рекурсивные блоки, intra-зависимости по верхней и левой границе, variable transforms и фильтры с halo создают divergence и синхронизации.
-- Random access, устойчивость к потерям, задержка и максимальная компрессия конфликтуют друг с другом.
-- Формат выдаёт одну «истинную» реконструкцию и практически не разделяет измеримую достоверность и правдоподобную генерацию.
+- They encode mostly rectangular areas of frames, rather than stable objects and surfaces. A house, a face or a logo often has to be re-transmitted after a long disappearance.
+- Motion compensation describes the connection of frames, but does not build long-term memory of the world.
+- Increased efficiency is achieved by expanding the menu of modes. The encoder goes through a huge number of combinations, and the decoder receives a branching graph with irregular memory accesses.
+- CABAC and other adaptive entropy mechanisms contain sequential dependencies that are poorly loaded on the GPU.
+- Recursive blocks, intra-dependencies on the top and left border, variable transforms and filters with halo create divergence and synchronization.
+- Random access, loss resistance, delay and maximum compression conflict with each other.- The format produces one “true” reconstruction and practically does not separate measurable reliability and plausible generation.
 
-Это не значит, что AV1/VVC плохо подходят ASIC. Напротив, под них делают прекрасные специализированные блоки. Но их структура гораздо хуже ложится на современные tensor/SIMD GPU, чем плотные integer-операции, warp/splat и параллельные чанки.
+This doesn't mean that AV1/VVC are bad ASICs. On the contrary, excellent specialized blocks are made for them. But their structure fits much worse on modern tensor/SIMD GPUs than dense integer operations, warp/splat and parallel chunks.
 
-## SceneLith: максимально амбициозная архитектура
+## SceneLith: the most ambitious architecture
 
-### 1. Кодировать мир, а не кадры
+### 1. Encode the world, not the frames
 
-Декодер хранит ограниченное, детерминированное состояние:
+The decoder stores a limited, deterministic state:
 
-- 2.5D-атлас видимых поверхностей;
-- feature planes и текстурные страницы;
-- разреженные surfels/2D Gaussian splats для геометрически устойчивых областей;
-- короткую память последних кадров;
-- словарь повторяющихся патчей;
-- компактные одномерные latent-токены долговременного контекста;
-- траектории камеры, объектов, деформаций и освещения.
+- 2.5D atlas of visible surfaces;
+- feature planes and texture pages;
+- sparse surfels/2D Gaussian splats for geometrically stable areas;
+- short memory of the last frames;
+- dictionary of repeating patches;
+- compact one-dimensional latent tokens of long-term context;
+- trajectories of the camera, objects, deformations and lighting.
 
-Если камера через десять секунд снова увидела стену, одежду или лицо, кодек ссылается на сохранённую поверхность и передаёт только изменение.
+If the camera sees a wall, clothing or face again after ten seconds, the codec refers to the saved surface and transmits only the change.
 
-Цель: для когерентной сцены битрейт должен зависеть преимущественно от количества новой информации, а не напрямую от `ширина × высота × FPS`. Переход 30→120 fps при гладком движении должен стоить существенно меньше четырёхкратного роста битрейта.
+Goal: For a coherent scene, the bitrate should depend primarily on the amount of new information, and not directly on `width × height × FPS`. The transition from 30→120 fps with smooth motion should cost significantly less than a fourfold increase in bitrate.
 
-Для воды, огня, зерна, листвы и хаотического движения остаётся универсальный innovation/residual fallback.
+For water, fire, grain, foliage and chaotic movement, the universal innovation/residual fallback remains.
 
-### 2. Chunk-native кодирование
+### 2. Chunk-native coding
 
-Вместо авторегрессивного восстановления одного кадра за другим SceneLith кодирует чанки по 8–16 кадров общим пространственно-временным latent-представлением и восстанавливает их параллельно.
+Instead of autoregressive reconstruction one frame after another, SceneLith encodes chunks of 8–16 frames with a common spatiotemporal latent representation and restores them in parallel.
 
-Только специальные spine-кадры могут изменять долговременное состояние. Остальные кадры читают состояние, но не мутируют его. Это даёт:
+Only special spine frames can change long-term state. The remaining frames read the state but do not mutate it. This gives:
 
-- параллельное декодирование;
+- parallel decoding;
 - discardable temporal layers;
-- контролируемую задержку;
-- отсутствие отравления всей последовательности одной ошибкой;
-- удобное аппаратное планирование.
+- controlled delay;
+- no poisoning of the entire sequence by one error;
+- convenient hardware planning.
 
-Практичность направления уже подтверждается DCVC-UF: авторы сообщают 273,6 fps для 1080p и 61,9 fps для 4K на RTX 4090, а также −42,2% к VTM в low-delay-конфигурации. Это не честное доказательство универсального выигрыша над VTM-RA, но очень сильный сигнал, что multi-frame neural decoding уже не обязан быть медленным. [DCVC-UF](https://arxiv.org/abs/2606.04410).
+The practicality of the direction is already confirmed by DCVC-UF: the authors report 273.6 fps for 1080p and 61.9 fps for 4K on the RTX 4090, as well as -42.2% to VTM in a low-delay configuration. This is not a fair proof of a universal win over VTM-RA, but a very strong signal that multi-frame neural decoding no longer has to be slow. [DCVC-UF](https://arxiv.org/abs/2606.04410).
 
-### 3. Encoder как компилятор представлений
+### 3. Encoder as a view compiler
 
-Тяжёлый encoder решает, чем дешевле представить каждый участок:
+The heavy encoder decides how cheap it is to represent each section:
 
-- классическим wavelet/residual;
-- атласом и деформацией;
-- Gaussian/surfel-примитивами;
-- текстом, вектором или спрайтом для screen content;
-- компактным neural latent;
-- per-scene адаптером;
-- точным objective residual.
+- classic wavelet/residual;
+- satin and deformation;
+- Gaussian/surfel primitives;
+- text, vector or sprite for screen content;
+- compact neural latent;
+- per-scene adapter;
+- exact objective residual.That is, the format becomes a visual virtual machine with a small set of hardware-implemented commands. Encoder can use a huge world model, segmentation, depth estimation and multi-minute RDO search - the decoder does not need this.
 
-То есть формат становится визуальной виртуальной машиной с небольшим набором аппаратно реализуемых команд. Encoder может использовать огромную world model, сегментацию, depth estimation и многоминутный RDO-поиск — декодеру это не требуется.
+### 4. Two independent quality contracts
 
-### 4. Два независимых контракта качества
-
-Это, вероятно, важнейшее отличие.
+This is probably the most important difference.
 
 **Fidelity/Truth Core**
 
-- детерминирован;
-- bit-exact на разных устройствах;
-- только он участвует в temporal prediction и изменяет память;
-- сохраняет геометрию, текст, лица, идентичность, измеряемые детали;
-- может получить lossless/objective enhancement layer.
+- determined;
+- bit-exact on different devices;
+- only it participates in temporal prediction and changes memory;
+- saves geometry, text, faces, identity, measured details;
+- can get lossless/objective enhancement layer.
 
 **Perceptual Shell**
 
-- опциональный одношаговый diffusion/rectified-flow renderer;
-- восстанавливает текстуры, зерно и микродетали на экстремально низком битрейте;
-- никогда не становится reference;
-- каждый синтезированный регион имеет provenance/uncertainty mask;
-- может быть полностью отключён в медицинском, судебном, научном и архивном режимах.
+- optional one-step diffusion/rectified-flow renderer;
+- restores textures, grain and micro-details at extremely low bitrates;
+- never becomes reference;
+- each synthesized region has a provenance/uncertainty mask;
+- can be completely disabled in medical, forensic, scientific and archival modes.
 
-Одношаговые генеративные кодеки уже сообщают более чем двукратные выигрыши по perceptual-метрикам, но это не равно сохранению исходных пикселей. [Single-step diffusion video coding](https://openaccess.thecvf.com/content/CVPR2026/html/Xue_Single-step_Diffusion-based_Video_Coding_with_Semantic-Temporal_Guidance_CVPR_2026_paper.html).
+Single-step generative codecs already report more than 2x gains in perceptual metrics, but this does not equate to preserving the original pixels. [Single-step diffusion video coding](https://openaccess.thecvf.com/content/CVPR2026/html/Xue_Single-step_Diffusion-based_Video_Coding_with_Semantic-Temporal_Guidance_CVPR_2026_paper.html).
 
-Универсальный честный «10× при том же качестве» сейчас неправдоподобен. 5–10× возможны лишь для ограниченного контента или когда разрешается правдоподобно синтезировать непереданные детали.
+The universal fair “10x with the same quality” is now implausible. 5–10× are only possible for limited content or when untransmitted details are allowed to be plausibly synthesized.
 
-### 5. Нормативный integer tensor/render ISA
+### 5. Standard integer tensor/render ISA
 
-В Main-профиле нельзя допускать произвольную загружаемую нейросеть. Иначе не будет ни безопасности, ни стабильного ASIC.
+An arbitrary loaded neural network cannot be allowed in the Main profile. Otherwise there will be neither security nor a stable ASIC.
 
-Допустимый набор операций:
+Valid set of operations:
 
 - INT8/INT4 weights;
 - INT16 activation, INT32 accumulation;
 - grouped/depthwise/1×1/3×3 convolution;
 - lifting/wavelet;
-- integer warp, mesh deformation и splat;
+- integer warp, mesh deformation and splat;
 - add, concat, clamp, LUT activation;
 - pixel shuffle;
 - lattice/vector quantization;
-- фиксированные tensor shapes и пределы памяти.
+- fixed tensor shapes and memory limits.
 
-Запрещены full-resolution attention, float-зависимая реконструкция, динамические циклы и обязательная diffusion-модель. DCVC-RT уже продемонстрировал bit-consistent integer neural codec с real-time-декодированием и заявленным выигрышем около 21% к VTM. [DCVC-RT](https://openaccess.thecvf.com/content/CVPR2025/html/Jia_Towards_Practical_Real-Time_Neural_Video_Compression_CVPR_2025_paper.html).
+Full-resolution attention, float-dependent reconstruction, dynamic loops and a mandatory diffusion model are prohibited. DCVC-RT has already demonstrated a bit-consistent integer neural codec with real-time decoding and a claimed gain of about 21% to VTM. [DCVC-RT](https://openaccess.thecvf.com/content/CVPR2025/html/Jia_Towards_Practical_Real-Time_Neural_Video_Compression_CVPR_2025_paper.html).
 
-### 6. Новая квантизация и entropy layer
+### 6. New quantization and entropy layer
 
-Вместо независимого округления каждого latent:
+Instead of rounding each latent independently:
 
-- обучаемая lattice vector quantization по небольшим группам;
+- trained lattice vector quantization in small groups;
 - progressive residual VQ;
 - factorized/non-autoregressive hyperprior;
-- 16–64 независимые interleaved rANS-линии;
-- таблица смещений для независимого доступа к tiles/chunks.
+- 16–64 independent interleaved RANS lines;
+- offset table for independent access to tiles/chunks.Trainable lattice quantizers already show up to 22.6% gain relative to scalar quantization with a simple entropy model and smaller but useful gains with strong context. [OLVQ](https://proceedings.neurips.cc/paper_files/paper/2024/file/c09916f6f0c428a97a09a53648e5002e-Paper-Conference.pdf).
 
-Обучаемые lattice-квантизаторы уже показывают до 22,6% выигрыша относительно scalar quantization при простой entropy-модели и меньшие, но полезные выигрыши с сильным контекстом. [OLVQ](https://proceedings.neurips.cc/paper_files/paper/2024/file/c09916f6f0c428a97a09a53648e5002e-Paper-Conference.pdf).
+Relative-entropy coding and bits-back are theoretically attractive: with a general prior, you can transfer the index of the reproduced sample for approximately the price of KL. But the computational cost of the general case remains dangerously high. Therefore, REC should only be applied to small low-KL adapters and perceptual microblocks, not in the Main entropy loop. [Practice REC](https://openreview.net/forum?id=OuQYWNuNxm).
 
-Relative-entropy coding и bits-back теоретически привлекательны: при общем prior можно передавать индекс воспроизводимого семпла примерно по цене KL. Но вычислительная стоимость общего случая остаётся опасно высокой. Поэтому REC следует применять только к маленьким low-KL адаптерам и perceptual microblocks, не в Main entropy loop. [Практический REC](https://openreview.net/forum?id=OuQYWNuNxm).
+### 7. Loss-native stream
 
-### 7. Loss-native поток
+Base latent is divided into several independently decoded descriptions. Memory and base layer receive enhanced FEC; enhancement can be lost.
 
-Base latent делится на несколько независимо декодируемых descriptions. Память и базовый слой получают усиленный FEC; enhancement можно терять.
+After the error:
 
-После ошибки:
+- generative concealment does not change the long-term condition;
+- hash detects desynchronization;
+- the next spine packet repairs the state;
+- checkpoints limit the spread of errors;
+- each tile has a CRC and independent entropy streams.
 
-- generative concealment не изменяет долговременное состояние;
-- hash обнаруживает рассинхронизацию;
-- следующий spine-пакет ремонтирует состояние;
-- checkpoints ограничивают распространение ошибки;
-- каждая tile имеет CRC и независимые entropy streams.
+This is much better than the “one damaged reference - the entire GOP is damaged” model.
 
-Это намного лучше модели «один повреждённый reference — испорчен весь GOP».
+## What to take from the latest research
 
-## Что брать из новейших исследований
-
-В Main v1, практически реализуемом за 1–3 года:
+In Main v1, practically implemented in 1–3 years:
 
 - multi-frame chunk coding;
 - bounded 2.5D scene memory;
@@ -163,117 +158,115 @@ Base latent делится на несколько независимо деко
 - multi-lane rANS;
 - time-continuous motion splines;
 - deterministic checkpoints;
-- отдельный нереференсный perceptual shell.
+- separate non-reference perceptual shell.
 
-В опциональные расширения:
+In optional extensions:
 
-- одномерные адаптивные latent-токены и долговременная память — GVC1D показывает очень крупные выигрыши по LPIPS/DISTS, но это сравнение с предыдущими perceptual-кодеками, а не доказательство превосходства над AV2 по fidelity. [GVC1D](https://arxiv.org/abs/2603.15302);
-- per-scene INR/LoRA — полезно для длинного VOD, talking heads и повторяющихся сериалов; некоторые работы уже обходят VTM-RA, но скорость encoding и нестабильность между датасетами пока мешают универсальному профилю. [GIViC](https://openaccess.thecvf.com/content/ICCV2025/html/Gao_GIViC_Generative_Implicit_Video_Compression_ICCV_2025_paper.html);
-- one-step diffusion — только как display shell;
-- Gaussian splats — как региональный режим, не единственное представление;
-- REC/shared-randomness — только для ограниченных адаптеров.
+- one-dimensional adaptive latent tokens and long-term memory - GVC1D shows very large gains in LPIPS/DISTS, but this is a comparison with previous perceptual codecs, and not proof of superiority over AV2 in fidelity. [GVC1D](https://arxiv.org/abs/2603.15302);
+- per-scene INR/LoRA - useful for long VOD, talking heads and recurring series; some works are already bypassing VTM-RA, but encoding speed and instability between datasets are still preventing a universal profile. [GIViC](https://openaccess.thecvf.com/content/ICCV2025/html/Gao_GIViC_Generative_Implicit_Video_Compression_ICCV_2025_paper.html);
+- one-step diffusion - only as display shell;
+- Gaussian splats - as a regional mode, not the only representation;
+- REC/shared-randomness - only for limited adapters.
 
-Пока не включать в нормативный декодер:
+Do not include in the normative decoder yet:
 
-- полноценную video world model;
-- многошаговый DiT;
-- произвольные скачиваемые графы;
+- full-fledged video world model;
+- multi-step DiT;
+- arbitrary downloadable graphs;
 - full-resolution transformer;
-- autoregressive entropy по каждому пикселю;
-- generative reconstruction как temporal reference;
-- семантическое «описание сцены словами» вместо достоверного base layer.
+- autoregressive entropy for each pixel;
+- generative reconstruction as temporal reference;
+- semantic “description of the scene in words” instead of a reliable base layer.
 
-## Измеримые moonshot-цели
+## Measurable moonshot goals
 
-Это цели, не обещанные результаты.
+These are goals, not promised results.
 
-**Через 12 месяцев**
+**After 12 months**
 
-- bit-exact 1080p60 GPU-декодер;
-- −20…−25% BD-rate к VTM-RA на закрытом наборе тестов;
-- scene memory отдельно должна уменьшать общий bitrate минимум на 10% на сценах с окклюзиями и возвращением камеры;
-- checkpoint/addressing overhead меньше 8%.
+- bit-exact 1080p60 GPU decoder;- −20…−25% BD-rate to VTM-RA on a closed set of tests;
+- scene memory separately should reduce the overall bitrate by at least 10% in scenes with occlusions and camera returns;
+- checkpoint/addressing overhead is less than 8%.
 
-**Через 24 месяца**
+**After 24 months**
 
-- 4K60 на desktop GPU;
-- −35% к VTM-RA;
-- минимум −10% к сильнейшему открытому learned-anchor того же класса задержки;
-- perceptual shell: не менее 2× по битрейту при равном blind MOS;
-- отдельные OCR, face identity, geometry и temporal-flicker gates.
+- 4K60 on desktop GPU;
+- −35% to VTM-RA;
+- minimum −10% to the strongest open learned-anchor of the same delay class;
+- perceptual shell: at least 2× in bitrate with equal blind MOS;
+- separate OCR, face identity, geometry and temporal-flicker gates.
 
-**Через 36 месяцев — stretch**
+**After 36 months - stretch**
 
-- −40…−45% к VTM-RA;
-- минимум −15% к современному на тот момент воспроизводимому learned-кодеку;
-- ни один крупный класс контента не хуже anchor более чем на 5%;
-- 2–3× perceptual reduction при равном blind MOS;
-- 4–10× только в специализированных VOD/UI/talking-head режимах;
-- Main High ≤5 kMAC на выходной пиксель, Low Compute ≤1,5 kMAC;
+- −40…−45% to VTM-RA;
+- at least −15% to the then modern reproducible learned codec;
+- no major content class is worse than anchor by more than 5%;
+- 2–3× perceptual reduction with equal blind MOS;
+- 4–10× only in specialized VOD/UI/talking-head modes;
+- Main High ≤5 kMAC per output pixel, Low Compute ≤1.5 kMAC;
 - baseline weights ≤32 MB, state ≤64 MB;
-- random access 0,25–0,5 секунды;
-- восстановление после потери состояния ≤250 мс.
+- random access 0.25–0.5 seconds;
+- recovery after state loss ≤250 ms.
 
-Если через 18 месяцев нет хотя бы 25% честного универсального выигрыша над contemporaneous anchor, новый стандарт не оправдан. Тогда нужно превращать разработку в отдельный инструмент для AV2/VVC или менять центральную гипотезу.
+If after 18 months there is not at least a 25% fair universal gain over the contemporaneous anchor, the new standard is not justified. Then you need to turn the development into a separate tool for AV2/VVC or change the central hypothesis.
 
-## Как создать многолетний отрыв
+## How to create a multi-year lead
 
-Не секретным декодером. Он убьёт стандартизацию.
+Not a secret decoder. It will kill standardization.
 
-Отрыв создаёт совокупность:
+The separation creates the aggregate:
 
-1. Огромный encoder-only world extractor и representation router.
-2. Многопроходный program/RDO search:
+1. Huge encoder-only world extractor and representation router.
+2. Multi-pass program/RDO search:
    \[
    J=R+\lambda D+\mu Compute+\nu Memory+\rho SeekPenalty+\sigma LossRisk
    \]
-3. Закрытый или лицензируемый корпус данных с subjective MOS, OCR, identity, flicker и geometry labels.
-4. Per-title и per-scene адаптация.
-5. Накопление решений энкодера: каждый новый каталог улучшает routing-модель.
-6. Оптимизированные CUDA/Vulkan kernels, FPGA и reference RTL.
-7. Conformance corpus, fuzzing, streaming SDK и browser integration.
-8. Узкие патенты на state/checkpoint semantics, dual-contract reference rules и compute-scalable syntax — с royalty-free или приемлемой FRAND-лицензией для стандарта.
+3. Closed or licensed data corpus with subjective MOS, OCR, identity, flicker and geometry labels.
+4. Per-title and per-scene adaptation.
+5. Accumulation of encoder solutions: each new directory improves the routing model.
+6. Optimized CUDA/Vulkan kernels, FPGA and reference RTL.
+7. Conformance corpus, fuzzing, streaming SDK and browser integration.
+8. Narrow patents for state/checkpoint semantics, dual-contract reference rules and compute-scalable syntax - with a royalty-free or acceptable FRAND license for the standard.
 
-Формула стратегии:
+Strategy formula:
 
-> Открытый и простой декодер; чрезвычайно сложный, постоянно самоулучшающийся encoder.
+> Open and simple decoder; extremely complex, constantly self-improving encoder.
 
-## Реальные сроки при круглосуточной работе со мной
+## Real deadlines when working with me around the clock
 
-Codex способен постоянно писать код, тесты, kernels, документацию, запускать эксперименты и анализировать результаты. Но 24/7 не превращается в 24-кратное ускорение: обучение моделей, субъективные тесты, исследования, патентный анализ, consensus и производство чипов остаются последовательными процессами.
+Codex is able to constantly write code, tests, kernels, documentation, run experiments and analyze the results. But 24/7 does not translate into 24x speedup: model training, subjective tests, research, patent analysis, consensus and chip production remain sequential processes.
 
-Реалистично:
+Realistic:
 
-- 10–16 недель — falsification prototype без большой обученной модели;
-- 6–12 месяцев — настоящий работающий PoC с собственным bitstream;
-- 18–36 месяцев — убедительная alpha-версия;
-- 3–5 лет — конкурентоспособный нишевой кодек при команде 8–15 сильных специалистов;
-- 4–7 лет — технология уровня серьёзного предложения в стандарт;
-- 8–12 лет, иногда до 15 — стандарт, conformance ecosystem и первые массовые аппаратные декодеры.
+- 10–16 weeks - falsification prototype without a large trained model;
+- 6–12 months - a real working PoC with its own bitstream;- 18–36 months - convincing alpha version;
+- 3–5 years – competitive niche codec with a team of 8–15 strong specialists;
+- 4–7 years - technology level of a serious proposal to the standard;
+- 8–12 years, sometimes up to 15 - standard, conformance ecosystem and the first mass-produced hardware decoders.
 
-В одиночку со мной реально создать PoC и сильную исследовательскую реализацию. Для universal codec, стандарта и кремния неизбежно понадобятся специалисты по compression research, GPU, ASIC/RTL, subjective testing, патентам и стандартизации.
+Alone with me it is possible to create a PoC and a strong research implementation. For universal codec, standard and silicon, specialists in compression research, GPU, ASIC/RTL, subjective testing, patents and standardization will inevitably be needed.
 
-И окно уже открылось: JVET в июле 2026 года выпустил call for proposals на технологию beyond VVC; основной пакет ожидается 26 октября 2026-го, оценка — в январе 2027-го, ориентир стандарта — октябрь 2029-го. С нуля подготовить полноценный codec proposal к этому окну уже нереально. Можно готовить отдельные сильные инструменты, публикации и доказательства для последующих интеграций или следующего цикла. [Официальная страница JVET](https://www.itu.int/en/ITU-T/studygroups/2025-2028/21/video/Pages/jvet.aspx), [Call for Proposals](https://www.itu.int/md/T25-SG21-260706-TD-PLEN-0348/en).
+And the window has already opened: JVET issued a call for proposals for beyond VVC technology in July 2026; the main package is expected on October 26, 2026, the assessment is in January 2027, the standard benchmark is October 2029. It is no longer realistic to prepare a full-fledged codec proposal for this window from scratch. Individual strong tools, publications, and evidence can be prepared for subsequent integrations or the next cycle. [JVET Official Page](https://www.itu.int/en/ITU-T/studygroups/2025-2028/21/video/Pages/jvet.aspx), [Call for Proposals](https://www.itu.int/md/T25-SG21-260706-TD-PLEN-0348/en).
 
-## Название
+## Title
 
-Мой лучший вариант:
+My best option:
 
-**SceneLith** — сцена, «высеченная» в компактном битстриме и готовая к реализации в кремнии. Коротко, технологично и хорошо подходит и проекту, и компании.
+**SceneLith** is a scene “carved” into a compact bitstream and ready for implementation in silicon. It’s short, technical and well suited to both the project and the company.
 
-Следующие кандидаты:
+The following candidates:
 
-1. **KineStrand** — поток устойчивых нитей движения и сцены.
-2. **QINTRA** — Quantized Implicit Neural Temporal Reconstruction Architecture.
-3. **TemporalStrand** — очень хорошее научное имя архитектуры.
-4. **VISTRAL** — Visual Scene Transform and Reconstruction Layer.
-5. **MOSAIC** — прекрасное внутреннее название архитектуры, но слишком занятое как публичный бренд.
+1. **KineStrand** - a stream of stable threads of movement and scene.
+2. **QINTRA** - Quantized Implicit Neural Temporal Reconstruction Architecture.
+3. **TemporalStrand** is a very good scientific name for architecture.
+4. **VISTRAL** - Visual Scene Transform and Reconstruction Layer.
+5. **MOSAIC** is a great internal architecture name, but too busy as a public brand.
 
-Оптимальная схема нейминга:
+Optimal naming scheme:
 
-- бренд: **SceneLith**;
-- архитектура: **MOSAIC**;
-- полное техническое название: **SceneLith Temporal-Strand Video Architecture**;
-- FourCC и расширение выбирать только после полноценной проверки реестров и товарных знаков.
+- brand: **SceneLith**;
+- architecture: **MOSAIC**;
+- full technical name: **SceneLith Temporal-Strand Video Architecture**;
+- Select FourCC and the extension only after a full check of registries and trademarks.
 
-Первый разумный артефакт разработки — не нейросеть, а `SceneLith-0`: короткая спецификация state machine и bitstream, bit-exact CPU/GPU decoder, multi-lane rANS, атлас поверхностей и честный benchmark harness. За первые 3–4 месяца он должен либо подтвердить центральную гипотезу «битрейт следует за новой информацией», либо быстро её опровергнуть.
+The first reasonable development artifact is not a neural network, but `SceneLith-0`: a short specification of state machine and bitstream, bit-exact CPU/GPU decoder, multi-lane RANS, surface atlas and an honest benchmark harness. In the first 3–4 months, he must either confirm the central hypothesis “bitrate follows new information” or quickly refute it.

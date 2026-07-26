@@ -1,146 +1,145 @@
-# JVET CfP 2026: официальный контур заявки SceneLith
+# JVET CfP 2026: official SceneLith bid outline
 
-Статус документа: **NORMATIVE-DRAFT** для ветки `SceneLith-CfP-2026`.
+Document status: **NORMATIVE-DRAFT** for branch `SceneLith-CfP-2026`.
 
-Дата проверки первичного источника: **2026-07-26**.
+Primary source review date: **2026-07-26**.
 
-Этот документ отделяет внешние требования JVET от целей и гипотез SceneLith:
+This document separates the external requirements of JVET from the goals and hypotheses of SceneLith:
 
-- **FACT — JVET**: требование или факт из утверждённого Call for Proposals.
-- **ACCEPTED — SceneLith**: принятое ограничение проектной ветки.
-- **TARGET — SceneLith**: срок или результат, который ещё не достигнут.
-- **HYPOTHESIS — SceneLith**: техническая идея, требующая измерения.
+- **FACT - JVET**: requirement or fact from an approved Call for Proposals.
+- **ACCEPTED - SceneLith**: Accepted project branch constraint.
+- **TARGET - SceneLith**: a deadline or result that has not yet been achieved.
+- **HYPOTHESIS - SceneLith**: a technical idea that requires measurement.
 
-Главный первичный источник — утверждённый документ
+The main primary source is an approved document
 [ITU-T SG21 TD 348/PLEN, JVET-AQ2021-v1](https://www.itu.int/md/T25-SG21-260706-TD-PLEN-0348/en)
-([прямой DOCX](https://www.itu.int/dms_pub/itu-t/md/25/sg21/td/260706/PLEN/T25-SG21-260706-TD-PLEN-0348%21%21MSW-E.docx)).
-Официальная [страница JVET](https://www.itu.int/en/ITU-T/studygroups/2025-2028/21/video/Pages/jvet.aspx)
-подтверждает выпуск совместного CfP в июле 2026 года. Параллельная официальная запись ISO/IEC
-находится на странице MPEG
+([direct DOCX](https://www.itu.int/dms_pub/itu-t/md/25/sg21/td/260706/PLEN/T25-SG21-260706-TD-PLEN-0348%21%21MSW-E.docx)).
+Official [JVET page](https://www.itu.int/en/ITU-T/studygroups/2025-2028/21/video/Pages/jvet.aspx)
+confirms the release of the joint CfP in July 2026. Concurrent ISO/IEC official record
+is on the MPEG page
 [Enhanced compression beyond VVC capability](https://www.mpeg.org/standards/Explorations/41/).
 
-## 1. Предмет CfP
+## 1. CfP subject
 
-**FACT — JVET.** CfP ищет поколение video compression technology, существенно превосходящее
-VVC Main 10 не только по compression efficiency, но также по:
+**FACT - JVET.** CfP is looking for a generation of video compression technology that is significantly superior
+VVC Main 10 not only for compression efficiency, but also for:
 
-- implementability encoder и decoder;
-- разнообразию контента и применений;
-- latency и robustness;
-- scalability и дополнительной функциональности;
-- практической скорости encoding.
+- implementability encoder and decoder;
+- diversity of content and applications;
+- latency and robustness;
+- scalability and additional functionality;
+- practical encoding speed.
 
-**FACT — JVET.** Формальная оценка proposal запланирована на 45-м заседании JVET в январе
-2027 года. Первый prospective test model предполагается начать выбирать в январе 2027 года,
-закончить initial selection не позднее октября 2027 года и завершить первую версию стандарта
-в октябре 2029 года.
+**FACT - JVET.** Formal evaluation of the proposal is scheduled for the 45th JVET meeting in January
+2027. The first prospective test model is expected to begin to be selected in January 2027,
+complete the initial selection no later than October 2027 and complete the first version of the standard
+in October 2029.
 
-## 2. Официальный календарь
+## 2. Official calendar
 
-| Дата | FACT — JVET |
+| Date | FACT - JVET |
 |---|---|
-| 2026-05-31 | Доступны VTM anchors, runtime-constrained VTM encodings, дополнительные VTM encodings с RPR и конфигурации encoder. |
-| 2026-07-17 | Выпущен Call for Proposals. Утверждённый TD датирован 2026-07-15. |
-| 2026-08-01 | Открывается formal registration. |
-| 2026-09-01 | Закрывается formal registration. |
-| 2026-09-07 | Определяется итоговая testing fee; test coordinator направляет formal offer. |
-| 2026-10-26 | Main submission package должен быть получен test coordinator; к этой же дате требуется подтверждение purchase order. |
-| 2026-11-02 | Начинается formal subjective assessment; плановое окончание — 2026-12-21. |
-| 2026-11-02 | Proponents получают дополнительный скрытый набор sequences. |
-| 2026-11-30 | Main package предоставляется cross-checkers; участие proponents в cross-check обязательно. |
-| 2026-12-21 | Supplemental package по дополнительному набору должен быть получен test coordinator. |
-| 2026-12-23 | Supplemental package предоставляется cross-checkers; проверку требуется завершить к 2027-01-13. |
-| 2027-01-06 | Дедлайн регистрации и подачи документов с техническим описанием proposal. |
-| 2027-01-06 | Дедлайн отчёта о cross-check main package. |
-| 2027-01-13 | Proponents и JVET получают summary subjective и objective results. |
-| 2027-01-13—22 | Evaluation of proposals на заседании JVET. |
+| 2026-05-31 | VTM anchors, runtime-constrained VTM encodings, additional VTM encodings with RPR and encoder configurations are available. |
+| 2026-07-17 | Call for Proposals released. The approved TD is dated 2026-07-15. |
+| 2026-08-01 | Formal registration opens. |
+| 2026-09-01 | Formal registration closes. |
+| 2026-09-07 | The final testing fee is determined; test coordinator sends a formal offer. |
+| 2026-10-26 | Main submission package must be received by test coordinator; confirmation of the purchase order is required by the same date. |
+| 2026-11-02 | The formal subjective assessment begins; planned completion - 2026-12-21. |
+| 2026-11-02 | Proponents receive an additional hidden set of sequences. |
+| 2026-11-30 | Main package is provided by cross-checkers; Participation of proponents in cross-check is mandatory. |
+| 2026-12-21 | Supplemental package for the additional set must be received by the test coordinator. || 2026-12-23 | Supplemental package provided by cross-checkers; the review must be completed by 2027-01-13. |
+| 2027-01-06 | Deadline for registration and submission of documents with a technical description of the proposal. |
+| 2027-01-06 | Deadline for the cross-check main package report. |
+| 2027-01-13 | Proponents and JVET receive summary subjective and objective results. |
+| 2027-01-13—22 | Evaluation of proposals at the JVET meeting. |
 
-**FACT — JVET.** Критический дедлайн исполняемого кодека — не январь, а **2026-10-26**:
-к этому дню нужны работающие binaries, все основные bitstreams и реконструкции.
+**FACT - JVET.** The critical deadline for the executable codec is not January, but **2026-10-26**:
+By this day we need working binaries, all the main bitstreams and reconstructions.
 
-## 3. Регистрация и участие
+## 3. Registration and participation
 
-**FACT — JVET.** Annex E нужно отправить не позднее **2026-09-01** обоим адресатам:
+**FACT - JVET.** Annex E must be sent no later than **2026-09-01** to both recipients:
 
-- Jens-Rainer Ohm, JVET chair — `ohm@ient.rwth-aachen.de`;
-- Mathias Wien, test coordinator — `wien@lfb.rwth-aachen.de`.
+- Jens-Rainer Ohm, JVET chair – `ohm@ient.rwth-aachen.de`;
+- Mathias Wien, test coordinator - `wien@lfb.rwth-aachen.de`.
 
-Форма содержит:
+The form contains:
 
 - organization;
-- contact person и email;
-- выбор unrestricted improved-compression test case;
-- выбор runtime-constrained test cases;
-- предполагаемые runtime targets: `0.2x`, `1x`, `5x`;
-- число test cases, запрашиваемых для subjective test;
-- подтверждение encoder/decoder executables для Ubuntu 24.04 x86-64 либо запрос другой
-  платформы у coordinator;
-- отметку о proposal дополнительной функциональности по Section 6;
+- contact person and email;
+- select unrestricted improved-compression test case;
+- selection of runtime-constrained test cases;
+- expected runtime targets: `0.2x`, `1x`, `5x`;
+- number of test cases requested for subjective test;
+- confirmation of encoder/decoder executables for Ubuntu 24.04 x86-64 or another request
+  platforms at coordinator;
+- a note about the proposal for additional functionality under Section 6;
 - remarks.
 
-**FACT — JVET.** CfP приглашает companies и organizations. Предварительное членство в JVET
-не объявлено условием регистрации. Chair прямо обещает помощь submitters outside JVET с
-участием в январском заседании.
+**FACT - JVET.** CfP invites companies and organizations. JVET provisional membership
+not declared as a condition of registration. Chair directly promises to help submitters outside JVET with
+participation in the January meeting.
 
-**FACT — ITU.** Для постоянного участия и подачи вкладов через ITU-T доступны Sector Member,
-Associate выбранной Study Group и Academia. Актуальные права участия описаны на
-[официальной странице ITU](https://www.itu.int/hub/membership/become-a-member/participation/),
-а сборы — на странице
+**FACT - ITU.** For continuous participation and submission of contributions through ITU-T, Sector Members are available,
+Associate selected by Study Group and Academia. Current participation rights are described at
+[ITU official page](https://www.itu.int/hub/membership/become-a-member/participation/),
+and fees are on the page
 [ITU-T Categories and Fees](https://www.itu.int/en/ITU-T/membership/Pages/Categories-and-Fees.aspx).
 
-**ACCEPTED — SceneLith, D-018.** Внешнюю регистрацию отложить до выбора
-architecture implementation candidate. План владельца — регистрация как
-независимого частного заявителя; юридическое имя не хранить в публичном
-техническом repository до необходимости оформления.
+**ACCEPTED - SceneLith, D-018.** External registration deferred until selected
+architecture implementation candidate. Owner Plan - Enroll As
+independent private applicant; legal name is not kept in public
+technical repository before registration is required.
 
-**OPEN / UNVERIFIED.** Это намерение ещё не означает допустимость: CfP
-приглашает companies/organizations, а Annex E требует поле `organization`.
-Сразу после принятия architecture candidate, и достаточно заранее до
-2026-09-01, письменно запросить у chair/test coordinator:
+**OPEN / UNVERIFIED.** This intent does not mean permissibility: CfP
+invites companies/organizations, and Annex E requires the `organization` field.
+Immediately after acceptance of the architecture candidate, and well in advance before
+2026-09-01, request in writing from chair/test coordinator:
 
-1. допускается ли independent individual как proponent;
-2. что писать в `organization`, если юридического лица нет;
+1. is an independent individual allowed as a proponent;
+2. what to write in `organization` if there is no legal entity;
 3. proponent ID;
-4. test sequences, anchors и configuration information;
-5. точную delivery logistics;
-6. порядок participation submitter outside JVET в январе 2027 года.
+4. test sequences, anchors and configuration information;
+5. precise delivery logistics;
+6. the participation procedure for a submitter outside JVET in January 2027.
 
-**TARGET:** внутренний go/no-go по registration route — не позднее
-2026-08-20, чтобы возможный ответ chair не оказался на critical path к
+**TARGET:** internal go/no-go by registration route - no later than
+2026-08-20 so that the possible answer chair does not end up on the critical path to
 2026-09-01.
 
 ## 4. Test cases
 
-### 4.1 Обязательная полнота
+### 4.1 Mandatory completeness
 
-**FACT — JVET.** Определены четыре test cases:
+**FACT - JVET.** Four test cases are defined:
 
 1. unrestricted improved compression;
-2. improved compression при encoder runtime около `5x` default VTM;
-3. improved compression при encoder runtime около `1x` default VTM;
-4. improved compression при encoder runtime около `0.2x` default VTM.
+2. improved compression with encoder runtime around `5x` default VTM;
+3. improved compression with encoder runtime around `1x` default VTM;
+4. improved compression with encoder runtime around `0.2x` default VTM.
 
-Участвовать во всех четырёх не обязательно. Однако для каждого выбранного test case требуется
-полный результат по **всем семи категориям**. Incomplete proposal может не рассматриваться.
+It is not necessary to participate in all four. However, each selected test case requires
+full results for **all seven categories**. Incomplete proposal may not be considered.
 
-**FACT — JVET.** Один полный test case содержит:
+**FACT - JVET.** One complete test case contains:
 
 - 30 test sequences;
-- 5 rate points на sequence;
+- 5 rate points per sequence;
 - **150 main bitstreams**;
-- соответствующие 150 reconstructed sequences;
-- aggregate и per-frame результаты;
-- скрытый supplemental set объёмом не более 50% основного содержимого.
+- corresponding 150 reconstructed sequences;
+- aggregate and per-frame results;
+- hidden supplemental set of no more than 50% of the main content.
 
-### 4.2 Полный основной набор
+### 4.2 Complete Core Set
 
-Все bitrates ниже приведены в kbit/s и перечислены как `R1 / R2 / R3 / R4 / R5`.
+All bitrates below are in kbit/s and are listed as `R1 / R2 / R3 / R4 / R5`.
 
 #### SDR RA UHD/4K
 
-Формат категории: 3840×2160, YCbCr 4:2:0 BT.709, 10 bit, random access.
+Category format: 3840×2160, YCbCr 4:2:0 BT.709, 10 bit, random access.
 
-| SID | Sequence | Frames @ fps | Target bitrates |
+| SID | Sequence | Frames@fps | Target bitrates |
 |---|---|---:|---:|
 | SRU1 | CrowdRun | 500 @ 50 | 700 / 1500 / 3200 / 7000 / 14000 |
 | SRU2 | DrivingPOV3 | 600 @ 60 | 300 / 600 / 1200 / 2400 / 4800 |
@@ -149,33 +148,31 @@ architecture implementation candidate. План владельца — реги�
 
 #### SDR RA HD
 
-Формат категории: 1920×1080, YCbCr 4:2:0 BT.709, random access.
+Category format: 1920×1080, YCbCr 4:2:0 BT.709, random access.
 
-| SID | Sequence | Bit depth | Frames @ fps | Target bitrates |
+| SID | Sequence | Bit depth | Frames@fps | Target bitrates |
 |---|---|---:|---:|---:|
 | SRH1 | DucksTakeOff | 8 | 500 @ 50 | 300 / 900 / 2400 / 4000 / 8000 |
-| SRH2 | TravellerSwim | 10 | 500 @ 50 | 150 / 300 / 600 / 1200 / 2400 |
+| SRH2 | TravelerSwim | 10 | 500 @ 50 | 150 / 300 / 600 / 1200 / 2400 |
 | SRH3 | Seeking | 8 | 500 @ 50 | 200 / 400 / 800 / 1600 / 3200 |
 | SRH4 | Umbrella | 8 | 500 @ 50 | 300 / 600 / 1400 / 3500 / 7000 |
 
 #### SDR LB HD
 
-Формат категории: landscape 1920×1080 либо portrait 1080×1920, YCbCr 4:2:0 BT.709,
+Category format: landscape 1920×1080 or portrait 1080×1920, YCbCr 4:2:0 BT.709,
 low-delay B-picture configuration.
 
-| SID | Sequence | Orientation / bit depth | Frames @ fps | Target bitrates |
+| SID | Sequence | Orientation / bit depth | Frames@fps | Target bitrates |
 |---|---|---:|---:|---:|
-| SLH1 | Beatriz | L / 8 | 500 @ 50 | 70 / 140 / 280 / 550 / 1100 |
-| SLH2 | GregoryCactus2 | P / 10 | 300 @ 30 | 200 / 600 / 1500 / 4000 / 8000 |
-| SLH3 | GregoryScarf2 | P / 10 | 300 @ 30 | 200 / 600 / 1800 / 5000 / 10000 |
-| SLH4 | OfficeWalkAtWall | L / 8 | 300 @ 30 | 90 / 200 / 450 / 1000 / 2000 |
+| SLH1 | Beatriz | L/8 | 500 @ 50 | 70 / 140 / 280 / 550 / 1100 |
+| SLH2 | GregoryCactus2 | P/10 | 300 @ 30 | 200 / 600 / 1500 / 4000 / 8000 |
+| SLH3 | GregoryScarf2 | P/10 | 300 @ 30 | 200 / 600 / 1800 / 5000 / 10000 |
+| SLH4 | OfficeWalkAtWall | L/8 | 300 @ 30 | 90 / 200 / 450 / 1000 / 2000 |#### HDR-PQ RA UHD
 
-#### HDR-PQ RA UHD
+Category format: YCbCr 4:2:0, 10 bit, BT.2100 PQ, random access. UHD/4K/8K sources
+cropped to 3840x2160 for evaluation.
 
-Формат категории: YCbCr 4:2:0, 10 bit, BT.2100 PQ, random access. UHD/4K/8K sources
-cropped до 3840×2160 для оценки.
-
-| SID | Sequence | Transfer | Frames @ fps | Target bitrates |
+| SID | Sequence | Transfer | Frames@fps | Target bitrates |
 |---|---|---|---:|---:|
 | HPQ1 | ChandelierCropBR | HDR10 PQ | 360 @ 60 | 300 / 650 / 1300 / 2800 / 5600 |
 | HPQ2 | FashionLadyCrop1 | HDR10 PQ | 380 @ 60 | 250 / 650 / 1700 / 4500 / 9000 |
@@ -184,10 +181,10 @@ cropped до 3840×2160 для оценки.
 
 #### HDR-HLG RA UHD
 
-Формат категории: YCbCr 4:2:0, 10 bit, BT.2100 HLG, random access. UHD/4K/8K sources
-cropped до 3840×2160 для оценки.
+Category format: YCbCr 4:2:0, 10 bit, BT.2100 HLG, random access. UHD/4K/8K sources
+cropped to 3840x2160 for evaluation.
 
-| SID | Sequence | Frames @ fps | Target bitrates |
+| SID | Sequence | Frames@fps | Target bitrates |
 |---|---|---:|---:|
 | HLG1 | WaterfallForest | 500 @ 50 | 1000 / 2500 / 6000 / 14000 / 28000 |
 | HLG2 | WomenFootball | 500 @ 50 | 300 / 600 / 1100 / 2000 / 4000 |
@@ -196,335 +193,327 @@ cropped до 3840×2160 для оценки.
 
 #### Gaming LB HD/UHD
 
-Формат категории: YCbCr 4:2:0 BT.709, low-delay B-picture configuration.
+Category format: YCbCr 4:2:0 BT.709, low-delay B-picture configuration.
 
-| SID | Sequence | Raster / bit depth | Frames @ fps | Target bitrates |
+| SID | Sequence | Raster/bit depth | Frames@fps | Target bitrates |
 |---|---|---:|---:|---:|
-| GLH1 | DOTA2s360 | 1920×1080 / 8 | 550 @ 60 | 180 / 300 / 550 / 1000 / 2000 |
-| GLH2 | GTAVs090 | 1920×1080 / 8 | 600 @ 60 | 400 / 900 / 2000 / 3600 / 7200 |
-| GLH3 | Level1 | 1920×1080 / 10 | 600 @ 60 | 400 / 1000 / 2000 / 4000 / 8000 |
-| GLH4 | Minecraft | 1920×1080 / 8 | 600 @ 60 | 300 / 600 / 1200 / 2400 / 4800 |
-| GLU5 | Wukong2 | 3840×2160 / 10 | 600 @ 60 | 1000 / 2400 / 6000 / 14000 / 28000 |
-| GLU6 | Carla5 | 3840×2160 / 8 | 600 @ 60 | 1100 / 2200 / 4300 / 8500 / 17000 |
+| GLH1 | DOTA2s360 | 1920x1080 / 8 | 550 @ 60 | 180 / 300 / 550 / 1000 / 2000 |
+| GLH2 | GTAVs090 | 1920x1080 / 8 | 600 @ 60 | 400 / 900 / 2000 / 3600 / 7200 |
+| GLH3 | Level1 | 1920x1080 / 10 | 600 @ 60 | 400 / 1000 / 2000 / 4000 / 8000 |
+| GLH4 | Minecraft | 1920x1080 / 8 | 600 @ 60 | 300 / 600 / 1200 / 2400 / 4800 |
+| GLU5 | Wukong2 | 3840x2160 / 10 | 600 @ 60 | 1000 / 2400 / 6000 / 14000 / 28000 |
+| GLU6 | Carla5 | 3840x2160 / 8 | 600 @ 60 | 1100 / 2200 / 4300 / 8500 / 17000 |
 
 #### UGC RA
 
-Формат категории: landscape 1920×1080 либо portrait 1080×1920, YCbCr 4:2:0 BT.709,
+Category format: landscape 1920×1080 or portrait 1080×1920, YCbCr 4:2:0 BT.709,
 8 bit, random access.
 
-| SID | Sequence | Orientation | Frames @ fps | Target bitrates |
+| SID | Sequence | Orientation | Frames@fps | Target bitrates |
 |---|---|---:|---:|---:|
 | URH1 | Camellia | P | 600 @ 60 | 200 / 400 / 800 / 1600 / 3200 |
 | URH2 | Hobby-w5xz-backpack | P | 240 @ 24 | 90 / 160 / 280 / 500 / 1000 |
 | URH3 | Sports-76a2-iceball | L | 600 @ 60 | 80 / 160 / 250 / 400 / 800 |
 | URH4 | VerticalVideo-3709-snow | P | 300 @ 30 | 80 / 160 / 300 / 500 / 1000 |
 
-MD5 исходных sequences являются частью официальных таблиц CfP и должны сверяться
-непосредственно с TD 348 и материалами, полученными от coordinator.
+MD5 source sequences are part of the official CfP tables and must be verified
+directly with TD 348 and materials received from the coordinator.
 
-## 5. Anchors и coding configurations
+## 5. Anchors and coding configurations
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-- Anchor описывается VVC Test Model 23 и документом JVET-AO2002.
-- SDR common test conditions и software reference configurations заданы JVET-AP2010.
-- HDR/WCG conditions заданы JVET-AO2011.
-- Default VTM является базой для relative compression performance и runtime.
-- Для runtime curve предоставлены high-performance VTM configuration примерно `2x` default
-  и три reduced-time variants примерно `0.2x`—`0.75x` default.
-- Дополнительно доступны VTM encodings с reference picture resampling.
-- Официальный reference implementation находится в
+- Anchor is described by VVC Test Model 23 and JVET-AO2002.
+- SDR common test conditions and software reference configurations are specified by JVET-AP2010.- HDR/WCG conditions are specified by JVET-AO2011.
+- Default VTM is the basis for relative compression performance and runtime.
+- For runtime curve, high-performance VTM configuration is provided approximately `2x` default
+  and three reduced-time variants approximately `0.2x`—`0.75x` default.
+- VTM encodings with reference picture resampling are additionally available.
+- The official reference implementation is in
   [VVCSoftware_VTM](https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM).
 
-**FACT — JVET.** Для random-access categories:
+**FACT - JVET.** For random-access categories:
 
-- intra refresh period anchor равен 32 для 24/25/30 fps;
-- intra refresh period anchor равен 64 для 50/60 fps;
-- proposal обязан предоставлять random access не реже;
-- после random-access point decoder обязан восстановить поток после удаления **всей**
-  информации, предшествующей этому point.
+- intra refresh period anchor is 32 for 24/25/30 fps;
+- intra refresh period anchor is 64 for 50/60 fps;
+- the proposal is obliged to provide random access at least less frequently;
+- after random-access point decoder is obliged to restore the stream after deleting **all**
+  information preceding this point.
 
-**ACCEPTED — SceneLith.** Каждый CfP random-access point содержит самодостаточный
-WorldState checkpoint. Никакое состояние до RAP не требуется. Optional Perceptual Detail
-не участвует в checkpoint, prediction или изменении WorldState.
+**ACCEPTED - SceneLith.** Each CfP random-access point contains a self-sufficient
+WorldState checkpoint. No pre-RAP condition is required. Optional Perceptual Detail
+does not participate in checkpoint, prediction or WorldState changes.
 
-**FACT — JVET.** Для low-delay categories:
+**FACT - JVET.** For low-delay categories:
 
-- output picture reordering не применяется;
-- overall structural delay proposal не превышает anchor;
-- encoder и preprocessing обрабатывают pictures в display order;
-- picture look-ahead запрещён.
+- output picture reordering is not applied;
+- overall structural delay proposal does not exceed anchor;
+- encoder and preprocessing process pictures in display order;
+- picture look-ahead is prohibited.
 
-## 6. Общие правила encoding
+## 6. General encoding rules
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-1. Bitstream не должен превышать target bitrate.
-2. Все rate points кодируются в полном input resolution. Если reduced-resolution coding является
-   частью алгоритма, его нужно описать.
-3. Quantization/RD settings должны оставаться статическими. Разрешено одно небольшое изменение
-   только в сторону меньшего bitrate для оставшейся части stream; его нужно документировать.
-4. Ручная и per-sequence оптимизация discouraged и должна быть раскрыта.
-5. Ни одна часть test sequences не может использоваться для обучения entropy tables, VQ
-   codebooks, transforms, predictors, filters, neural models и иных частей codec.
-6. Training material для обученных частей алгоритма обязательно раскрывается.
-7. Preprocessing, postprocessing, perceptual optimization и multi-pass encoding, а также их
-   влияние на compression performance, должны быть описаны.
-8. Время preprocessing включается в encoder runtime; требуемое postprocessing включается в
+1. Bitstream should not exceed the target bitrate.
+2. All rate points are encoded in full input resolution. If reduced-resolution coding is
+   part of the algorithm, it needs to be described.
+3. Quantization/RD settings should remain static. One small change allowed
+   only towards a lower bitrate for the remaining part of the stream; it needs to be documented.
+4. Manual and per-sequence optimization is discouraged and should be exposed.
+5. No part of test sequences can be used for training entropy tables, VQ
+   codebooks, transforms, predictors, filters, neural models and other parts of codec.
+6. Training material for the trained parts of the algorithm must be disclosed.
+7. Preprocessing, postprocessing, perceptual optimization and multi-pass encoding, as well as their
+   the impact on compression performance must be described.
+8. Preprocessing time is included in encoder runtime; required postprocessing is included in
    decoder runtime.
-9. Если proposal использует особую оптимизацию, рекомендуется представить anchor с
-   эквивалентной оптимизацией.
+9. If the proposal uses special optimization, it is recommended to provide an anchor with
+   equivalent optimization.
 
 ### Runtime measurement
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-- При multithreading runtime равен сумме времени всех threads, а не wall-clock time.
-- При segment-wise parallelism рекомендуется суммировать runtime segments.
-- Anchor и proposal измеряются одной методикой.
-- Для sequence сначала суммируется время всех rate points; затем берётся geometric mean по
-  sequences; затем считается ratio к anchor.
-- У runtime-constrained cases цели равны `5x`, `1x`, `0.2x` aggregate default VTM runtime.
-- Точного совпадения не требуется, но точки должны покрывать сопоставимую runtime/compression
+- With multithreading, runtime is equal to the sum of the time of all threads, and not wall-clock time.- With segment-wise parallelism, it is recommended to summarize runtime segments.
+- Anchor and proposal are measured using the same methodology.
+- For sequence, the time of all rate points is first summed up; then take the geometric mean by
+  sequences; then the ratio to the anchor is calculated.
+- For runtime-constrained cases, the goals are `5x`, `1x`, `0.2x` aggregate default VTM runtime.
+- An exact match is not required, but the points must cover comparable runtime/compression
   curve.
-- Decoder runtime target отсутствует, однако runtime и implementation complexity обязательно
-  сообщаются и учитываются.
+- Decoder runtime target is missing, but runtime and complexity implementation are required
+  reported and taken into account.
 
-**FACT — JVET.** Unrestricted improved-compression case не вводит жёсткого лимита encoder
-runtime. Это разрешает очень тяжёлый offline encoder, но не исключает runtime из оценки:
-полное время и degree of optimization требуется раскрыть.
+**FACT - JVET.** Unrestricted improved-compression case does not introduce a hard encoder limit
+runtime. This allows a very heavy offline encoder, but does not exclude runtime from the evaluation:
+the full time and degree of optimization is required to be disclosed.
 
 ## 7. Main submission package — 2026-10-26
 
-**FACT — JVET.** Материалы доставляются на SSD по адресу test coordinator. Получение должно
-состояться не позднее дедлайна; риск доставки и отказа носителя несёт proponent.
+**FACT - JVET.** Materials are delivered to the SSD at the test coordinator address. Receipt must
+take place no later than the deadline; The risk of delivery and media failure is borne by proponent.
 
-Обязательны:
+Required:
 
-1. bitstreams для всех sequences, rate points и выбранных test cases;
-2. encoder binaries и соответствующие configuration settings;
-3. один decoder executable для всех выбранных test cases;
-4. инструкция по command line и configuration parameters;
+1. bitstreams for all sequences, rate points and selected test cases;
+2. encoder binaries and corresponding configuration settings;
+3. one decoder executable for all selected test cases;
+4. instructions for command line and configuration parameters;
 5. reconstructed 10-bit YUV 4:2:0 sequences;
-6. Annex D CSV с aggregate objective metrics;
-7. отдельный per-frame CSV для каждой комбинации sequence/rate;
-8. MD5 checksums всех файлов, предпочтительно в одном manifest;
-9. подтверждённый purchase order на subjective testing.
+6. Annex D CSV with aggregate objective metrics;
+7. separate per-frame CSV for each sequence/rate combination;
+8. MD5 checksums of all files, preferably in one manifest;
+9. Confirmed purchase order for subjective testing.
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-- Executables следует собирать для **Ubuntu 24.04, x86-64-v3**. Для иной платформы нужно
-  заранее согласовать порядок с coordinator.
-- Один decoder должен принимать bitstream и output path, например
+- Executables should be built for **Ubuntu 24.04, x86-64-v3**. For another platform you need
+  Agree the order in advance with the coordinator.
+- One decoder should accept bitstream and output path, for example
   `decoder -b input.bit -o output.yuv`.
-- Decoder выдаёт 10-bit 4:2:0 `.yuv` либо `.pyuv`.
-- Proposal bitstream имеет расширение `.bit`.
-- Bitstream может быть proprietary, но обязан содержать всю информацию для decoding.
-  Внешние parameter/model files не допускаются.
+- Decoder produces 10-bit 4:2:0 `.yuv` or `.pyuv`.
+- Proposal bitstream has the extension `.bit`.
+- Bitstream can be proprietary, but must contain all the information for decoding.
+  External parameter/model files are not allowed.
 
-Именование:
+Naming:
 
 ```text
 xxxx_Pyy_Rz_Cw.eee
 ```
 
-где `xxxx` — SID, `yy` — proponent ID, `z` — rate 1…5, `w` — test case:
+where `xxxx` — SID, `yy` — proponent ID, `z` — rate 1…5, `w` — test case:
 
 - `C0`: unrestricted improved compression;
 - `C1`: runtime `5x`;
 - `C2`: runtime `1x`;
 - `C3`: runtime `0.2x`.
 
-`P00` зарезервирован для VVC anchor. Расширения: `bit`, `pyuv`, `csv`.
+`P00` is reserved for VVC anchor. Extensions: `bit`, `pyuv`, `csv`.
 
 ## 8. Hidden supplemental set
 
-**FACT — JVET.**
+**FACT - JVET.**- Additional sequences are issued **2026-11-02**, after main binaries and bitstreams.
+- The volume of material is expected to be no more than 50% of the main test content.
+- Resolutions, content types, structural delay and bitrate ranges will be similar to the main set.
+- Supplemental bitstreams must fall within the range of 80%—100% of the specified target bitrate.
+- The same binaries sent to the main package must encode and decode the hidden set.
+- Until **2026-12-21** bitstreams, configs, reconstructions, CSV and MD5 are sent.
+- New encoder/decoder executables are not included in the supplemental package list.
 
-- Additional sequences выдаются **2026-11-02**, после main binaries и bitstreams.
-- Объём материала ожидается не более 50% основного test content.
-- Разрешения, content types, structural delay и bitrate ranges будут аналогичны main set.
-- Supplemental bitstreams должны попадать в диапазон 80%—100% заданного target bitrate.
-- Те же binaries, отправленные в main package, должны кодировать и декодировать hidden set.
-- До **2026-12-21** отправляются bitstreams, configs, reconstructions, CSV и MD5.
-- Новые encoder/decoder executables не входят в список supplemental package.
-
-**ACCEPTED — SceneLith.** Decoder и bitstream semantics для CfP замораживаются до main
-submission. Нельзя полагаться на hard-coded test sequence knowledge или ручное
-per-sequence обучение. Hidden-set generalization является release gate.
+**ACCEPTED - SceneLith.** Decoder and bitstream semantics for CfP are frozen before main
+submission. You cannot rely on hard-coded test sequence knowledge or manual
+per-sequence learning. Hidden-set generalization is a release gate.
 
 ## 9. Cross-check
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-- Cross-checking проверяет binaries, configs, воспроизводимость reconstruction и корректность
+- Cross-checking checks binaries, configs, reconstruction reproducibility and correctness
   metrics.
-- Packages распределяются между другими сторонами без раскрытия proposing party.
-- Участие каждого proponent в проверке чужого package обязательно.
-- Main package передаётся cross-checkers 2026-11-30.
-- Main cross-check report требуется 2027-01-06.
-- Supplemental cross-check должен завершиться к 2027-01-13.
+- Packages are distributed between other parties without disclosing the proposing party.
+- The participation of each proponent in checking someone else’s package is mandatory.
+- Main package is transferred to cross-checkers 2026-11-30.
+- Main cross-check report required 2027-01-06.
+- Supplemental cross-check must be completed by 2027-01-13.
 
 ## 10. Technical proposal document — 2027-01-06
 
-**FACT — JVET.** Документ должен позволять экспертам концептуально понять proposal,
-воспроизвести эквивалентную performance и оценить степень optimization. Обязательны:
+**FACT - JVET.** The document must allow experts to conceptually understand the proposal,
+reproduce equivalent performance and evaluate the degree of optimization. Required:
 
-- все data-processing paths и компоненты, формирующие bitstream;
-- implementation languages, external libraries и supported build platforms;
-- random-access behaviour и maximum pictures-to-access;
-- encoding/decoding delay, reordering, buffering, multipass decisions и parallelization;
-- encoder/decoder runtime относительно VTM на одинаковой среде;
-- заполненный complexity reporting template;
-- степень parallel processing;
-- дополнительная функциональность: resilience, scalability, 4:4:4 и прочее.
+- all data-processing paths and components that form the bitstream;
+- implementation languages, external libraries and supported build platforms;
+- random-access behavior and maximum pictures-to-access;
+- encoding/decoding delay, reordering, buffering, multipass decisions and parallelization;
+- encoder/decoder runtime relative to VTM on the same environment;
+- completed complexity reporting template;
+- degree of parallel processing;
+- additional functionality: resilience, scalability, 4:4:4, etc.
 
-## 11. Source code, training и IPR
+## 11. Source code, training and IPR
 
-**FACT — JVET.** Main submission принимает binaries, но если technology выбрана для
-дальнейшего исследования:
+**FACT - JVET.** Main submission accepts binaries, but if technology is selected for
+further research:
 
-- relevant source code становится условием участия в core experiments и возможного включения
-  в reference software;
-- source должен воспроизводить результаты proposal;
-- relevant technology может включать training scripts или equations получения parameters;
-- ожидается доступность training materials для проверки либо retraining на доступном JVET
-  материале;
-- действует
-  [Common Patent Policy for ITU-T/ITU-R/ISO/IEC](https://www.itu.int/ITU-T/dbase/patent/patent-policy.html).
+- relevant source code becomes a condition for participation in core experiments and possible inclusion
+  in reference software;
+- source must reproduce the results of the proposal;
+- relevant technology may include training scripts or equations for obtaining parameters;
+- expected availability of training materials for testing or retraining on an available JVET
+  material;
+- valid
+  [Common Patent Policy for ITU-T/ITU-R/ISO/IEC](https://www.itu.int/ITU-T/dbase/patent/patent-policy.html).## 12. Formal subjective assessment
 
-## 12. Formal subjective assessment
+**FACT - JVET.**
 
-**FACT — JVET.**
-
-- Formal subjective testing проводится только для R1—R4 main package.
-- R5 используется для objective metrics и runtime.
-- Все sequences и rates, включая hidden set, проходят objective evaluation.
-- При большом числе proposals chair и coordinator могут выбрать representative subset для
+- Formal subjective testing is carried out only for R1-R4 main package.
+- R5 is used for objective metrics and runtime.
+- All sequences and rates, including hidden set, undergo objective evaluation.
+- If there is a large number of proposals, the chair and coordinator can choose a representative subset for
   subjective testing.
-- Метод — DCR/DSIS: uncompressed reference, затем processed sequence.
-- Планируется 11-level impairment scale от `0` — severely annoying до `10` — imperceptible.
-- Native resolution обязателен; viewing distance — `1.5H`.
-- Публикуются MOS и confidence interval отдельно для каждой sequence; разные sequences не
-  объединяются в один graph.
+- Method - DCR/DSIS: uncompressed reference, then processed sequence.
+- An 11-level impairment scale is planned from `0` - severely annoying to `10` - imperceptible.
+- Native resolution is required; viewing distance - `1.5H`.
+- MOS and confidence interval are published separately for each sequence; different sequences are not
+  are combined into one graph.
 
-Методика ссылается на
-[ITU-R BT.500](https://www.itu.int/rec/R-REC-BT.500) и
+The technique refers to
+[ITU-R BT.500](https://www.itu.int/rec/R-REC-BT.500) and
 [ITU-T P.910](https://www.itu.int/rec/T-REC-P.910).
 
 ## 13. Testing fee
 
-**FACT — JVET.**
+**FACT - JVET.**
 
-- Fee покрывает formal subjective assessment.
-- Ожидаемый максимум — **EUR 20 000 за каждый test case**, включённый в subjective test.
-- Partial test case считается полным при определении fee.
-- Proponent указывает, сколько submitted cases он хочет включить в subjective assessment.
-- Финальный набор решается на 44-м заседании JVET для максимальной comparability.
-- Итоговая сумма сообщается 2026-09-07; подтверждение purchase order требуется к 2026-10-26.
+- Fee covers formal subjective assessment.
+- Expected maximum - **EUR 20,000 for each test case** included in the subjective test.
+- Partial test case is considered complete when determining fee.
+- Proponent indicates how many submitted cases it wants to include in the subjective assessment.
+- The final set is decided at the 44th JVET meeting for maximum comparability.
+- The total amount is reported on 2026-09-07; confirmation of purchase order is required by 2026-10-26.
 
-## 14. Узкая стратегия SceneLith-CfP-2026
+## 14. Narrow strategy SceneLith-CfP-2026
 
 ### 14.1 Scope
 
-**ACCEPTED — SceneLith.** Для текущего CfP готовится один полный `C0` unrestricted
-improved-compression test case. Runtime-constrained `C1`—`C3` не входят в initial response.
-Это уменьшает deliverables с потенциальных 600 до 150 main bitstreams, не ослабляя
-формальную полноту выбранного case.
+**ACCEPTED - SceneLith.** One complete `C0` unrestricted is being prepared for the current CfP
+improved-compression test case. Runtime-constrained `C1`—`C3` are not included in the initial response.
+This reduces deliverables from a potential 600 to 150 main bitstreams without weakening
+formal completeness of the selected case.
 
-**ACCEPTED — SceneLith.** CfP-ветка не пытается реализовать весь будущий MOSAIC. Она обязана
-сохранить каноническую модель:
+**ACCEPTED - SceneLith.** The CfP branch does not attempt to implement the entire future MOSAIC. She must
+save canonical model:
 
 \[
 Video(t)=Render(WorldState_t,\ Trajectories_t)
-       +TruthInnovation_t
-       +OptionalPerceptualDetail_t
+       + TruthInnovation_t
+       + OptionalPerceptualDetail_t
 \]
 
-но ограничивается минимальным проверяемым набором:
+but is limited to the minimum checked set:
 
 1. bounded deterministic WorldState;
-2. самодостаточный checkpoint на каждом RAP;
-3. bounded `MOSAIC Cell` с Support, Lifetime и
+2. self-sufficient checkpoint on each RAP;
+3. bounded `MOSAIC Cell` with Support, Lifetime and
    `STATIC/LINEAR_TRANSLATION` MotionLaw;
 4. objective TruthInnovation residual;
 5. self-contained bitstream;
-6. один reproducible decoder;
-7. Optional Perceptual Detail только если он не угрожает objective reconstruction,
-   сроку и hidden-set generalization.
+6. one reproducible decoder;
+7. Optional Perceptual Detail only if it does not threaten objective reconstruction,
+   term and hidden-set generalization.
 
 ### 14.2 Fastest implementation path
 
-**HYPOTHESIS — SceneLith.** Наиболее быстрый путь к полной заявке — использовать
-проверенный VTM-compatible residual backend как transport/fallback и добавить
-малый SceneLith subset: asynchronous `CELL_SET`, persistent linear motion runs,
-compact `CAPTURE_TRUTH` content и read-only `PRESENT`. Это измеряет эффект
-frame-free state без одновременного изобретения каждого слоя codec.
+**HYPOTHESIS - SceneLith.** The fastest way to a complete application is to use
+tested VTM-compatible residual backend as transport/fallback and add
+small SceneLith subset: asynchronous `CELL_SET`, persistent linear motion runs,compact `CAPTURE_TRUTH` content and read-only `PRESENT`. This measures the effect
+frame-free state without simultaneously reinventing each codec layer.
 
-**HYPOTHESIS — SceneLith.** Foundry encoder может получить дополнительный
-выигрыш через многопроходный анализ всей RA epoch, flow, support/lifetime
-search, compact-content reuse и RDO. Depth/3D/semantic decoder не входят в
+**HYPOTHESIS - SceneLith.** Foundry encoder may receive additional
+gain through multi-pass analysis of the entire RA epoch, flow, support/lifetime
+search, compact-content reuse and RDO. Depth/3D/semantic decoder are not included
 fastest path.
 
-**TARGET — SceneLith.** Любой gain должен считаться по полному bitstream, включая:
+**TARGET — SceneLith.** Any gain must be calculated based on the full bitstream, including:
 
 - WorldState checkpoint;
 - Cell Content/Support/Lifetime events;
-- MotionLaw knots и presentation metadata;
+- MotionLaw knots and presentation metadata;
 - embedded parameters/weights;
 - TruthInnovation;
-- headers, indexes и checksums.
+- headers, indexes and checksums.
 
 ### 14.3 CfP release gates
 
-**TARGET — SceneLith.**
+**TARGET - SceneLith.**
 
-1. Все 150 main bitstreams декодируются одним Ubuntu binary.
-2. Повторный decode даёт byte-identical output и MD5.
-3. Каждый RA stream стартует без данных до RAP.
-4. Low-delay categories не используют look-ahead.
-5. Каждый bitstream укладывается в target; hidden streams — в 80%—100%.
-6. Training provenance полностью документирован; CfP material не входит в training.
-7. Full runtime включает preprocessing, multipass и postprocessing.
-8. Package воспроизводится независимым cross-check runner.
-9. Hidden set проходит теми же frozen binaries.
-10. Offline encoder complexity раскрывается честно и не маскируется wall-clock parallelism.
+1. All 150 main bitstreams are decoded by one Ubuntu binary.
+2. Repeated decode gives byte-identical output and MD5.
+3. Each RA stream starts without data before RAP.
+4. Low-delay categories do not use look-ahead.
+5. Each bitstream fits into a target; hidden streams - 80%—100%.
+6. Training provenance is fully documented; CfP material is not included in training.
+7. Full runtime includes preprocessing, multipass and postprocessing.
+8. Package is played by an independent cross-check runner.
+9. Hidden set goes through the same frozen binaries.
+10. Offline encoder complexity is revealed honestly and is not masked by wall-clock parallelism.
 
 ## 15. Project buffer dates
 
-Это внутренние цели, а не даты JVET.
+These are internal goals, not JVET dates.
 
-| TARGET — SceneLith | Результат |
+| TARGET - SceneLith | Result |
 |---|---|
-| 2026-08-01 | Отправлена formal registration; получены/запрошены proponent ID и assets. |
-| 2026-08-07 | Anchor pipeline и Annex D metrics воспроизводятся локально. |
-| 2026-08-21 | Первый self-contained `.bit` round trip на Ubuntu 24.04. |
-| 2026-09-01 | Registration подтверждена; выбран ровно один `C0` case. |
-| 2026-09-15 | Заморожены decoder ISA, syntax и WorldState checkpoint semantics. |
-| 2026-09-30 | Работает полный 30-sequence distributed encoding pipeline. |
-| 2026-10-09 | Все 150 candidate streams прошли decode/MD5/rate validation. |
-| 2026-10-16 | Main package frozen, SSD собран и проверен на независимой Ubuntu machine. |
-| 2026-10-19 | SSD отправлен с отслеживаемой доставкой; сохранена verified duplicate. |
-| 2026-10-26 | Официальный main deadline без использования внутреннего буфера. |
-| 2026-11-02 | Hidden-set encoding запускается автоматически frozen toolchain. |
-| 2026-12-14 | Supplemental package frozen за неделю до официального срока. |
+| 2026-08-01 | formal registration sent; proponent ID and assets received/requested. |
+| 2026-08-07 | Anchor pipeline and Annex D metrics are played locally. |
+| 2026-08-21 | First self-contained `.bit` round trip on Ubuntu 24.04. |
+| 2026-09-01 | Registration confirmed; Exactly one `C0` case is selected. |
+| 2026-09-15 | ISA decoder, syntax and WorldState checkpoint semantics are frozen. |
+| 2026-09-30 | The full 30-sequence distributed encoding pipeline is running. |
+| 2026-10-09 | All 150 candidate streams passed decode/MD5/rate validation. |
+| 2026-10-16 | Main package frozen, SSD assembled and tested on an independent Ubuntu machine. |
+| 2026-10-19 | SSD shipped with tracked delivery; verified duplicate saved. |
+| 2026-10-26 | Official main deadline without using an internal buffer. |
+| 2026-11-02 | Hidden-set encoding is launched automatically by the frozen toolchain. |
+| 2026-12-14 | Supplemental package frozen one week before the official deadline. |
 
-## 16. Section 6 fallback, не равный formal proposal
+## 16. Section 6 fallback, not equal to formal proposal
 
-**FACT — JVET.** Дополнительную функциональность можно представить отдельным вкладом к
-document deadline 45-го заседания. Такой материал:
+**FACT - JVET.** Additional functionality can be provided as a separate contribution todocument deadline for the 45th meeting. This material:
 
-- не входит в main submission package;
-- не участвует в formal subjective test;
-- не требует обязательного pre-meeting cross-check;
-- может получить expert viewing или informal demonstration.
+- not included in the main submission package;
+- does not participate in formal subjective test;
+- does not require mandatory pre-meeting cross-check;
+- may receive expert viewing or informal demonstration.
 
-**TARGET — SceneLith.** Даже при срыве полного `C0` подготовить Section 6 contribution о:
+**TARGET - SceneLith.** Even if the complete failure `C0` prepare Section 6 contribution about:
 
 - persistent scene state;
 - compute/scalability dimensions;
-- truth-preserving base и non-reference perceptual detail;
-- state checkpointing и error recovery.
+- truth-preserving base and non-reference perceptual detail;
+- state checkpointing and error recovery.
 
-Это страховка присутствия SceneLith в обсуждении, но **не** замена полноценному formal
+This is insurance for SceneLith's presence in the discussion, but **not** a replacement for a full-fledged formal
 compression response.

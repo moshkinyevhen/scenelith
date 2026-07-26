@@ -1,83 +1,82 @@
 # Observed Surface Memory: Evidence Atlas
 
-Статус: **RESEARCH / SUPERSEDED FOR MAIN-0** решениями D-015 и D-017.
-Семантика `Domain/Known`, 2.5D и полная OSM не входит в первый implementation
-gate. DPM baseline находится в
-[13_MINIMAL_PATCH_CORE.md](13_MINIMAL_PATCH_CORE.md), текущий time/state
-candidate — в
-[14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md). Все показатели
-здесь остаются **HYPOTHESIS/TARGET**.  
-Дата: 2026-07-26
+Status: **RESEARCH / SUPERSEDED FOR MAIN-0** by decisions D-015 and D-017.
+Semantics `Domain/Known`, 2.5D and full OSM are not included in the first implementation
+gate. DPM baseline is in
+[13_MINIMAL_PATCH_CORE.md](13_MINIMAL_PATCH_CORE.md), current time/state
+candidate - in
+[14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md). All indicators
+**HYPOTHESIS/TARGET** remain here.
+Date: 2026-07-26
 
-Рабочие названия:
+Working titles:
 
-- **Observed Surface Memory (OSM)** — нормативная подсистема `WorldState`;
-- **Evidence Atlas** или **Witness Atlas** — разговорное/internal название;
-- **Minimal Sufficient Scene** — encoder-only принцип построения представления.
+- **Observed Surface Memory (OSM)** — normative `WorldState` subsystem;
+- **Evidence Atlas** or **Witness Atlas** - colloquial/internal name;
+- **Minimal Sufficient Scene** — encoder-only representation construction principle.
 
-Термин `Atlas` уже используется AV2 и immersive standards для других
-конструкций. В публичной syntax предпочтительно **Observed Surface Memory**,
-пока терминологический и IP review не завершён.
+The term `Atlas` is already used by AV2 and immersive standards for others
+designs. In public syntax, **Observed Surface Memory** is preferred,
+terminological and IP review has not yet been completed.
 
-## 1. Что меняется
+## 1. What is changing
 
-SceneLith не должен восстанавливать полный физически правильный или
-правдоподобно дорисованный мир. Для воспроизведения заданного видео достаточно
-минимального набора фрагментов поверхностей, которые действительно участвуют в
-целевых кадрах.
+SceneLith should not restore complete physically correct or
+a believably completed world. To play a given video, it is enough
+a minimum set of surface fragments that actually participate in
+target frames.
 
 **NORMATIVE-DRAFT:**
 
-- никогда не наблюдавшаяся и никогда не выводимая область не требует bits;
-- неизвестность является явным состоянием, а не чёрным, прозрачным или
-  синтезированным texel;
-- `Truth` renderer не имеет права читать неизвестный sample;
-- видимые фрагменты могут после Truth reconstruction быть сохранены в
-  долгоживущую память и повторно использоваться;
-- любое место, которое невозможно предсказать из определённого состояния,
-  кодируется `REPLACE/TruthInnovation`;
-- генеративный display-only слой никогда не делает неизвестный texel
-  нормативно известным.
+- never observed and never inferred region requires no bits;
+- obscurity is a clear state, not black, transparent or
+  synthesized texel;
+- `Truth` renderer does not have the right to read an unknown sample;
+- visible fragments can be saved in
+  long-lived memory and reusability;
+- any place that cannot be predicted from a certain state,
+  coded `REPLACE/TruthInnovation`;
+- generative display-only layer never renders unknown texel
+  normatively known.
 
-Это переносит основную сложность из decoder-side world generation в
-encoder-only correspondence, segmentation, geometry estimation и RDO.
+This transfers the main complexity from decoder-side world generation to
+encoder-only correspondence, segmentation, geometry estimation and RDO.
 
-## 2. Модель фрагмента
+## 2. Fragment model
 
-Для поверхности \(i\):
+For surface \(i\):
 
 \[
 F_i=(T_i,\Omega_i,W_i(t),V_i(t),Z_i(t),P_i),
 \]
 
-где:
+where:
 
-- \(T_i\) — реконструированная каноническая текстура;
-- \(\Omega_i\) — разреженная область определённых samples;
-- \(W_i(t)\) — integer warp, mesh или trajectory;
+- \(T_i\) — reconstructed canonical texture;
+- \(\Omega_i\) - sparse area of ​​certain samples;
+- \(W_i(t)\) — integer warp, mesh or trajectory;
 - \(V_i(t)\) — visibility;
 - \(Z_i(t)\) — depth/order;
 - \(P_i\) — provenance class.
 
-Для каждого atlas texel используются `DomainMask D` и `KnownMask K`:
+For each atlas texel, `DomainMask D` and `KnownMask K` are used:
 
-| D | K | Значение |
+| D | K | Meaning |
 |---|---|---|
-| 0 | 0 | texel не объявлен частью поверхности |
-| 1 | 0 | поверхность существует, sample неизвестен |
-| 1 | 1 | sample нормативно восстановлен и доступен |
-| 0 | 1 | запрещённое состояние |
+| 0 | 0 | texel is not declared as part of the surface |
+| 1 | 0 | surface exists, sample unknown |
+| 1 | 1 | sample has been restored and is available |
+| 0 | 1 | prohibited state |
 
-`UNKNOWN` не равен прозрачности. Если неизвестная передняя поверхность
-окклюдирует фон, decoder не должен показать задний слой сквозь неё. Такой
-output region получает `REPLACE` или безопасный frame-based fallback.
+`UNKNOWN` does not equal transparency. If the front surface is unknownoccludes the background, the decoder should not show the back layer through it. Such
+output region receives `REPLACE` or secure frame-based fallback.
 
-Для filtered sampling все taps footprint должны быть известны. В первом
-профиле integer bilinear sample допустим только при `K=1` у всех четырёх taps.
+For filtered sampling, all taps footprint must be known. In the first
+profile integer bilinear sample is valid only with `K=1` for all four taps.
 
-## 3. Ключевая операция: CAPTURE_PROMOTE
+## 3. Key operation: CAPTURE_PROMOTE
 
-Главный практический primitive:
+Main practical primitive:
 
 ```text
 CAPTURE_PROMOTE {
@@ -93,11 +92,11 @@ CAPTURE_PROMOTE {
 }
 ```
 
-После полного восстановления и проверки Truth frame decoder копирует выбранные
-reconstructed pixels в atlas. Texture payload уже был оплачен текущим кадром;
-повторно передаются только mask, mapping и lifecycle metadata.
+After complete restoration and verification, Truth frame decoder copies the selected
+reconstructed pixels in atlas. Texture payload has already been paid by the current frame;
+Only mask, mapping and lifecycle metadata are retransmitted.
 
-Для destination texel \(d\), отображаемого в frame coordinate \(F(d)\):
+For destination texel \(d\) mapped to frame coordinate \(F(d)\):
 
 \[
 CaptureValid(d)=M(d)\land
@@ -105,287 +104,281 @@ CaptureValid(d)=M(d)\land
 Owner(q)=source\_instance.
 \]
 
-Ни один tap не должен принадлежать foreground object или другому surface.
-Decoder не проверяет семантическое утверждение «это дом»; он проверяет только
-нормативную ownership/mask согласованность. Ошибка encoder ухудшает будущий
-rate, но не меняет bit-exact output.
+No tap should belong to a foreground object or another surface.
+Decoder does not check the semantic statement "this is a house"; it only checks
+normative ownership/mask consistency. Encoder error degrades future
+rate, but does not change bit-exact output.
 
-Encoder SHOULD захватывать guard ring шириной в один source texel для bilinear
-reuse. Decoder MUST NOT самостоятельно делать dilation, edge replication или
-clamp-to-known. Отсутствующий guard делает будущую выборку `UNRESOLVED`.
+Encoder SHOULD capture guard ring one source texel wide for bilinear
+reuse. Decoder MUST NOT do dilation, edge replication or
+clamp-to-known. A missing guard makes a future selection `UNRESOLVED`.
 
-Порядок:
+Order:
 
-1. Decoder читает неизменяемый pre-access-unit state.
-2. Structural render создаёт prediction и `ResolvedMask`.
-3. Truth Innovation восстанавливает objective output.
-4. Integrity и bounds проверяются.
-5. `CAPTURE_PROMOTE` строит новую страницу в staging memory.
-6. Проверяется post-state hash.
-7. Memory Delta коммитится атомарно и становится доступен следующей Spine Unit.
+1. Decoder reads the immutable pre-access-unit state.
+2. Structural render creates prediction and `ResolvedMask`.
+3. Truth Innovation restores objective output.
+4. Integrity and bounds are checked.
+5. `CAPTURE_PROMOTE` builds a new page in staging memory.
+6. Post-state hash is checked.
+7. Memory Delta is committed atomically and becomes available to the next Spine Unit.
 
-Повреждённый, concealment-generated или perceptual output не может быть
-источником `CAPTURE_PROMOTE`.
-Все target writes одной транзакции должны быть непересекающимися; sources
-читаются только из immutable pre-state или завершённых Truth outputs.
+Damaged, concealment-generated or perceptual output cannot be
+source `CAPTURE_PROMOTE`.
+All target writes of one transaction must be disjoint; sources
+read only from immutable pre-state or completed Truth outputs.
 
-## 4. Пример: человек проходит вдоль дома
+## 4. Example: a person walks along the house
 
-1. Encoder связывает видимые части стены в разных кадрах с одной поверхностью.
-2. Силуэт человека исключается capture-mask.
-3. По мере движения человека вновь раскрытые части стены сохраняются через
+1. Encoder associates visible parts of the wall in different frames with one surface.
+2. The silhouette of a person is excluded by the capture-mask.
+3. As a person moves, the newly opened parts of the wall are preserved through
    `CAPTURE_PROMOTE`.
-4. Никогда не показанные части стены остаются `UNKNOWN` и не занимают texture
+4. Parts of the wall that are never shown remain `UNKNOWN` and do not occupy the texture
    payload.
-5. Стена рендерится из atlas через homography или bounded mesh warp.
-6. Человек кодируется отдельным patch/deformable layer либо обычным motion
-   fallback.
-7. Тени, отражения, волосы, motion blur и изменения освещения исправляются
-   ephemeral layer и Truth Innovation.
-8. Если фрагмент больше не повторится, RDO может не сохранять его вообще.
+5. The wall is rendered from atlas using homography or bounded mesh warp.
+6. A person is encoded with a separate patch/deformable layer or regular motion
+   fallback
+7. Shadows, reflections, hair, motion blur and lighting changes are corrected
+   ephemeral layer and Truth Innovation.
+8. If the fragment is not repeated again, RDO may not save it at all.No semantic “house model” decoder is needed. Sufficient compression
+a geometry that cheaply reproduces the original camera path.
 
-Никакая семантическая «модель дома» decoder не нужна. Достаточна компрессионная
-геометрия, которая дёшево воспроизводит исходную траекторию камеры.
+## 5. GPU/ASIC-friendly freeform
 
-## 5. GPU/ASIC-friendly произвольная форма
+An arbitrary fragment should not mean pointer-rich pixel list.
 
-Произвольный фрагмент не должен означать pointer-rich pixel list.
+**NORMATIVE-DRAFT candidates:**
 
-**NORMATIVE-DRAFT кандидаты:**
-
-- логические atlas pages фиксированного размера;
+- logical atlas pages of fixed size;
 - sparse microtiles;
-- прямоугольный texture resource и компактные `Domain/Known` bitmasks;
+- rectangular texture resource and compact `Domain/Known` bitmasks;
 - bounded per-output-tile draw list;
-- affine/projective или piecewise-affine inverse mapping;
-- integer depth либо compact explicit owner map;
-- детерминированные fill, tie-break, interpolation, rounding и saturation;
-- generation counters для защиты от use-after-free старой страницы.
+- affine/projective or piecewise-affine inverse mapping;
+- integer depth or compact explicit owner map;
+- deterministic fill, tie-break, interpolation, rounding and saturation;
+- generation counters to protect against use-after-free old page.
 
-**CANDIDATE:** page `128×128`, microtile `8×8`, по одному 64-битному слову
-`DomainMask` и `KnownMask` на microtile. Эти размеры не заморожены.
+**CANDIDATE:** page `128×128`, microtile `8×8`, one 64-bit word each
+`DomainMask` and `KnownMask` on microtile. These sizes are not frozen.
 
-Decoder не выполняет segmentation, SLAM, depth inference, object recognition
-или generative completion.
+Decoder does not perform segmentation, SLAM, depth inference, object recognition
+or generative completion.
 
-## 6. Иерархия режимов
+## 6. Hierarchy of modes
 
-Encoder выбирает самый дешёвый режим для каждого region/chunk:
+Encoder selects the cheapest mode for each region/chunk:
 
 1. recent-frame motion compensation;
 2. equal-memory long-term decoded reference;
 3. decoded patch cache;
 4. 2D Evidence Atlas;
-5. layered 2.5D atlas с depth/alpha/mesh;
-6. sparse 3D surfels/splats для подходящих сцен;
+5. layered 2.5D atlas with depth/alpha/mesh;
+6. sparse 3D surfels/splats for suitable scenes;
 7. intra/innovation replacement.
 
-Main v0 начинает с 2D и ограниченного 2.5D. Полный 3D и INR не являются
-обязательными режимами.
+Main v0 starts with 2D and limited to 2.5D. Full 3D and INR are not
+mandatory regimes.
 
-## 7. Encoder и миллион кадров
+## 7. Encoder and a million frames
 
-Миллион frames нельзя сравнивать попарно: это порядка \(10^{12}\) пар.
-Практический Foundry pipeline иерархичен:
+A million frames cannot be compared in pairs: these are on the order of \(10^{12}\) pairs.
+The practical Foundry pipeline is hierarchical:
 
-1. scene-cut и shot segmentation;
-2. low-resolution features для всех кадров;
-3. keyframe selection;
-4. local tracks через flow/masks;
-5. loop-closure retrieval по компактному index;
-6. full-resolution registration только для небольшого списка кандидатов;
-7. observation graph и глобальный hardware-aware RDO.
+1. scene-cut and shot segmentation;
+2. low-resolution features for all frames;
+3.keyframe selection;
+4. local tracks via flow/masks;
+5. loop-closure retrieval by compact index;
+6. full-resolution registration only for a small list of candidates;
+7. observation graph and global hardware-aware RDO.
 
-Live строит atlas causal по уже полученным наблюдениям. Studio анализирует shot.
-Foundry может анализировать весь title и выбирать лучшие наблюдения, но decoder
-и bitstream у них одинаковы.
+Live builds a causal atlas based on the observations already obtained. Studio analyzes the shot.
+Foundry can analyze the entire title and select the best observations, but the decoder
+and their bitstreams are the same.
 
-Foundry-router не заменяется:
+Foundry-router is not replaced:
 
-- OSM определяет, **что можно хранить и рендерить**;
-- router предлагает, **когда создать/расширить/использовать/удалить fragment**;
-- точный RDO проверяет, что полный rate действительно ниже fallback.
+- OSM determines **what can be stored and rendered**;
+- router suggests **when to create/expand/use/delete fragment**;
+- accurate RDO checks that the full rate is indeed below the fallback.
 
-## 8. Полная rate-модель
+## 8. Full rate model
 
-Для surface reuse:
+For surface reuse:
 
 \[
 \begin{aligned}
 R_{\mathrm{OSM}}={}&R_{\mathrm{capture}}+R_{\mathrm{domain}}
-+R_{\mathrm{geometry}}+R_{\mathrm{visibility}}\\
++ R_{\mathrm{geometry}}+R_{\mathrm{visibility}}\\
 &+R_{\mathrm{updates}}+R_{\mathrm{checkpoints}}
-+R_{\mathrm{residual,OSM}},\\
++ R_{\mathrm{residual,OSM}},\\
 R_{\mathrm{baseline}}={}&R_{\mathrm{motion}}+R_{\mathrm{ref\_management}}
-+R_{\mathrm{residual,baseline}}.
++ R_{\mathrm{residual,baseline}}.
 \end{aligned}
 \]
 
-OSM выбирается только если на горизонте reuse:
+OSM is selected only if reuse is on the horizon:
 
 \[
 G=R_{\mathrm{baseline}}-R_{\mathrm{OSM}}>0.
 \]
 
-Сравнение обязательно выполняется с **equal-memory long-term reference** и
-decoded patch cache. Иначе выигрыш может оказаться следствием большей памяти, а
-не новой scene representation.
+Comparison must be performed with **equal-memory long-term reference** and
+decoded patch cache. Otherwise, the gain may turn out to be a consequence of greater memory, andnot a new scene representation.
 
-## 9. Почему потолок сжатия меняется
+## 9. Why the compression ceiling changes
 
-Для устойчивой поверхности, используемой \(q\) раз:
+For a stable surface used \(q\) times:
 
 \[
 R_{\mathrm{OSM}}(q)
 \approx R_{\mathrm{texture\ once}}
-+q(R_{\mathrm{pose}}+R_{\mathrm{visibility}}+R_{\mathrm{small\ residual}}).
++ q(R_{\mathrm{pose}}+R_{\mathrm{visibility}}+R_{\mathrm{small\ residual}}).
 \]
 
-У frame-based baseline повторная texture mismatch обычно продолжает создавать
-residual. Если сцена идеально повторяема и innovation стремится к нулю, texture
-cost SceneLith амортизируется один раз. Поэтому максимальный выигрыш не имеет
-единого процента: на искусственном периодическом content отношение может расти
-с продолжительностью ролика.
+For frame-based baseline, repeated texture mismatch usually continues to create
+residual. If the scene is perfectly repeatable and innovation tends to zero, texture
+cost SceneLith is depreciated once. Therefore, the maximum gain does not have
+single percent: on artificial periodic content the ratio can grow
+with the duration of the video.
 
-Это не означает универсальное бесконечное сжатие. Первый уникальный sample
-должен быть:
+This does not mean universal infinite compression. First unique sample
+should be:
 
-- однажды передан;
-- либо получен нормативным predictor и objective correction;
-- либо уже существовать в подтверждённом Truth state.
+- once transferred;
+- either received by normative predictor and objective correction;
+- or already exist in a confirmed Truth state.
 
-## 10. Диапазоны для экспериментов
+## 10. Ranges for experimentation
 
-Все числа ниже — **HYPOTHESIS/TARGET**, не результаты. `Net saving` означает
-полную дельту bitrate после geometry, masks, state updates, checkpoints и
-residual при одинаковом objective quality.
+All numbers below are **HYPOTHESIS/TARGET**, not results. `Net saving` means
+full delta bitrate after geometry, masks, state updates, checkpoints and
+residual with the same objective quality.
 
-| Content | Рабочая TARGET net saving | HYPOTHESIS ceiling |
+| Content | Working TARGET net saving | HYPOTHESIS ceiling |
 |---|---:|---:|
-| Static/planar, всё уже помещается в equal-memory LTR | 0–8% | 10–15% |
-| Rigid/screen с long-gap revisit, sprite reuse или working set больше frame-reference coverage | 20–45% | 45–65% |
-| Puzzle-friendly natural: длинный shot, repeated surfaces, умеренный parallax/light | 10–25% | 25–40% |
-| Смешанный uncurated natural corpus | 4–12% | 12–20% |
-| Fire/water/foliage/crowds/grain/reflections/cuts | 0–1% с fallback | 1–3% на редких periodic regions |
+| Static/planar, everything is already placed in equal-memory LTR | 0–8% | 10–15% |
+| Rigid/screen with long-gap revisit, sprite reuse or working set more frame-reference coverage | 20–45% | 45–65% |
+| Puzzle-friendly natural: long shot, repeated surfaces, moderate parallax/light | 10–25% | 25–40% |
+| Mixed uncurated natural corpus | 4–12% | 12–20% |
+| Fire/water/foliage/crowds/grain/reflections/cuts | 0–1% with fallback | 1–3% on rare periodic regions |
 
-При self-contained random access около 1 секунды нижняя/средняя часть этих
-диапазонов вероятнее: state snapshot повторно тарифицирует texture и metadata.
+With self-contained random access about 1 second the lower/middle part of these
+ranges are more likely: state snapshot re-charges texture and metadata.
 
-На искусственном infinite-GOP ролике, где почти весь inter payload является
-повторным вводом вытесненных поверхностей, можно теоретически убрать 70–95%
-этого inter payload, а предел при \(T\to\infty\) приближается к 100%. Это не
-означает 70–95% полного bitrate на natural video и не является product claim.
-Если нужная texture уже доступна equal-memory LTR с точным warp, выигрыш OSM
-может быть почти нулевым.
+On an artificial infinite-GOP video, where almost the entire inter payload is
+by reintroducing the displaced surfaces, it is theoretically possible to remove 70–95%
+this inter payload, and the limit at \(T\to\infty\) approaches 100%. This is not
+means 70–95% of the full bitrate for natural video and is not a product claim.
+If the desired texture is already available equal-memory LTR with exact warp, OSM wins
+may be almost zero.
 
-Полный SceneLith может сочетать OSM с multi-frame innovation, quantization и
-entropy tools. Проценты отдельных модулей нельзя механически складывать.
+Full SceneLith can combine OSM with multi-frame innovation, quantization and
+entropy tools. The percentages of individual modules cannot be added mechanically.
 
-## 11. Обновлённый инженерный timeline
+## 11. Updated engineering timeline
 
-Оценка предполагает 3–4 параллельных workstreams, круглосуточное продолжение
-работы, готовые flow/depth/segmentation components и узкий первый профиль:
-opaque patches, affine/bounded mesh, bilinear filter, без diffusion decoder.
+The assessment assumes 3–4 parallel workstreams, 24/7 continuation
+works, ready-made flow/depth/segmentation components and a narrow first profile:
+opaque patches, affine/bounded mesh, bilinear filter, no diffusion decoder.
 
-| Результат | Оптимистично | Реалистично |
+| Result | Optimistic | Realistic |
 |---|---:|---:|
-| Исполняемый synthetic skeleton с known masks/warps | 48–72 часа | 4–7 дней |
-| Oracle experiment с полным bit accounting на выбранных real shots | 2–3 недели | 4–6 недель |
-| Первый end-to-end stream: encoder → syntax → CPU Truth output | 4–6 недель | 8–12 недель |
-| GPU decode, `CAPTURE/PROMOTE`, basic MAP и conformance | 6–9 недель | 10–16 недель |
-| Устойчивая research platform с practical Studio encoder | 8–12 недель | 14–22 недели |
-| Proposal-grade evidence на широком corpus | 12–20 недель | 24–40 недель |
+| Executable synthetic skeleton with known masks/warps | 48–72 hours | 4–7 days || Oracle experiment with full bit accounting on selected real shots | 2–3 weeks | 4–6 weeks |
+| First end-to-end stream: encoder → syntax → CPU Truth output | 4–6 weeks | 8–12 weeks |
+| GPU decode, `CAPTURE/PROMOTE`, basic MAP and conformance | 6–9 weeks | 10–16 weeks |
+| Sustainable research platform with practical Studio encoder | 8–12 weeks | 14–22 weeks |
+| Proposal-grade evidence on a wide corpus | 12–20 weeks | 24–40 weeks |
 
-Прежние **6–12 недель** остаются правдоподобными для первой вертикальной
-версии, а не для доказанного стандарта. Новая формулировка не уничтожает
-timeline; она:
+Previous **6-12 weeks** remain plausible for first vertical
+versions, not to a proven standard. The new formulation does not destroy
+timeline; she:
 
-- даёт исполняемый skeleton за дни;
-- позволяет убить неверную гипотезу oracle-тестом до тяжёлой ML-разработки;
-- исключает из Main v0 универсальную 3D reconstruction, генерацию невидимого и
+- gives an executable skeleton in days;
+- allows you to kill an incorrect hypothesis with an oracle test before heavy ML development;
+- excludes from Main v0 universal 3D reconstruction, generation of invisible and
   neural world decoder;
-- делает 6–12-недельную версию существенно более содержательной и
-  стандартизуемой.
+- makes the 6–12 week version significantly more meaningful and
+  standardized.
 
-Версия с честным общим BD-rate, GPU path, masks, checkpoints и несколькими
-content classes реалистичнее оценивается в **10–16 недель**. Полный стандарт и
-silicon-ready профиль не превращаются в недельную задачу из-за datasets,
-interoperability, corpus runs и последовательных bit-exact/RD gates.
+Version with honest general BD-rate, GPU path, masks, checkpoints and several
+content classes are more realistically estimated at **10–16 weeks**. Full standard and
+silicon-ready profile does not turn into a weekly task due to datasets,
+interoperability, corpus runs and serial bit-exact/RD gates.
 
-Главная экономия времени относительно полного world model — не нужно сначала
-решать универсальную monocular 3D reconstruction, генерацию невидимых областей
-и тяжёлый neural decoder. Сложность остаётся в practical encoder и
-доказательстве выигрыша, но теперь её можно вводить ступенчато.
+The main time saving is relative to the complete world model - no need to first
+solve universal monocular 3D reconstruction, generation of invisible regions
+and a heavy neural decoder. The complexity remains in practical encoder and
+proof of benefit, but it can now be introduced in stages.
 
-### 11.1 Изменение сложности
+### 11.1 Changing difficulty
 
-| Свойство | Frame codec | OSM SceneLith | Full generative world model |
+| Property | Frame codec | OSM SceneLith | Full generative world model |
 |---|---|---|---|
 | Persistent state | DPB frames | Sparse pages, masks, lifecycle | 3D/neural latent world |
-| Decoder analysis | Нет | Нет | Часто model inference/rendering |
-| Decoder operations | MC, filters, transforms | Integer warp, mask, depth/owner, capture, residual | Большой tensor graph/neural renderer |
-| Bit-exactness | Отработана | Достижима фиксированной integer ISA | Существенно труднее |
-| Encoder analysis | Motion/RDO | Global tracking, stitching, observation graph, state RDO | World reconstruction, inference/training и RDO |
-| ASIC path | Доказан | Реалистичен через texture/cache/mask blocks | Высокий риск до заморозки моделей |
+| Decoder analysis | No | No | Often model inference/rendering |
+| Decoder operations | MC, filters, transforms | Integer warp, mask, depth/owner, capture, residual | Large tensor graph/neural renderer |
+| Bit-exactness | Completed | Reachable fixed integer ISA | Significantly more difficult |
+| Encoder analysis | Motion/RDO | Global tracking, stitching, observation graph, state RDO | World reconstruction, inference/training and RDO |
+| ASIC path | Proven | Realistic via texture/cache/mask blocks | High risk before freezing models |
 
-**HYPOTHESIS для планирования, не измеренный результат:**
+**HYPOTHESIS for planning, not measured result:**
 
-- OSM reference decoder — примерно `1.3–2×` инженерной сложности минимального
-  conventional research decoder; это не прогноз silicon area или runtime;
-- early Live encoder pipeline — порядка `2–5×` conventional Live по числу
-  analysis stages;
-- early Studio pipeline — порядка `5–20×` conventional Studio;
-- Foundry может быть на порядки тяжелее, не изменяя нормативный decoder;
-- full generative world decoder ожидается существенно тяжелее OSM и хуже
-  подходит для первого bit-exact ASIC profile.
+- OSM reference decoder - approximately `1.3–2×` of minimum engineering complexity
+  conventional research decoder; this is not a silicon area or runtime forecast;
+- early Live encoder pipeline - about `2–5×` conventional Live in number
+  analysis stages;- early Studio pipeline - about `5–20×` conventional Studio;
+- Foundry can be orders of magnitude heavier without changing the standard decoder;
+- full generative world decoder is expected to be significantly heavier and worse than OSM
+  suitable for the first bit-exact ASIC profile.
 
-OSM не обязан добавляться поверх всех VVC tools. Цель — заменить часть сложной
-frame-based prediction более регулярными GPU-native операциями, поэтому
-сложность итогового decoder определяется после удаления проигравших tools.
+OSM is not required to be added on top of all VVC tools. The goal is to replace a complex part
+frame-based prediction by more regular GPU-native operations, so
+The complexity of the final decoder is determined after removing the losing tools.
 
 ## 12. Kill gates
 
-1. Oracle с perfect camera/depth/visibility должен дать после всех side bits:
-   - не менее 30% на ideal long-gap revisit;
-   - не менее 15% на puzzle subset;
-   - не менее 5% на mixed set против equal-memory AVM/VTM-class LTR.
-2. Против equal-memory deduplicating decoded patch cache OSM должен дать не
-   менее 10% на puzzle subset и 3–5% на mixed set. Иначе оставить простой
-   patch cache и убрать лишнюю world geometry.
-3. Practical estimator должен сохранить не менее 65–70% oracle **net** delta.
-4. Geometry, masks и updates на active puzzle regions должны составлять не
-   более 8% baseline rate; вся non-residual OSM side information — не более
+1. Oracle with perfect camera/depth/visibility should give after all side bits:
+   - at least 30% for ideal long-gap revisit;
+   - at least 15% on puzzle subset;
+   - at least 5% for mixed set against equal-memory AVM/VTM-class LTR.
+2. Against equal-memory deduplicating decoded patch cache OSM should not give
+   less than 10% for puzzle subset and 3–5% for mixed set. Otherwise leave it simple
+   patch cache and remove unnecessary world geometry.
+3. Practical estimator must retain at least 65–70% oracle **net** delta.
+4. Geometry, masks and updates on active puzzle regions should not be
+   more than 8% baseline rate; all non-residual OSM side information - no more
    12%.
-5. Checkpoint overhead должен оставаться не более 8% при 1 s random access и
-   4–5% при 2 s.
-6. Средняя regression hostile class после fallback — не более 0.5%, p95 clip —
-   не более +3%, ни один clip — не более +5%.
-7. OSM syntax overhead при отключённом mode — не более 0.3%.
-8. Uncorrected never-observed pixels в Truth Core: ровно 0.
-9. Если полный 3D даёт менее 7–10% сверх 2.5D после geometry/checkpoint bits,
-   он исключается из Main.
-10. Median admitted page должна окупить insertion, mapping, masks, updates и
-    checkpoint allocation не позднее 2–3 uses.
+5. Checkpoint overhead should remain no more than 8% with 1 s random access and
+   4–5% at 2 s.
+6. Average hostile class regression after fallback - no more than 0.5%, p95 clip -
+   no more than +3%, no clip - no more than +5%.
+7. OSM syntax overhead with mode disabled - no more than 0.3%.
+8. Uncorrected never-observed pixels in Truth Core: exactly 0.
+9. If full 3D gives less than 7–10% over 2.5D after geometry/checkpoint bits,
+   it is excluded from Main.
+10. Median admitted page must pay for insertion, mapping, masks, updates and
+    checkpoint allocation no later than 2–3 uses.
 
-## 13. Prior art и потенциальная новизна
+## 13. Prior art and potential novelty
 
-Сами по себе background mosaic, arbitrary-shape object, progressive sprite
-reveal, layered atlas, occupancy map и 3D splat не являются новыми.
+Themselves background mosaic, arbitrary-shape object, progressive sprite
+reveal, layered atlas, occupancy map and 3D splat are not new.
 
-Потенциально отличительная комбинация SceneLith:
+Potentially distinctive SceneLith combination:
 
-- неизвестность как нормативное состояние reference memory;
-- evidence-bounded fragment вместо обязательного полного объекта;
-- `CAPTURE_PROMOTE` без повторного texture payload;
-- явный visibility/filter-footprint contract;
-- transactional sparse GPU memory с bounded lifetime/checkpoints;
-- global RDO, учитывающий всю стоимость state;
-- один universal fallback codec path;
-- строгая граница Truth и generative display shell.
+- uncertainty as a normative state of reference memory;
+- evidence-bounded fragment instead of the required full object;
+- `CAPTURE_PROMOTE` without repeated texture payload;
+- explicit visibility/filter-footprint contract;
+- transactional sparse GPU memory with bounded lifetime/checkpoints;
+- global RDO, taking into account the entire cost of state;
+- one universal fallback codec path;
+- strict Truth boundary and generative display shell.
 
-Новизна этой комбинации должна подтверждаться отдельным patent/prior-art
-search до syntax freeze.
+The novelty of this combination must be confirmed by a separate patent/prior-art
+search to syntax freeze.
 
-Дополнительный терминологический риск: AV2 уже использует `Atlas` как virtual
-2D image для decoded layers/multistream composition. Поэтому рабочее
-нормативное имя модуля — `Observed Surface Memory`, не просто `Atlas`.
+Additional terminology risk: AV2 already uses `Atlas` as virtual2D image for decoded layers/multistream composition. Therefore the working
+the standard name of the module is `Observed Surface Memory`, not just `Atlas`.

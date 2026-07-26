@@ -1,119 +1,117 @@
-# North Star и архитектурные инварианты
+# North Star and architectural invariants
 
-Статус: **ACCEPTED**
+Status: **ACCEPTED**
 
-## Основная идея
+## Main idea
 
-SceneLith кодирует не последовательность
-независимых изображений, а программу изменения ограниченной визуальной сцены:
+SceneLith encodes not a sequence
+independent images, and a program for changing a limited visual scene:
 
 \[
 \hat{V}_t=Render(S_t,\tau_t)+\Delta^{truth}_t+\Delta^{perceptual}_t
 \]
 
-где:
+where:
 
-- \(S_t\) — `WorldState`;
+- \(S_t\) - `WorldState`;
 - \(\tau_t\) — `Trajectories`;
-- \(\Delta^{truth}_t\) — `TruthInnovation`;
+- \(\Delta^{truth}_t\) - `TruthInnovation`;
 - \(\Delta^{perceptual}_t\) — `OptionalPerceptualDetail`.
 
-## Нормативные инварианты
+## Normative invariants
 
-### N1. Ограниченное состояние
+### N1. Limited condition
 
-`WorldState` имеет нормативные пределы памяти, lifetime, идентификаторы страниц,
-правила eviction, контрольные hash и полные/дельта-checkpoints.
+`WorldState` has normative memory limits, lifetime, page IDs,
+eviction rules, hash checkpoints and full/delta checkpoints.
 
-Никакого неограниченного накопления истории.
+No unlimited accumulation of history.
 
-### N2. Детерминированность истины
+### N2. Determinacy of truth
 
-`Render(WorldState, Trajectories) + TruthInnovation` должен быть bit-exact для
-всех conforming decoder одной версии профиля.
+`Render(WorldState, Trajectories) + TruthInnovation` must be bit-exact for
+all conforming decoder of one profile version.
 
-### N3. Генеративный слой не является reference
+### N3. The generative layer is not a reference
 
 `OptionalPerceptualDetail`:
 
-- не меняет `WorldState`;
-- не используется для temporal prediction;
-- не влияет на entropy context базового потока;
-- может быть отброшен без нарушения последующего декодирования;
-- должен иметь provenance/uncertainty marking.
+- does not change `WorldState`;
+- not used for temporal prediction;
+- does not affect the entropy context of the underlying thread;
+- can be discarded without disrupting subsequent decoding;
+- must have provenance/uncertainty marking.
 
-### N4. Random access восстанавливает состояние
+### N4. Random access restores state
 
-Каждая random-access point обязана содержать всё необходимое для
-восстановления допустимого `WorldState` без доступа к предыдущим пакетам.
+Each random-access point must contain everything necessary for
+restoring a valid `WorldState` without access to previous packages.
 
-### N5. Универсальный fallback
+### N5. Universal fallback
 
-Если atlas, geometry, latent memory или trajectory неэффективны, encoder может
-перейти к независимому objective innovation/residual режиму. Ни один класс
-контента не должен быть обязан использовать scene representation.
+If atlas, geometry, latent memory or trajectory are ineffective, the encoder can
+switch to independent objective innovation/residual mode. No class
+content should not be required to use scene representation.
 
-### N6. Декодер ограничен, encoder свободен
+### N6. Decoder is limited, encoder is free
 
-Стандарт определяет bitstream и decoding process. Encoder может применять
-сколь угодно тяжёлые модели и поиск, если создаёт conforming stream.
+The standard defines bitstream and decoding process. Encoder can apply
+arbitrarily heavy models and search, if it creates a conforming stream.
 
-### N7. Один поток — разные бюджеты encoder
+### N7. One stream - different encoder budgets
 
-Live, Studio и Foundry используют один нормативный синтаксис. Foundry не имеет
-права передавать произвольный decoder graph, отсутствующий в Main profile.
+Live, Studio and Foundry use the same prescriptive syntax. Foundry does not have
+the right to transmit an arbitrary decoder graph that is not in the Main profile.
 
 ### N8. GPU/ASIC-first
 
-Main profile строится из фиксированных integer tensor/render operations,
-параллельных chunks/tiles и независимых entropy lanes. Полноэкранная
-авторегрессия и произвольные динамические графы запрещены.
+Main profile is built from fixed integer tensor/render operations,
+parallel chunks/tiles and independent entropy lanes. Full screen
+autoregression and arbitrary dynamic graphs are prohibited.
 
-### N9. Presentation не является state mutation
+### N9. Presentation is not state mutation
 
-**NORMATIVE-DRAFT:** запрос output в момент \(t\) читает `WorldState`, но сам
-по себе не изменяет его. State, motion knots, Truth Innovation и presentation
-sampling имеют независимые clocks.
+**NORMATIVE-DRAFT:** the output request at time \(t\) reads `WorldState`, but itself
+in itself does not change it. State, motion knots, Truth Innovation and presentation
+sampling have independent clocks.
 
-Статичная область остаётся действительной без per-frame `HOLD`. Плавное
-движение задаётся absolute fixed-point law на интервал и не вычисляется
-рекурсивным warp предыдущего output. Подробности:
-[14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).
+The static area remains valid without per-frame `HOLD`. Smooth
+the movement is specified by absolute fixed-point law for the interval and is not calculated
+recursive warp of previous output. Details:
+[14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).## Fundamental hypotheses
 
-## Фундаментальные гипотезы
+### H1. Bitrate follows new information
 
-### H1. Битрейт следует за новой информацией
+**HYPOTHESIS:** on a coherent scene the flow cost should be mostly
+determined by scene changes and not by the work `width × height × FPS`.
 
-**HYPOTHESIS:** на когерентной сцене стоимость потока должна в основном
-определяться изменениями сцены, а не произведением `width × height × FPS`.
+### H2. Long-term reuse
 
-### H2. Долговременное повторное использование
-
-**HYPOTHESIS:** повторное появление поверхности после окклюзии или ухода камеры
-может кодироваться ссылкой на сохранённое состояние дешевле повторного
+**HYPOTHESIS:** reappearance of a surface after occlusion or camera exit
+can be encoded with a reference to a saved state, cheaper than repeating
 pixel-domain intra/inter coding.
 
-### H3. Временная непрерывность
+### H3. Temporal continuity
 
-**HYPOTHESIS:** spline/trajectory description позволяет увеличивать частоту
-кадров существенно дешевле линейного роста битрейта для гладкого движения.
+**HYPOTHESIS:** spline/trajectory description allows you to increase the frequency
+frames are significantly cheaper than the linear increase in bitrate for smooth movement.
 
-Уточнение D-017: частота presentation samples не обязана быть частотой
-bitstream events. Для источника с дискретным ground truth новые timestamps
-считаются interpolated/synthetic, пока не подтверждены дополнительным
-наблюдением или Truth Innovation.
+Clarification D-017: the frequency of presentation samples does not have to be the frequency
+bitstream events. For a source with discrete ground truth, new timestamps
+are considered interpolated/synthetic until confirmed by additional
+observation or Truth Innovation.
 
-### H4. Асимметрия полезна
+### H4. Asymmetry is useful
 
-**HYPOTHESIS:** дорогой encoder может компилировать сложное видео в небольшой
-ограниченный decoder ISA без переноса основной сложности на клиент.
+**HYPOTHESIS:** Expensive encoder can compile complex video into small
+limited decoder ISA without transferring much of the complexity to the client.
 
-## Правила честности
+## Rules of Honesty
 
-1. Fidelity и perceptual результаты публикуются раздельно.
-2. Синтезированные детали не называются восстановленными исходными деталями.
-3. Все side information, weights, adapters, checkpoints и metadata входят в
-   итоговый bitrate.
-4. Encoder preprocessing и multipass учитываются в runtime.
-5. Сравнения выполняются при сопоставимых latency, GOP, random-access,
-   resolution, chroma format и bit depth.
+1. Fidelity and perceptual results are published separately.
+2. Synthesized parts are not called remanufactured original parts.
+3. All side information, weights, adapters, checkpoints and metadata are included in
+   final bitrate.
+4. Encoder preprocessing and multipass are taken into account at runtime.
+5. Comparisons are performed with comparable latency, GOP, random-access,
+   resolution, chroma format and bit depth.

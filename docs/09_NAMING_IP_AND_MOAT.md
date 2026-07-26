@@ -1,144 +1,142 @@
-# Naming, IP и конкурентный отрыв
+# Naming, IP and competitive lead
 
-Статус: названия — **ACCEPTED**, IP-модель — **NORMATIVE-DRAFT**.
+Status: names - **ACCEPTED**, IP model - **NORMATIVE-DRAFT**.
 
-## 1. Принятый naming
+## 1. Accepted naming
 
-- Standalone video codec и bitstream family: **SceneLith**.
-- Проект и открытая video-codec экосистема: **SceneLith**.
-- Внутренняя архитектура: **MOSAIC**.
-- Расшифровка:
+- Standalone video codec and bitstream family: **SceneLith**.
+- Project and open video-codec ecosystem: **SceneLith**.
+- Internal architecture: **MOSAIC**.
+- Decoding:
   **Memory-Oriented Scalable Asymmetric Integer Codec**.
-- Маркетинговая формулировка:
-  **“SceneLith Video — powered by MOSAIC.”**
+- Marketing wording:
+  **“SceneLith Video – powered by MOSAIC.”**
 
-Смысл SceneLith: сцена, «высеченная» в компактном потоке и пригодная для
-реализации в кремнии.
+The meaning of SceneLith: a scene "carved" into a compact flow and suitable for
+implementation in silicon.
 
-## 2. Исторические кандидаты
+## 2. Historical candidates
 
 - KineStrand;
 - TemporalStrand;
 - VISTRAL;
 - QINTRA;
-- MOSAIC как публичный бренд.
+- MOSAIC as a public brand.
 
-Они не являются текущим названием, но сохраняются для истории и возможных
-подсистем.
+They are not the current title, but are saved for history and possible
+subsystems
 
-## 2.1 Отказ от QINTRA и принятие SceneLith Video — 2026-07-26
+## 2.1 Rejection of QINTRA and acceptance of SceneLith Video - 2026-07-26
 
-Статус роли codec/bitstream family: **ACCEPTED** решением D-032.  
-Статус trademark/FTO SceneLith: **OPEN / UNVERIFIED**.
+Codec/bitstream family role status: **ACCEPTED** by decision D-032.
+SceneLith trademark/FTO status: **OPEN / UNVERIFIED**.
 
-QINTRA коротко и ударно звучит как имя кодека, но владелец проекта отказался
-от него до публичного запуска. Причина — визуальная и фонетическая коллизия с
-существующей компанией в Германии и другими Quintra/Qintra technology names.
-Решения D-011 и D-016 в части принятия QINTRA имеют статус **SUPERSEDED**.
+QINTRA sounds short and striking like the name of a codec, but the project owner refused
+from there to the public launch. The reason is a visual and phonetic conflict with
+existing company in Germany and other Quintra/Qintra technology names.
+Decisions D-011 and D-016 regarding the adoption of QINTRA have the status **SUPERSEDED**.
 
-SceneLith лучше отражает основной объект стандарта: долговечное состояние
-визуальной сцены, «высеченное» в компактном bitstream и пригодное для
-реализации в кремнии. Одно имя используется для video codec, bitstream family
-и открытого проекта вокруг него.
+SceneLith better reflects the main object of the standard: durable condition
+visual scene, “carved” into a compact bitstream and suitable for
+implementation in silicon. One name is used for video codec, bitstream family
+and the open project around it.
 
-### Принятое распределение ролей
+### Accepted distribution of roles
 
-- **SceneLith Video** — standalone video codec и bitstream family;
+- **SceneLith Video** — standalone video codec and bitstream family;
 - **Resonith Audio** — standalone audio codec;
-- **MOSAIC** — внутренняя архитектура SceneLith Video;
-- **SceneLith AV Bridge** — отдельная binding specification.
+- **MOSAIC** — internal architecture of SceneLith Video;
+- **SceneLith AV Bridge** is a separate binding specification.
 
-> SceneLith — video codec  
-> Resonith — audio codec  
-> MOSAIC — внутренняя video-архитектура
+> SceneLith - video codec
+> Resonith - audio codec
+> MOSAIC - internal video architecture
 
-Имя QINTRA сохраняется только в исторических материалах и superseded-записях.
-Продуктовое решение не заменяет профессиональную проверку SceneLith и
-Resonith перед регистрацией и публичным запуском.
+The QINTRA name is retained only in historical materials and superseded records.
+The product solution is not a substitute for professional SceneLith inspection and
+Resonith before registration and public launch.
 
-## 3. Неутверждённые идентификаторы
+## 3. Unapproved identifiers
 
-Пока не выбирать без проверки:
+Do not select without checking yet:
 
 - FourCC;
-- расширение файла;
+- file extension;
 - MIME type;
 - codec string;
 - product logo;
-- юридическое имя компании.
+- legal name of the company.
 
-Перед публичным запуском нужны:
+Before public launch you need:
 
 - WIPO Global Brand Database;
 - EUIPO;
 - USPTO;
-- национальные реестры;
+- national registers;
 - IANA/MIME;
-- MP4RA/FourCC и container registries;
-- поиск конфликтующих software/package names и доменов.
+- MP4RA/FourCC and container registries;
+- search for conflicting software/package names and domains.
 
-Предварительный web search не является юридической trademark clearance.
+A preliminary web search is not a legal trademark clearance.
 
-## 4. Стандарто-дружественная IP-модель
+## 4. Standard-friendly IP model
 
-Цель — не закрывать conforming decoder.
+The goal is not to close the conforming decoder.
 
-Возможная модель:
+Possible model:- open specification and conformance vectors;
+- available baseline decoder;
+- royalty-free or pre-understood FRAND license; normative claims;
+- patenting of narrow, truly new mechanisms;
+- separate license/secrecy of non-standard Foundry encoder;
+- legally clear training datasets and dependencies.
 
-- открытая спецификация и conformance vectors;
-- доступный baseline decoder;
-- royalty-free либо заранее понятная FRAND-лицензия normative claims;
-- патентование узких действительно новых механизмов;
-- отдельная лицензия/секретность ненормативного Foundry encoder;
-- юридически чистые training datasets и dependencies.
+A separate professional patent/FTO review is required before a public freeze.
 
-Требуется отдельный профессиональный patent/FTO review до публичного freeze.
+## 5. What can be protected
 
-## 5. Что можно защищать
+Candidates for prior-art/patent analysis:
 
-Кандидаты для prior-art/patent analysis:
-
-- motion-lifetime MOSAIC Cell, единым contract амортизирующая Content,
-  Support, MotionLaw и state lifetime;
-- независимые State/Motion/Innovation/Presentation clocks при objective
+- motion-lifetime MOSAIC Cell, single contract shock-absorbing Content,
+  Support, MotionLaw and state lifetime;
+- independent State/Motion/Innovation/Presentation clocks with objective
   natural-video fallback;
 - direct cell-to-display incremental execution contract;
-- bounded persistent visual state с нормативными checkpoint/update rules;
-- dual-contract rule, запрещающий generative detail входить в reference;
+- bounded persistent visual state with normative checkpoint/update rules;
+- dual-contract rule, prohibiting generative detail from being included in the reference;
 - temporal spine/read-only chunk state mutation;
-- compute-scalable syntax и bounded tensor/render ISA;
-- teacher–student transfer RDO traces между Foundry и consumer encoder;
-- loss repair, не допускающий concealment в state;
+- compute-scalable syntax and bounded tensor/render ISA;
+- teacher–student transfer RDO traces between Foundry and consumer encoder;
+- loss repair, which does not allow concealment in the state;
 - combination atlas/trajectory/innovation under one state contract.
 
-Наличие идеи в этом списке не означает её патентоспособность.
+The presence of an idea on this list does not mean that it is patentable.
 
-## 6. Реальный moat
+## 6. Real moat
 
-Открытый decoder можно реализовать конкуренту. Практический отрыв создают:
+An open decoder can be implemented by a competitor. A practical gap is created by:
 
 1. Foundry world extractor.
 2. Representation router.
 3. Exact multi-objective RDO.
-4. Накопленные traces оптимальных решений.
-5. Distillation в consumer encoder.
+4. Accumulated traces of optimal solutions.
+5. Distillation in consumer encoder.
 6. Subjective/OCR/identity/flicker datasets.
 7. Per-title adaptation.
 8. CUDA/Vulkan/ASIC kernels.
-9. Test farm, fuzzing и conformance corpus.
+9. Test farm, fuzzing and conformance corpus.
 10. Streaming/browser/chip partnerships.
 
-Целевой эффект:
+Target effect:
 
-> Любой может декодировать SceneLith; долгое время никто не кодирует SceneLith
-> так же эффективно.
+> Anyone can decode SceneLith; no one codes SceneLith for a long time
+> just as effective.
 
-## 7. Что разрушит adoption
+## 7. What will ruin adoption?
 
-- обязательный секретный decoder model;
-- непредсказуемые royalties;
-- arbitrary code execution из bitstream;
+- mandatory secret decoder model;
+- unpredictable royalties;
+- arbitrary code execution from bitstream;
 - device-dependent output;
-- отсутствие baseline fallback;
-- чрезмерная state/compute стоимость;
-- выдача генеративных деталей за исходную истину.
+- lack of baseline fallback;
+- excessive state/compute cost;
+- passing off generative details as the original truth.

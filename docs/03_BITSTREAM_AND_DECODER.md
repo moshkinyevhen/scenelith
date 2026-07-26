@@ -1,70 +1,70 @@
-# Черновая структура bitstream и decoder
+# Draft bitstream and decoder structure
 
-Статус: **NORMATIVE-DRAFT**  
-Bit-level syntax ещё не заморожен.
+Status: **NORMATIVE-DRAFT**
+Bit-level syntax is not frozen yet.
 
-## 1. Иерархия
+## 1. Hierarchy
 
-Предлагаемая структура:
+Suggested structure:
 
-1. `SequenceHeader`
+1.`SequenceHeader`
 2. `MemoryAccessPoint`
-3. `SceneEpoch`
-4. `EventBlock`
+3.`SceneEpoch`
+4.`EventBlock`
 5. `PayloadTile`
 6. optional `ModelSet` extension
 7. `EndOfSequence`
 
-## 2. SequenceHeader
+## 2.SequenceHeader
 
-Минимальные поля:
+Minimum fields:
 
-- magic и bitstream version;
+- magic and bitstream version;
 - profile/level;
 - coded/display dimensions;
-- chroma format, bit depth и nominal color space;
-- integer timebase и scene duration;
+- chroma format, bit depth and nominal color space;
+- integer timebase and scene duration;
 - optional compatibility presentation schedule;
-- color primaries, transfer и matrix;
+- color primaries, transfer and matrix;
 - maximum state bytes;
-- maximum cells, content bytes и support entries;
-- maximum State Events и moving cells;
-- maximum model bytes, если extension включён;
+- maximum cells, content bytes and support entries;
+- maximum State Events and moving cells;
+- maximum model bytes, if extension is enabled;
 - maximum MAC/output-pixel class;
 - enabled tool flags;
 - integrity mode;
 - model-set identifier/hash.
 
-Все данные, необходимые для декодирования, находятся в stream или в
-нормативно определённом baseline decoder. Внешние parameter files запрещены.
+All data needed for decoding is in stream or in
+a normatively defined baseline decoder. External parameter files are prohibited.
 
-## 3. ModelSet — optional extension
+## 3. ModelSet - optional extension
 
-Main-0 не требует learned ModelSet. Если extension включён:
+Main-0 does not require a learned ModelSet. If extension is enabled:
 
-- фиксированный нормативный operator graph;
-- baseline weights или переданные self-contained quantized weights в пределах
-  профиля;
+- fixed normative operator graph;
+- baseline weights or transmitted self-contained quantized weights within
+  profile;
 - cryptographic/content hash;
-- явный совместимый version identifier.
+- explicit compatible version identifier.
 
-Произвольный исполняемый код или динамический graph запрещены.
+Arbitrary executable code or dynamic graph is prohibited.
 
 ## 4. MemoryAccessPoint
 
-`MemoryAccessPoint` обеспечивает random access:
+`MemoryAccessPoint` provides random access:
 
-- очищает или полностью заменяет предыдущее state;
-- содержит self-contained active MOSAIC Cells/Content либо full-screen
+- clears or completely replaces the previous state;
+- contains self-contained active MOSAIC Cells/Content or full-screen
   objective fallback;
-- не ссылается на пакеты до точки доступа;
-- завершает проверкой восстановленного state hash.
+- does not refer to packets to the access point;
+- ends with checking the restored state hash.
 
-CfP-ветка обязана соблюдать RAP cadence соответствующего anchor.
+The CfP branch must comply with the RAP cadence of the corresponding anchor.
 
 ## 5. SceneEpoch
 
-Epoch ограничивает lifetime state и содержит:
+Epoch limits the lifetime state and contains:
 
 - epoch identifier;
 - cell/content namespace;
@@ -73,113 +73,110 @@ Epoch ограничивает lifetime state и содержит:
 - optional scene-level adapter;
 - initial state hash.
 
-Любой adapter полностью учитывается в bitrate.
+Any adapter is fully taken into account in the bitrate.
 
 ## 6. EventBlock
 
-`EventBlock` имеет:
+`EventBlock` has:
 
 - timestamp interval;
-- exact record count и offsets независимых entropy lanes;
-- ordered `STATE_RESET`, `CELL_SET` и `PRESENT` records;
+- exact record count and offsets independent entropy lanes;
+- ordered `STATE_RESET`, `CELL_SET` and `PRESENT` records;
 - inline/captured content directories;
 - `TRUTH_INNOVATION`;
 - optional `PERCEPTUAL_DETAIL`;
-- integrity check и post-state hash, если block меняет state.
+- integrity check and post-state hash, if the block changes state.
 
-`PERCEPTUAL_DETAIL` всегда опционален и не входит в reference path.
+`PERCEPTUAL_DETAIL` is always optional and is not included in the reference path.
 
-State events внутри проверенного block применяются в coded order. PRESENT
-читает все более ранние events с тем же timestamp и не видит более поздние.
+State events inside the checked block are applied in coded order. PRESENT
+reads all earlier events with the same timestamp and does not see later ones.
 
 ## 7. PayloadTile
 
-Payload tile имеет:
-
-- фиксированную геометрию, предварительно 128×128 или 256×256;
+Payload tile has:- fixed geometry, pre-128×128 or 256×256;
 - halo policy;
 - content/innovation mode;
-- offsets независимых entropy lanes;
+- offsets of independent entropy lanes;
 - integrity check;
 - cell/support ownership metadata;
 - optional ROI priority.
 
-Support является bounded union разрешённых dyadic microtiles. Рекурсивное
-неограниченное quadtree-разбиение не является базовой моделью MOSAIC.
+Support is a bounded union of allowed dyadic microtiles. Recursive
+unlimited quadtree partitioning is not a basic MOSAIC model.
 
 ## 8. Decoder state machine
 
-Высокоуровневый порядок:
+High level order:
 
-1. Parse и проверить `SequenceHeader`.
-2. Инициализировать profile limits.
-3. Загрузить/проверить optional `ModelSet`, если он разрешён profile.
-4. На `MemoryAccessPoint` очистить и self-contained восстановить `WorldState`.
-5. Для каждого EventBlock:
-   1. проверить directory/integrity и resource bounds;
-   2. получить entropy parameters и декодировать lanes;
-   3. применить `STATE_RESET/CELL_SET` атомарно в coded order;
-   4. на `PRESENT(t)` вычислить absolute MotionLaw active cells;
-   5. выполнить deterministic composition;
-   6. добавить Truth Innovation и objective fallback;
-   7. сформировать post-filter Truth output;
-   8. сохранить его только как допустимый future `CAPTURE_TRUTH` source;
-   9. отдельно применить необязательный Perceptual Detail;
-   10. выдать output, не меняя state самим PRESENT.
-6. При ошибке не применять неподтверждённые State Events.
+1. Parse and check `SequenceHeader`.
+2. Initialize profile limits.
+3. Load/check optional `ModelSet`, if it is allowed by profile.
+4. On `MemoryAccessPoint`, clean and self-contained restore `WorldState`.
+5. For each EventBlock:
+   1. check directory/integrity and resource bounds;
+   2. get entropy parameters and decode lanes;
+   3. apply `STATE_RESET/CELL_SET` atomically in coded order;
+   4. on `PRESENT(t)` calculate absolute MotionLaw active cells;
+   5. perform deterministic composition;
+   6. add Truth Innovation and objective fallback;
+   7. generate post-filter Truth output;
+   8. save it only as a valid future `CAPTURE_TRUTH` source;
+   9. separately apply the optional Perceptual Detail;
+   10. issue output without changing the state of PRESENT itself.
+6. In case of an error, do not use unconfirmed State Events.
 
 ## 9. Bit-exact arithmetic
 
-Нужно нормативно определить:
+It is necessary to define:
 
 - signed/unsigned widths;
 - rounding direction;
 - saturation;
-- overflow behaviour;
+- overflow behavior;
 - accumulator width;
 - interpolation coefficients;
 - LUT values;
 - rANS normalization;
-- PRNG и seed для optional stochastic tools.
+- PRNG and seed for optional stochastic tools.
 
-Плавающая точка не должна участвовать в Main reference reconstruction.
+Floating point should not participate in Main reference reconstruction.
 
-## 10. Параллелизм
+## 10. Parallelism
 
-- Несколько независимых rANS lanes.
-- Tile directory известна до payload decode.
-- Read-only presentation tiles могут выполняться параллельно.
-- Только ordered State Event commit требует сериализации.
-- Cross-tile зависимости ограничены нормативным halo.
+- Several independent rANS lanes.
+- Tile directory is known before payload decode.
+- Read-only presentation tiles can be executed in parallel.
+- Only ordered State Event commit requires serialization.
+- Cross-tile dependencies are limited by the normative halo.
 
-## 11. Профили
+## 11. Profiles
 
-Предварительно:
+Preliminary:
 
-- `Main-Fidelity` — event-retained state и универсальная детерминированная
-  реконструкция;
+- `Main-Fidelity` - event-retained state and universal deterministic
+  reconstruction;
 - `Live` — causal/low-delay, bounded state, loss repair;
-- `Perceptual` — Main-Fidelity плюс нереференсный shell;
-- `VOD-Adaptive` — scene adapters/dictionaries с полным учётом bits;
-- `Screen` — text/vector/sprite и optional exact refinement.
-- `Continuous-Output` — host queries arbitrary timestamps; неподтверждённые
-  source timestamps явно маркируются interpolated.
+- `Perceptual` — Main-Fidelity plus non-reference shell;
+- `VOD-Adaptive` — scene adapters/dictionaries with full regard to bits;
+- `Screen` — text/vector/sprite and optional exact refinement.
+- `Continuous-Output` — host queries arbitrary timestamps; unconfirmed
+  source timestamps are explicitly marked interpolated.
 
-CfP-2026 использует отдельное минимальное подмножество, описанное в
+CfP-2026 uses a separate minimum subset described in
 `05_JVET_CFP_2026.md`.
 
-## 12. Открытые вопросы
+## 12. Open questions
 
-- Нормативный размер tile.
-- Maximum duration/events per EventBlock.
-- Разделение State, Motion, Innovation и Presentation clocks.
+- Standard tile size.
+- Maximum duration/events per EventBlock.- Separation of State, Motion, Innovation and Presentation clocks.
 - Binary syntax `STATE_RESET/CELL_SET/PRESENT`.
 - Microtile Support coding.
-- Continuous-output API и container presentation mapping.
-- Baseline weights в binary или в bitstream.
-- Модель обновления model-set после аппаратного выпуска.
-- Точная lattice/FSQ схема.
-- Формат depth/visibility после Main-0 gate.
-- Допустимые виды splat.
-- Структура lossless enhancement.
-- Conformance tolerance: строго bit-exact или отдельный bounded-error профиль.
+- Continuous-output API and container presentation mapping.
+- Baseline weights in binary or bitstream.
+- Model-set update model after hardware release.
+- Accurate lattice/FSQ circuit.
+- Depth/visibility format after Main-0 gate.
+- Acceptable types of splat.
+- Lossless enhancement structure.
+- Conformance tolerance: strictly bit-exact or separate bounded-error profile.

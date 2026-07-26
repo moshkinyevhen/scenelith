@@ -1,100 +1,99 @@
-# Энкодеры SceneLith: Live, Studio и Foundry
+# SceneLith Encoders: Live, Studio and Foundry
 
-Статус документа: **NORMATIVE-DRAFT** для границы bitstream/decoder и
-**TARGET** для всех численных бюджетов и показателей эффективности.
+Document status: **NORMATIVE-DRAFT** for bitstream/decoder boundary and
+**TARGET** for all numerical budgets and performance indicators.
 
-Числа ниже являются целями проектирования. Они не являются измеренными
-результатами SceneLith и должны подтверждаться воспроизводимыми экспериментами.
+The numbers below are design goals. They are not measured
+SceneLith results and must be supported by reproducible experiments.
 
-## 1. Один bitstream и один декодер
+## 1. One bitstream and one decoder
 
-**ACCEPTED:** SceneLith определяет один нормативный bitstream и один
-детерминированный decoder для трёх ненормативных классов encoder:
+**ACCEPTED:** SceneLith defines one normative bitstream and one
+deterministic decoder for three non-normative encoder classes:
 
-1. **Live** — строго causal real-time кодирование на бытовой GPU;
-2. **Studio** — многопроходное кодирование на рабочей станции;
-3. **Foundry** — распределённый offline scene compiler с практически
-   неограниченным бюджетом поиска.
+1. **Live** - strictly causal real-time coding on a consumer GPU;
+2. **Studio** - multi-pass encoding on a workstation;
+3. **Foundry** - distributed offline scene compiler with almost
+   unlimited search budget.
 
-Все три encoder используют один набор MOSAIC-примитивов, одинаковые ограничения
-decoder ISA и одинаковую семантику WorldState. Класс encoder не меняет
-реконструкцию уже созданного потока и не является условием его декодируемости.
-Различаются только качество анализа, глубина поиска и выбранные encoder решения.
+All three encoders use the same set of MOSAIC primitives, the same restrictions
+decoder ISA and the same WorldState semantics. The encoder class does not change
+reconstruction of an already created stream and is not a condition for its decodability.
+The only differences are the quality of the analysis, the depth of the search, and the encoder solutions chosen.
 
-Foundry не может передать произвольный executable graph или скрытую модель.
-Любой передаваемый scene adapter обязан использовать ограниченные нормативные
-операции, размеры и числовые форматы decoder; полная стоимость adapter входит в
-битрейт. Live может использовать законное подмножество syntax без adapter.
+Foundry cannot pass an arbitrary executable graph or hidden model.
+Any transmitted scene adapter must use a bounded normative
+decoder operations, sizes and number formats; the full cost of the adapter is included
+bitrate. Live can use a legal subset of syntax without adapter.
 
-Optional Perceptual Detail при любом классе encoder остаётся нереференсным,
-никогда не изменяет WorldState и не участвует в предсказании Fidelity/Truth Core.
+Optional Perceptual Detail for any encoder class remains non-reference,
+never modifies WorldState or participates in Fidelity/Truth Core predictions.
 
-## 2. Классы encoder
+## 2. Encoder classes
 
-| Характеристика | Live | Studio | Foundry |
+| Characteristics | Live | Studio | Foundry |
 |---|---|---|---|
-| Основное применение | трансляции, звонки, локальная запись, UGC | мастер-файлы, creator/VOD, архив | фильмы, каталоги, эталонный encode, исследования |
-| Анализ будущего | **ACCEPTED:** 0 кадров в strict Live; optional near-live preset до 8 кадров | **TARGET:** 8–32 кадра; quality preset до 1–4 с или полный shot | полный title и связи между shots |
-| Кандидаты RDO | **TARGET:** top-K 2–8 на tile/chunk | **TARGET:** top-K 8–64 и несколько проходов | распределённый beam/A*/DP search и множество λ-прогонов |
-| Encoder compute | **TARGET:** 10–30 kMAC на выходной пиксель | **TARGET:** 30–300 kMAC на выходной пиксель | **TARGET:** 10–500 GPU-с на секунду исходника |
-| Экстремальный режим | **TARGET:** 1× real-time и preset 2–10× медленнее | **TARGET:** 2–100 GPU-с на секунду исходника | **TARGET:** 10³–10⁴ GPU-с на секунду для hero/research encode |
-| Оборудование | **TARGET:** 1080p60 на 8 GB VRAM; 4K60 на 12–16 GB | **TARGET:** 1–4 GPU, 16–96 GB суммарной VRAM | распределённый GPU-кластер |
-| Адаптация | без обязательного обучения; короткая online-статистика | shot/title dictionary и ограниченный adapter | **TARGET:** 10–500 GPU-часов per-title adaptation, когда это окупается битрейтом |
+| Main Application | broadcasts, calls, local recording, UGC | master files, creator/VOD, archive | films, catalogues, reference encode, research |
+| Future Analysis | **ACCEPTED:** 0 frames in strict Live; optional near-live preset up to 8 frames | **TARGET:** 8–32 frames; quality preset up to 1–4 s or full shot | full title and connections between shots |
+| RDO Candidates | **TARGET:** top-K 2–8 on tile/chunk | **TARGET:** top-K 8–64 and multiple passes | distributed beam/A*/DP search and multiple λ-runs |
+| Encoder compute | **TARGET:** 10–30 kMAC per output pixel | **TARGET:** 30–300 kMAC per output pixel | **TARGET:** 10-500 GPU-s per second source |
+| Extreme Mode | **TARGET:** 1× real-time and preset 2–10× slower | **TARGET:** 2–100 GPU-s per source second | **TARGET:** 10³–10⁴ GPU-s per second for hero/research encode || Equipment | **TARGET:** 1080p60 on 8 GB VRAM; 4K60 on 12–16 GB | **TARGET:** 1–4 GPU, 16–96 GB total VRAM | distributed GPU cluster |
+| Adaptation | without compulsory training; short online statistics | shot/title dictionary and limited adapter | **TARGET:** 10–500 GPU-hours per-title adaptation, when it pays off in bitrate |
 
-Для Live бюджет 10–30 kMAC/пиксель соответствует приблизительно 5–15 TMAC/с
-при 4K60. Это **TARGET**, а не заявление о достигнутой скорости. Реальная
-пропускная способность также ограничивается памятью, синхронизациями, entropy
-coding и загрузкой GPU.
+For Live, a budget of 10–30 kMAC/pixel corresponds to approximately 5–15 TMAC/s
+at 4K60. This is a **TARGET** and not a statement of speed achieved. Real
+bandwidth is also limited by memory, synchronizations, entropy
+coding and GPU loading.
 
 ### 2.1 Live
 
-Live использует:
+Live uses:
 
-- causal MOSAIC Cell state и ограниченную историю;
-- fixed-grid change detection и flow на 1/4–1/8 разрешения;
+- causal MOSAIC Cell state and limited history;
+- fixed-grid change detection and flow at 1/4–1/8 resolution;
 - open-ended `STATIC/LINEAR_TRANSLATION` runs;
-- разрыв run, когда objective error или полный RDO перестаёт проходить gate;
+- run break when objective error or full RDO stops passing gate;
 - bounded online `CAPTURE_TRUTH`/eviction;
-- локальную проверку кандидатов по фактически сформированным битам;
-- conventional objective fallback и parallel rANS.
+- local verification of candidates based on actually generated bits;
+- conventional objective fallback and parallel rANS.
 
-**TARGET:** задержка интерактивного режима — 50–250 мс, если выбранный transport
-и checkpoint interval это позволяют.
+**TARGET:** Interactive delay - 50-250 ms if selected transport
+and checkpoint interval allow this.
 
 ### 2.2 Studio
 
-Studio расширяет Live следующими возможностями:
+Studio extends Live with the following features:
 
-- двунаправленный анализ полного shot;
-- несколько проходов allocation/RDO;
-- более точные flow, boundary/support и tracking;
-- совместная оптимизация motion knots, cell lifetime и checkpoints;
-- малые per-shot/per-title dictionaries и adapters;
-- повторный encode проблемных участков после проверки метрик.
+- bidirectional analysis of the full shot;
+- multiple allocation/RDO passes;
+- more accurate flow, boundary/support and tracking;
+- joint optimization of motion knots, cell lifetime and checkpoints;
+- small per-shot/per-title dictionaries and adapters;
+- re-encode problem areas after checking the metrics.
 
-Studio является основным массовым high-quality encoder: его работа должна быть
-возможна на одной мощной рабочей станции без обязательного доступа к кластеру.
+Studio is the main mass-produced high-quality encoder: its work must be
+possible on one powerful workstation without mandatory access to the cluster.
 
 ### 2.3 Foundry
 
-Foundry является encoder-only исследовательским oracle и производственным
-scene compiler. Он может использовать:
+Foundry is an encoder-only research oracle and production
+scene compiler. It can use:
 
-- анализ полного фильма и loop closure через минуты;
-- большие encoder-only vision/world models;
-- глобальное сопоставление fragments и повторно появляющихся поверхностей;
-- совместный поиск Cell Content/Support/MotionLaw/Lifetime, representation
-  routing и rate;
-- множество независимых encode trials;
-- ансамбль objective, perceptual, OCR, identity, geometry и flicker metrics;
-- распределённую per-title оптимизацию dictionaries и ограниченных adapters.
+- analysis of the full movie and loop closure in minutes;
+- large encoder-only vision/world models;
+- global comparison of fragments and re-appearing surfaces;
+- joint search for Cell Content/Support/MotionLaw/Lifetime, representation
+  routing and rate;
+- many independent encode trials;
+- ensemble of objective, perceptual, OCR, identity, geometry and flicker metrics;
+- distributed per-title optimization of dictionaries and limited adapters.
 
-Foundry не является обязательным для получения полезного SceneLith-потока. Его
-дополнительная роль — создавать решения teacher для ускорения Live и Studio.
+Foundry is not required to receive a useful SceneLith stream. His
+additional role is to create teacher solutions to speed up Live and Studio.
 
 ### 2.4 Continuous-Time Cell pipeline
 
-Одна encoder-задача выбирает для каждого кандидата:
+One encoder task selects for each candidate:
 
 ```text
 Content + Support + MotionLaw + Lifetime + Order + Mode
@@ -102,36 +101,36 @@ Content + Support + MotionLaw + Lifetime + Order + Mode
 
 Pipeline:
 
-1. detector отмечает spatiotemporal error относительно текущих active cells;
-2. existing motion estimator предлагает `STATIC/LINEAR_TRANSLATION`;
-3. temporal DP решает, продолжить run, поставить knot, split support или
-   перейти к Truth fallback;
-4. compact-memory planner решает, окупится ли `CAPTURE_TRUTH`;
-5. exact RDO сравнивает полный event/support/motion/checkpoint/innovation rate
-   с AV2/VVC-like raster path;
-6. только положительный net candidate попадает в stream.
+1. detector measures spatiotemporal error against the current active cells;
+2. existing motion estimator offers `STATIC/LINEAR_TRANSLATION`;
+3. temporal DP decides whether to continue run, put a knot, split support or
+   go to Truth fallback;
+4. compact-memory planner decides whether `CAPTURE_TRUTH` will pay off;
+5. exact RDO compares the full event/support/motion/checkpoint/innovation rate
+   with AV2/VVC-like raster path;
+6. only positive net candidate gets into stream.
 
-Live не обязан заранее знать `death_time`: он создаёт open-ended cell и
-посылает новый event, когда контракт перестал быть верен. Studio знает shot и
-может оптимизировать duration. Foundry ищет long-gap correspondence по title,
-но decoder и bitstream одинаковы.
+Live is not required to know `death_time` in advance: it creates an open-ended cell and
+sends a new event when the contract is no longer valid. Studio knows shot and
+can optimize duration. Foundry searches for long-gap correspondence by title,
+but decoder and bitstream are the same.
 
-Foundry не сравнивает миллион samples попарно. Он выполняет shot segmentation,
-low-resolution indexing, key-sample selection, local tracks и loop-closure
-retrieval; full-resolution registration запускается только для shortlist.
+Foundry does not compare a million samples pairwise. It performs shot segmentation,
+low-resolution indexing, key-sample selection, local tracks and loop-closure
+retrieval; full-resolution registration runs only for shortlist.
 
-Никогда не наблюдавшаяся область не генерируется для Truth playback. Content
-становится reference только через inline objective decode или подтверждённый
-`CAPTURE_TRUTH`. Display-only generation остаётся Perceptual Detail.
+A never observed region is not generated for Truth playback. Content
+becomes reference only through inline objective decode or confirmed
+`CAPTURE_TRUTH`. Display-only generation remains Perceptual Detail.
 
-Полная модель:
+Full model:
 [14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).
 
-### 2.5 Изменение encoder complexity
+### 2.5 Changing encoder complexity
 
-Все множители — **HYPOTHESIS/TARGET**, не измеренные результаты:
+All multipliers are **HYPOTHESIS/TARGET**, unmeasured results:
 
-| Реализация | Относительно сильного conventional encoder |
+| Implementation | Relatively strong conventional encoder |
 |---|---:|
 | Gate A: ideal temporal RLE/HOLD | `+5–15%` analysis |
 | Gate B: fixed-grid linear motion runs | `+10–30%` Live encode time |
@@ -139,16 +138,16 @@ retrieval; full-resolution registration запускается только дл
 | Full-shot Studio cells | `3–10×` |
 | Foundry global oracle | `10–100×+`, budget-controlled |
 
-Gate B переиспользует conventional motion candidates и добавляет temporal DP.
-Gate C сложнее из-за support, capture/eviction и long-horizon value. Эти затраты
-ненормативны и не переходят в decoder.
+Gate B reuses conventional motion candidates and adds temporal DP.
+Gate C is more difficult due to support, capture/eviction and long-horizon value. These costs
+non-normative and do not go to decoder.
 
-Если practical Live сохраняет менее 80% oracle net gain, tool упрощается либо
-остаётся Studio/VOD-only.
+If practical Live retains less than 80% oracle net gain, the tool is simplified either
+remains Studio/VOD-only.
 
 ## 3. Rate-distortion-compute optimization
 
-Базовый multi-objective критерий encoder:
+Basic multi-objective encoder criterion:
 
 \[
 J =
@@ -162,95 +161,93 @@ R_{\mathrm{total}}
 + \eta S_{\mathrm{instability}}.
 \]
 
-Где:
+Where:
 
-- \(R_{\mathrm{total}}\) включает payload, headers, memory deltas, adapters,
-  checkpoints, indexes и FEC;
-- \(D_{\mathrm{truth}}\) измеряет Fidelity/Truth Core;
-- \(D_{\mathrm{perceptual}}\) применяется только к разрешённому нереференсному
+- \(R_{\mathrm{total}}\) includes payload, headers, memory deltas, adapters,
+  checkpoints, indexes and FEC;
+- \(D_{\mathrm{truth}}\) measures Fidelity/Truth Core;
+- \(D_{\mathrm{perceptual}}\) applies only to allowed non-referential
   perceptual layer;
-- \(C_{\mathrm{decode}}\) и \(M_{\mathrm{state}}\) ограничивают decoder compute
-  и память;
-- \(L_{\mathrm{seek}}\) штрафует дорогой random access;
-- \(P_{\mathrm{loss}}\) учитывает распространение ошибок;
-- \(S_{\mathrm{instability}}\) штрафует flicker, state drift и нестабильный
+- \(C_{\mathrm{decode}}\) and \(M_{\mathrm{state}}\) limit decoder compute
+  and memory;
+- \(L_{\mathrm{seek}}\) penalizes expensive random access;
+- \(P_{\mathrm{loss}}\) takes into account error propagation;- \(S_{\mathrm{instability}}\) penalizes flicker, state drift and unstable
   representation switching.
 
-Финальный выбор режима должен учитывать фактические полные биты. Entropy proxy
-разрешён для предварительного ранжирования, но не для итогового отчёта RD.
-Сравнение encoder проводится при одинаковых decoder profile, latency,
-random-access и resilience constraints.
+The final mode selection must take into account the actual complete bits. Entropy proxy
+allowed for preliminary ranking, but not for final RD report.
+Encoder comparison is carried out with the same decoder profile, latency,
+random-access and resilience constraints.
 
-Live применяет learned proposal и точный локальный RDO. Studio увеличивает
-горизонт и beam. Foundry выполняет глобальную или приближённо глобальную
-оптимизацию по chunks, checkpoints и состоянию сцены.
+Live uses a learned proposal and precise local RDO. Studio increases
+horizon and beam. Foundry performs global or approximately global
+optimization by chunks, checkpoints and scene state.
 
 ## 4. Teacher–student distillation
 
-Foundry сохраняет для каждого исследованного участка:
+Foundry stores for each explored site:
 
-- Pareto-набор кандидатов и их фактический rate;
-- выбранный representation primitive;
-- Cell Content/Support и capture/reuse decisions;
-- cell lifetime, update и eviction решения;
-- MotionLaw knots, order и occlusion decisions;
+- Pareto-set of candidates and their actual rate;
+- selected representation primitive;
+- Cell Content/Support and capture/reuse decisions;
+- cell lifetime, update and eviction solutions;
+- MotionLaw knots, order and occlusion decisions;
 - Q/bit allocation;
 - checkpoint placement;
-- полное значение компонентов \(J\);
-- причины расхождения с Live/Studio.
+- the full value of the components \(J\);
+- reasons for the discrepancy with Live/Studio.
 
-Ненормативный student-router Live/Studio обучается:
+Non-normative student-router Live/Studio learns:
 
-1. imitation learning на лучших Foundry-решениях;
-2. pairwise ranking кандидатов;
-3. регрессии компонентов RDO;
-4. DAgger/hard-negative циклом на случаях расхождения student и teacher;
-5. quantization-aware training и INT8 pruning.
+1. imitation learning using the best Foundry solutions;
+2. pairwise ranking of candidates;
+3. regression of RDO components;
+4. DAgger/hard-negative cycle on cases of discrepancy between student and teacher;
+5. quantization-aware training and INT8 pruning.
 
-Student только предлагает top-K. Bit-exact RDO сохраняет право отвергнуть его
-предложение. При высокой uncertainty encoder расширяет K либо использует
-безопасный fallback. Веса encoder ненормативны и могут обновляться без изменения
-bitstream или decoder.
+Student only offers top-K. Bit-exact RDO reserves the right to reject it
+proposal. With high uncertainty, the encoder expands K or uses
+safe fallback. The encoder weights are non-standard and can be updated without change
+bitstream or decoder.
 
-Так стоимость Foundry-поиска амортизируется: однажды найденная закономерность
-становится быстрым решением на бытовой GPU.
+This is how the cost of Foundry search is amortized: once a pattern is found
+becomes a fast solution on a consumer GPU.
 
-## 5. Целевой разрыв качества
+## 5. Target quality gap
 
-Для одного контента, уровня качества и одинаковых ограничений обозначим:
+For the same content, quality level and the same restrictions, we denote:
 
-- \(B_A\) — полный битрейт внешнего anchor;
-- \(B_F\) — полный битрейт Foundry;
-- \(B_L\) — полный битрейт Live.
+- \(B_A\) — full bitrate of the external anchor;
+- \(B_F\) — full Foundry bitrate;
+- \(B_L\) — full Live bitrate.
 
-Доля Foundry-выигрыша, сохранённая Live:
+Share of Foundry gains retained by Live:
 
 \[
 G_{\mathrm{capture}} =
 \frac{B_A - B_L}{B_A - B_F}.
 \]
 
-**TARGET:** Live должен сохранять не менее 80% Foundry-выигрыша в ранней
-пригодной версии и 90% в зрелой версии на основном закрытом тестовом наборе.
-Правило применяется только когда Foundry статистически значимо лучше anchor.
+**TARGET:** Live must retain at least 80% of Foundry gains in the early
+usable version and 90% in the mature version on the main closed test set.
+The rule only applies when Foundry is statistically significantly better than anchor.
 
-Дополнительные цели:
+Additional goals:
 
-- **TARGET:** зрелый Live использует не более чем на 8–15% больше битов, чем
-  Foundry, на общем видео при равном качестве и constraints;
-- **TARGET:** Studio использует не более чем на 3–8% больше битов, чем Foundry;
-- **TARGET:** против contemporaneous strong anchor Live достигает 25–35%
-  экономии битрейта, Studio — 30–40%, Foundry — 35–45%;
-- **TARGET:** существенно больший разрыв Foundry допускается как отдельный
-  результат только для заранее определённых specialised classes, например
-  talking-head, UI или длинного повторяющегося VOD.
+- **TARGET:** mature Live uses no more than 8–15% more bits than
+  Foundry, on general video with equal quality and constraints;
+- **TARGET:** Studio uses no more than 3-8% more bits than Foundry;
+- **TARGET:** against contemporaneous strong anchor Live reaches 25–35%
+  bitrate savings, Studio - 30-40%, Foundry - 35-45%;- **TARGET:** a significantly larger Foundry gap is allowed as a separate
+  the result is only for predefined specialized classes, for example
+  talking-head, UI or long repeating VOD.
 
-Процентные цели не считаются достигнутыми без hidden-set тестирования, полного
-учёта всех служебных битов и проверки независимым decoder.
+Percentage goals are not considered achieved without hidden-set testing, full
+accounting of all service bits and verification by an independent decoder.
 
-Если Live систематически сохраняет менее 80% Foundry-выигрыша, проблему нельзя
-маскировать обязательным облачным encode. Необходимо упростить representation
-search, улучшить distillation/router либо пересмотреть syntax. Массовый успех
-SceneLith требует, чтобы бытовой encoder уже давал основную часть структурного
-выигрыша, а Foundry улучшал максимум, обучал быстрые encoder и обслуживал
-дорогой offline VOD.
+If Live systematically retains less than 80% of Foundry gains, the problem cannot be solved
+mask with mandatory cloud encode. Representation needs to be simplified
+search, improve distillation/router or revise syntax. Massive success
+SceneLith requires a consumer encoder to already provide the bulk of the structural
+gains, while Foundry improves the ceiling, trains the fast encoder, and maintains
+expensive offline VOD.

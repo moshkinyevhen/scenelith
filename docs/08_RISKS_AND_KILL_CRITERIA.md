@@ -1,80 +1,80 @@
-# Риски и критерии остановки
+# Risks and stopping criteria
 
-Статус: **ACCEPTED**
+Status: **ACCEPTED**
 
-## 1. Continuous-Time Cells не окупаются
+## 1. Continuous-Time Cells do not pay off
 
-Риски:
+Risks:
 
-- event/support/motion/checkpoint bits съедают экономию;
-- AV2 skip/merge/BRU/LTR/Atlas уже забирают почти весь доступный gain;
-- MotionLaw runs слишком коротки;
-- lighting/deformation делает старый Content бесполезным;
-- bounded memory слишком быстро забывает сцену.
+- event/support/motion/checkpoint bits eat up savings;
+- AV2 skip/merge/BRU/LTR/Atlas already take almost all the available gain;
+- MotionLaw runs are too short;
+- lighting/deformation makes old Content useless;
+- bounded memory forgets the scene too quickly.
 
-Проверка:
+Check:
 
-- отдельный reappearance/occlusion dataset;
+- separate reappearance/occlusion dataset;
 - ablation `HOLD`, `HOLD+LINEAR`, compact Content;
-- отдельно tool-complete AV2 v1.0 BRU/LTR/Atlas и VVC/H.266 baseline;
+- separately tool-complete AV2 v1.0 BRU/LTR/Atlas and VVC/H.266 baseline;
 - equal-memory deduplicating decoded patch cache;
-- ideal temporal RLE существующих mode maps;
-- полный учёт metadata.
+- ideal temporal RLE existing mode maps;
+- full accounting of metadata.
 
 Kill/pivot:
 
-- Main-0 против AV2: <10% broad screen, <5% puzzle или <2% mixed;
-- Main-0 против VVC: <12% broad screen, <7% puzzle или <3% mixed;
-- persistent TruthInnovation добавляет <7% screen или <5% puzzle сверх
-  Main-0 после собственных state/checkpoint bits;
-- отсутствие gain против decoded patch cache означает pivot к простому cache;
-- practical encoder сохраняет <70% oracle net gain;
+- Main-0 vs AV2: <10% broad screen, <5% puzzle or <2% mixed;
+- Main-0 vs VVC: <12% broad screen, <7% puzzle or <3% mixed;
+- persistent TruthInnovation adds <7% screen or <5% puzzle over
+  Main-0 after own state/checkpoint bits;
+- lack of gain against decoded patch cache means pivot to simple cache;
+- practical encoder saves <70% oracle net gain;
 - event/support/checkpoint >20% gross saving;
-- частые крупные false references.
+- frequent large false references.
 
-Непереходимые cell-инварианты:
+Intransitive cell invariants:
 
-- PRESENT не меняет state;
-- отсутствие event означает persistence;
-- только проверенный Truth output может быть источником `CAPTURE_TRUTH`;
-- MotionLaw является absolute и не warp'ит предыдущий interpolated output;
-- uncorrected never-observed pixels в Truth Core: ровно 0.
+- PRESENT does not change state;
+- the absence of event means persistence;
+- only verified Truth output can be the source of `CAPTURE_TRUTH`;
+- MotionLaw is absolute and does not warp the previous interpolated output;
+- uncorrected never-observed pixels in Truth Core: exactly 0.
 
-Если rate gain <3%, но decoder/DRAM energy падает >25–30% на крупном screen
-profile, механизм может остаться low-power profile, но не объявляется
-универсальной compression revolution.
+If rate gain <3%, but decoder/DRAM energy drops >25–30% on a large screen
+profile, the mechanism may remain low-power profile, but is not declared
+universal compression revolution.
 
 ## 2. Chaotic content
 
-Классы:
+Classes:
 
-- вода;
-- огонь/дым;
-- плёнка и sensor grain;
-- листва;
-- толпа;
+- water;
+- fire/smoke;
+- film and sensor grain;
+- foliage;
+- crowd;
 - rapid cuts;
-- сложный sports motion.
+- complex sports motion.
 
-Защита:
+Protection:
 
 - objective residual fallback;
 - tile-level representation routing;
-- запрет принудительного scene mode;
+- prohibition of forced scene mode;
 - no-regression gates.
 
 ## 3. State drift
 
-Причины:
+Reasons:
 
 - arithmetic mismatch;
 - corrupted delta;
-- concealment попал в reference;
-- ошибочная eviction;
-- потерянный asynchronous event заморозил cell;
+- concealment is included in reference;
+- erroneous eviction;
+- lost asynchronous event frozen cell;
 - model version mismatch.
 
-Защита:
+Protection:
 
 - integer bit-exact path;
 - state hashes;
@@ -85,159 +85,157 @@ profile, механизм может остаться low-power profile, но н
 
 ## 4. Random access penalty
 
-Полный cell/content checkpoint может быть дорогим.
+A full cell/content checkpoint can be expensive.
 
 **TARGET:**
 
 - overhead <8%;
-- RA 0.25–0.5 секунды в основном продукте;
-- CfP cadence не реже anchor;
-- после RAP никакой зависимости от предыдущего state.
+- RA 0.25–0.5 seconds in the main product;
+- CfP cadence at least anchor;
+- after RAP there is no dependence on the previous state.
 
-Если checkpoint систематически уничтожает основной выигрыш, state должен быть
-упрощён или разделён на independently refreshable cell groups.
+If checkpoints systematically destroy the primary gains, the state should be
+simplified or divided into independently refreshable Cell groups.
 
-## 5. Decoder слишком сложен
+## 5. Decoder is too complicated
 
-Риски:
+Risks:
 
-- DRAM traffic важнее MAC;
-- много мелких kernels;
-- fragmented support и слишком много moving cells;
+- DRAM traffic is more important than MAC;
+- many small kernels;
+- fragmented support and too many moving cells;
 - entropy stalls;
-- непредсказуемый peak state.
+- unpredictable peak state.
 
-Защита:
+Protection:
 
-- compute/memory/traffic как нормативные level axes;
+- compute/memory/traffic as standard level axes;
 - fixed microtiles;
 - fused integer kernels;
 - multi-lane entropy;
 - baseline fallback graph;
-- early GPU profiler и FPGA model.
+- early GPU profiler and FPGA model.
 
-## 6. Consumer encoder слишком слаб
+## 6. Consumer encoder is too weak
 
-Если Foundry находит выигрыш, который нельзя предсказывать маленьким router,
-массовый продукт провалится.
+If Foundry finds a win that cannot be predicted by the small router,
+the mass product will fail.
 
-Критерий:
+Criterion:
 
-- зрелый Studio должен сохранять 80–90% Foundry delta;
-- early gap >30% требует distillation/redesign;
-- устойчивый gap >20% после обучения является основанием исключить tool из
-  Main profile или оставить его VOD-only.
+- a mature Studio should maintain 80–90% Foundry delta;
+- early gap >30% requires distillation/redesign;
+- a persistent gap >20% after training is a reason to exclude the tool from
+  Main profile or leave it VOD-only.
 
-## 7. Генеративные галлюцинации
+## 7. Generative hallucinations
 
-Риски:
+Risks:
 
-- изменение текста, лица или факта;
+- change of text, person or fact;
 - temporal identity drift;
-- пользователь не знает, что деталь синтезирована;
-- generative error отравляет следующие frames.
+- the user does not know that the part has been synthesized;
+- generative error poisons the following frames.
 
-Непереходимые правила:
+Unbreakable rules:
 
-- Perceptual Shell не reference;
-- provenance mask обязателен;
-- evidence profiles отключают shell;
+- Perceptual Shell is not reference;
+- provenance mask is required;
+- evidence profiles disable shell;
 - OCR/identity/geometry gates;
-- Truth-only decode всегда доступен.
+- Truth-only decode is always available.
 
-## 8. Training leakage и generalization
+## 8. Training leakage and generalization
 
-- Официальные test sequences не используются для обучения.
-- Training corpus раскрывается там, где это требует CfP.
-- Hidden set обрабатывается теми же binaries.
-- Ручная per-sequence настройка не считается универсальным результатом.
-- Все adapters входят в bitrate.
+- Official test sequences are not used for training.
+- Training corpus is revealed where CfP requires it.
+- Hidden set is processed by the same binaries.
+- Manual per-sequence tuning is not considered a universal result.
+- All adapters are included in bitrate.
 
-## 9. Неверные сравнения
+## 9. Incorrect comparisons
 
-Опасности:
+Dangers:
 
-- сравнить LD с RA;
-- не учитывать delay;
-- исключить model bits;
-- сравнить reference encoder с production preset без пояснения;
-- выдать VMAF/LPIPS за достоверность.
+- compare LD with RA;
+- ignore delay;
+- exclude model bits;
+- compare reference encoder with production preset without explanation;
+- pass VMAF/LPIPS as authentic.
 
-Каждый результат проходит fair-comparison checklist из
+Each result passes the fair-comparison checklist of
 `07_METRICS_AND_ROADMAP.md`.
 
-## 10. IP и стандартизация
+## 10. IP and standardization
 
-Риски:
+Risks:
 
-- скрытые патентные claims;
-- несовместимая лицензия training/code;
-- закрытые weights мешают conformance;
-- не выполнены formal CfP logistics.
+- hidden patent claims;
+- incompatible training/code license;
+- closed weights interfere with conformance;
+- formal CfP logistics have not been completed.
 
-Защита:
+Protection:
 
 - source/license inventory;
-- prior-art search до freeze;
-- узкие patent claims и RF/FRAND strategy;
-- отдельный submission checklist;
-- partner/organization для JVET.
+- prior-art search to freeze;
+- narrow patent claims and RF/FRAND strategy;
+- separate submission checklist;
+- partner/organization for JVET.
 
 ## 11. Deadline risk CfP
 
-Критический результат к 26 октября — не научная презентация, а:
+The critical result by October 26 is not a scientific presentation, but:
 
-- один decoder;
+- one decoder;
 - encoder/configs;
-- 150 main streams для выбранного полного test case;
+- 150 main streams for the selected full test case;
 - reconstructed sequences;
 - metrics/MD5;
-- self-contained package на физическом SSD.
+- self-contained package on a physical SSD.
 
-При нехватке времени сокращается число экспериментальных tools, но не
-conformance, reproducibility или completeness.
+When there is a lack of time, the number of experimental tools is reduced, but not
+conformance, reproducibility or completeness.
 
-## 12. Visible tile seams и произвольные границы
+## 12. Visible tile seams and arbitrary bordersRisk:
 
-Риск:
-
-- storage rectangle либо dyadic support становится видимым как квадратный
+- storage rectangle or dyadic support becomes visible as square
   contour;
-- binary mask даёт aliasing;
-- bilinear taps читают padding другой поверхности;
-- hair, smoke, transparency и motion blur порождают mask churn, который
-  уничтожает bitrate gain;
-- spatially приемлемая ошибка мерцает во времени.
+- binary mask gives aliasing;
+- bilinear taps read the padding of another surface;
+- hair, smoke, transparency and motion blur generate mask churn, which
+  destroys bitrate gain;
+- spatially acceptable error flickers in time.
 
-Непереходимые требования:
+Non-negotiable requirements:
 
-- storage/culling Support не является visible shape;
-- вне Support Cell строго identity: \(g=1,c=0\);
-- видимая форма задаётся scalar Gate с fractional coverage;
-- каждый sampling footprint имеет canonical apron либо objective fallback;
-- lossless test воспроизводится pixel-exact;
-- изменение внутренней tile partition при тех же decoded fields не меняет
+- storage/culling Support is not a visible shape;
+- outside the Support Cell strictly identity: \(g=1,c=0\);
+- the visible shape is set by scalar Gate with fractional coverage;
+- each sampling footprint has a canonical apron or objective fallback;
+- lossless test is played by pixel-exact;
+- changing the internal tile partition with the same decoded fields does not change
   output;
-- encoder может отказаться от persistent shape и использовать short-lived
+- encoder can abandon persistent shape and use short-lived
   exact Truth Cell.
 
 Adversarial shape suite:
 
 - diagonal/subpixel lines;
-- вращающийся antialiased disc;
-- текст и тонкие glyph strokes;
+- rotating antialiased disc;
+- text and subtle glyph strokes;
 - hair/fur;
 - glass/transparency;
 - smoke/shadow;
 - motion-blurred silhouette;
-- границы chroma subsampling;
-- медленное subpixel движение, выявляющее temporal shimmer.
+- chroma subsampling boundaries;
+- slow subpixel movement, revealing temporal shimmer.
 
 Kill gates:
 
-- любой seam, коррелирующий с storage tile boundary, является correctness bug;
-- lossless mismatch — немедленный stop;
-- boundary-weighted distortion или temporal-edge flicker хуже отдельно
-  настроенного AV2/VVC baseline — Cell mode отключается для данного region;
-- forced persistent shape на chaotic boundary ожидаемо может проигрывать;
-  automatic RDO fallback обязан ограничить total regression.
+- any seam that correlates with the storage tile boundary is a correctness bug;
+- lossless mismatch — immediate stop;
+- boundary-weighted distortion or temporal-edge flicker is worse separately
+  configured AV2/VVC baseline - Cell mode is disabled for this region;
+- forced persistent shape on a chaotic boundary can be expected to lose;
+  automatic RDO fallback is required to limit total regression.

@@ -1,545 +1,579 @@
-# Журнал решений SceneLith
+# SceneLith Solution Log
 
-Последнее обновление: 2026-07-26
+Last update: 2026-07-26
 
-## D-001 — Название и архитектура
+## D-001 - Name and architecture
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - проект называется **SceneLith**;
-  - архитектура называется
-    **MOSAIC — Memory-Oriented Scalable Asymmetric Integer Codec**.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - the project is called **SceneLith**;
+  - architecture is called
+    **MOSAIC - Memory-Oriented Scalable Asymmetric Integer Codec**.
 
-## D-002 — Главная формула
+## D-002 - Master Formula
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
 
 \[
 Video(t)=Render(WorldState_t,\ Trajectories_t)
-       +TruthInnovation_t
-       +OptionalPerceptualDetail_t
+       + TruthInnovation_t
+       + OptionalPerceptualDetail_t
 \]
 
-## D-003 — Корень проекта
+## D-003 - Project Root
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: все материалы и код проекта хранятся в `G:\SceneLith`.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Decision: all canonical materials and project code are stored in the
+  SceneLith repository.
 
-## D-004 — Reference safety
+## D-004 - Reference safety
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: только детерминированный Fidelity/Truth Core может менять
-  `WorldState` и использоваться как temporal reference. Perceptual Shell
-  всегда нереференсный и отключаемый.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: Only deterministic Fidelity/Truth Core can change
+  `WorldState` and used as a temporal reference. Perceptual Shell
+  always non-reference and switchable.
 
-## D-005 — Новый объект стандартизации
+## D-005 - New standardization object
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: SceneLith стандартизует ограниченную visual scene machine и поток
-  innovation, а не является очередным расширением блочного hybrid codec.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: SceneLith standardizes limited visual scene machine and flow
+  innovation, and is not just another extension of the block hybrid codec.
 
-## D-006 — Deadline текущего JVET CfP
+## D-006 — Deadline of the current JVET CfP
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**, заменяет прежнюю оценку
-- Решение: подготовить полный формальный unrestricted improved-compression
-  response к 26 октября 2026 года.
-- Supersedes: утверждение из первоначального текста, что подача полного
-  proposal в это окно «нереальна». Теперь это классифицируется как
-  экстремально рискованная, но формально выполнимая deadline-миссия.
+- Date: 2026-07-26
+- Status: **ACCEPTED**, replaces the previous rating
+- Solution: prepare a full formal unrestricted improved-compression
+  response by October 26, 2026.
+- Supersedes: statement from the original text that the submission is complete
+  proposal in this window is “unrealistic”. It is now classified as
+  extremely risky, but formally feasible deadline mission.
 
-## D-007 — Отдельная CfP-ветка
+## D-007 - Separate CfP branch
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: создать `SceneLith-CfP-2026` с узким детерминированным ядром:
-  bounded state, trajectories, multi-frame innovation, обязательные RAP
-  checkpoints и надёжный residual fallback. Не блокировать ветку попыткой
-  одновременно реализовать весь будущий MOSAIC.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: create `SceneLith-CfP-2026` with a narrow deterministic kernel:
+  bounded state, trajectories, multi-frame innovation, mandatory RAPs
+  checkpoints and reliable residual fallback. Don't block the thread with an attempt
+  simultaneously implement the entire future MOSAIC.
 
-## D-008 — Три класса encoder
+## D-008 – Three class encoder
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: один decoder/bitstream обслуживает:
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: one decoder/bitstream serves:
   - `Live` — causal real-time;
-  - `Studio` — бытовой GPU с lookahead и ограниченным multipass;
-  - `Foundry` — распределённый hyperscale/offline scene compiler.
+  - `Studio` - consumer GPU with lookahead and limited multipass;
+  - `Foundry` - distributed hyperscale/offline scene compiler.
 
-## D-009 — Foundry как teacher
+## D-009 — Foundry as teacher
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: RDO traces Foundry используются для distillation маленького
-  consumer-router. Бытовой encoder должен извлекать не менее 80–90% общей
-  дельты Foundry после созревания.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: RDO traces Foundry are used for distillation of small
+  consumer-router. A household encoder should extract at least 80–90% of the total
+  delta Foundry after maturation.
 
-## D-010 — Документация является канонической
+## D-010 - Documentation is canonical
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение: все новые стандарты и идеи из чата записываются в файлы проекта.
-  Исторические исходники сохраняются в `archive/`; изменения отражаются через
-  этот журнал, а не через молчаливое переписывание истории.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution: all new standards and ideas from the chat are written into the project files.
+  Historical sources are saved in `archive/`; changes are reflected throughthis journal, and not through the silent rewriting of history.
 
-## D-011 — Повторная оценка QINTRA
+## D-011 - QINTRA Re-Evaluation
 
-- Дата: 2026-07-26
-- Статус: **SUPERSEDED** решением D-016
-- Вопрос: не использовать ли QINTRA вместо SceneLith из-за более короткого и
-  запоминающегося звучания.
-- Предварительный вывод:
-  - QINTRA действительно ударнее как имя кодека;
-  - SceneLith лучше передаёт центральную идею и предварительно уникальнее;
-  - QINTRA фонетически конфликтует с существующим technology/software именем
-    Quintra и требует профессиональной trademark-проверки.
-- Исторический вывод D-011: SceneLith оставался именем проекта, а роль QINTRA
-  ещё не была принята. Этот вывод заменён D-016.
+- Date: 2026-07-26
+- Status: **SUPERSEDED** by decision D-016
+- Question: should QINTRA be used instead of SceneLith due to the shorter and
+  memorable sound.
+- Preliminary conclusion:
+  - QINTRA is really more striking as a codec name;
+  - SceneLith better conveys the central idea and is more unique;
+  - QINTRA phonetically conflicts with an existing technology/software name
+    Quintra and requires professional trademark verification.
+- Historical output D-011: SceneLith remained the project name, and the role of QINTRA
+  has not yet been accepted. This pin has been replaced by D-016.
 
-## D-012 — Рекомендуемый режим Codex Sol
+## D-012 - Recommended Codex Sol mode
 
-- Дата: 2026-07-26
-- Статус: **SUPERSEDED** решением D-013
-- Рекомендация:
-  - для корневой задачи SceneLith использовать Sol Ultra;
-  - для единственного режима без делегации использовать Sol XHigh;
-  - Max резервировать для freeze и hardest single-problem reviews;
-  - High/XHigh использовать для основной реализации;
-  - Medium/Low использовать для механически проверяемых массовых задач.
-- Причина: максимальный project throughput требует сочетать глубокое reasoning
-  на необратимых решениях с быстрыми итерациями реализации и тестов.
+- Date: 2026-07-26
+- Status: **SUPERSEDED** by decision D-013
+- Recommendation:
+  - for the SceneLith root task use Sol Ultra;
+  - for the only mode without delegation, use Sol XHigh;
+  - Max reserve for freeze and hardest single-problem reviews;
+  - High/XHigh used for the main implementation;
+  - Medium/Low is used for mechanically verifiable mass tasks.
+- Reason: maximum project throughput requires combining deep reasoning
+  on irreversible decisions with rapid implementation and test iterations.
 
-## D-013 — Фактические уровни усилия 5.6 Sol
+## D-013 - Actual Force Levels 5.6 Sol
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Исправление: D-012 использовал внутренние английские обозначения и ошибочно
-  включал `Max`, которого нет в текущем интерфейсе пользователя.
-- Решение: рабочая шкала SceneLith должна дословно соответствовать model picker:
-  - **Лёгкий**;
-  - **Средний**;
-  - **Высокий**;
-  - **Очень высокий**;
-  - **Ультра**.
-- Для текущего проектирования канонического стандарта используется
-  **«Ультра»**. Для одиночного brainstorming без фиксации решения достаточно
-  **«Очень высокого»**.
-- Распределение:
-  - Ультра — архитектура стандарта, bitstream/state freeze, интеграция и
-    параллельный adversarial review;
-  - Очень высокий — один сложный алгоритм, RDO или bit-exact debugging;
-  - Высокий — реализация по уже определённой спецификации;
-  - Средний — документация и воспроизводимые тесты;
-  - Лёгкий — тривиальные механические изменения.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Correction: D-012 used internal English notation and incorrectly
+  included `Max`, which is not in the current user interface.
+- Solution: the SceneLith working scale must correspond verbatim to the model picker:
+  - **Light**;
+  - **Average**;
+  - **High**;
+  - **Very tall**;
+  - **Ultra**.
+- For current design of the canonical standard is used
+  **"Ultra"**. For single brainstorming without fixing the solution, it is enough
+  **"Very high"**.
+- Distribution:
+  - Ultra - standard architecture, bitstream/state freeze, integration and
+    parallel adversarial review;
+  - Very high - one complex algorithm, RDO or bit-exact debugging;
+  - High - implementation according to an already defined specification;
+  - Medium - documentation and reproducible tests;
+  - Easy - trivial mechanical changes.
 
-## D-014 — Observed Surface Memory вместо полного дорисованного мира
+## D-014 - Observed Surface Memory instead of a complete completed world
 
-- Дата: 2026-07-26
-- Статус: **SUPERSEDED** решением D-015 для первого experiment gate и
-  решением D-017 как кандидатом основной архитектуры
-- Решение-кандидат:
-  - Main Truth Core хранит только минимально достаточные наблюдавшиеся surface
+- Date: 2026-07-26
+- Status: **SUPERSEDED** by decision D-015 for the first experiment gate and
+  solution D-017 as a core architecture candidate
+- Candidate solution:
+  - Main Truth Core stores only minimally sufficient observed surfaces
     fragments;
-  - неизвестный texel является явным состоянием и не может использоваться как
-    predictor;
-  - никогда не выводимая область не передаётся и не генерируется;
-  - `CAPTURE_PROMOTE` сохраняет уже восстановленные Truth pixels в persistent
-    state без повторного texture payload;
-  - неизвестное, впервые появившееся в output, восстанавливается objective
-    `REPLACE/TruthInnovation`, после чего может быть сохранено для reuse;
-  - Full 3D и generation не являются обязательными Main v0 paths;
-  - Foundry/router остаётся ненормативным механизмом поиска выгодных fragment,
-    lifecycle и representation решений.
-- Влияние на сроки:
-  - executable skeleton — дни;
-  - oracle real-shot proof — 2–3 недели оптимистично, 4–6 реалистично;
-  - первая вертикальная версия — 4–6 недель оптимистично, 8–12 реалистично;
-  - GPU/MAP/basic conformance — 6–9 недель оптимистично, 10–16 реалистично.
-- Compression hypothesis против equal-memory strong baseline:
-  - 20–45% net saving на rigid/screen long-gap reuse;
-  - 10–25% на puzzle-friendly natural;
-  - 4–12% на mixed natural;
-  - около 0% на hostile dynamic благодаря fallback.
-- Все численные диапазоны являются **HYPOTHESIS/TARGET**, а не результатами.
-- Полная проработка: `12_OBSERVED_SURFACE_MEMORY.md`.
+  - unknown texel is an explicit state and cannot be used aspredictor;
+  - the never-output area is not transmitted or generated;
+  - `CAPTURE_PROMOTE` saves already restored Truth pixels in persistent
+    state without repeated texture payload;
+  - the unknown, which first appeared in output, is restored objective
+    `REPLACE/TruthInnovation`, after which it can be saved for reuse;
+  - Full 3D and generation are optional Main v0 paths;
+  - Foundry/router remains a non-standard mechanism for finding profitable fragments,
+    lifecycle and representation solutions.
+- Impact on timing:
+  - executable skeleton — days;
+  - oracle real-shot proof - 2–3 weeks optimistically, 4–6 realistically;
+  - first vertical version - 4–6 weeks optimistically, 8–12 realistically;
+  - GPU/MAP/basic conformance - 6–9 weeks is optimistic, 10–16 is realistic.
+- Compression hypothesis versus equal-memory strong baseline:
+  - 20–45% net saving on rigid/screen long-gap reuse;
+  - 10–25% on puzzle-friendly natural;
+  - 4–12% for mixed natural;
+  - about 0% on hostile dynamic thanks to fallback.
+- All numerical ranges are **HYPOTHESIS/TARGET** and not results.
+- Full development: `12_OBSERVED_SURFACE_MEMORY.md`.
 
-## D-015 — Minimal Decoded Patch Memory как контрольный baseline
+## D-015 — Minimal Decoded Patch Memory as reference baseline
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - первым тестом reference-memory остаётся минимальный `DPM` с
-    `RESET/PROMOTE/PLACE/DROP`, rectangles и integer copy;
-  - DPM не объявляется основной архитектурой QINTRA до измеренного выигрыша;
-  - masks, depth, 3D, semantics и learned decoder не добавляются для спасения
-    отрицательного результата;
-  - DPM после D-017 является контрольным spatial-memory baseline и возможным
-    способом хранения content для более общего time-state core.
-- Полная проработка: `13_MINIMAL_PATCH_CORE.md`.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - the first reference-memory test remains the minimum `DPM` with
+    `RESET/PROMOTE/PLACE/DROP`, rectangles and integer copy;
+  - DPM is not announced by the main QINTRA architecture until the measured gain;
+  - masks, depth, 3D, semantics and learned decoder are not added to save
+    negative result;
+  - DPM after D-017 is the control spatial-memory baseline and possible
+    a way to store content for a more general time-state core.
+- Full development: `13_MINIMAL_PATCH_CORE.md`.
 
-## D-016 — Иерархия SceneLith / QINTRA / MOSAIC
+## D-016 - SceneLith / QINTRA / MOSAIC Hierarchy
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - **SceneLith** — проект, будущая компания и экосистема;
-  - **QINTRA** — имя codec/bitstream family;
-  - **MOSAIC — Memory-Oriented Scalable Asymmetric Integer Codec** —
-    внутренняя архитектура;
-  - маркетинговая формулировка:
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - **SceneLith** - project, future company and ecosystem;
+  - **QINTRA** — codec/bitstream family name;
+  - **MOSAIC - Memory-Oriented Scalable Asymmetric Integer Codec** -
+    interior architecture;
+  - marketing wording:
     **“QINTRA — a SceneLith codec, powered by MOSAIC.”**
-- До публичного запуска QINTRA всё равно требует профессиональной
-  trademark/FTO-проверки; это не отменяет принятую продуктовую иерархию.
+- Before the public launch, QINTRA still requires professional
+  trademark/FTO checks; this does not change the accepted product hierarchy.
 
-## D-017 — Кадр не является единицей state, reference или движения
+## D-017 - Frame is not a unit of state, reference or motion
 
-- Дата: 2026-07-26
-- Статус: time/state invariants — **NORMATIVE-DRAFT / HYPOTHESIS**; исходная
-  hard-support/composition formula — **PARTIALLY SUPERSEDED** D-021/D-022
-- Решение-кандидат:
-  - frame остаётся только совместимым `PresentationSample`, то есть запросом
-    результата в момент времени, но не изменяет state сам по себе;
-  - bitstream является потоком асинхронных state events;
-  - единый primitive — долгоживущая `MOSAIC Cell`:
+- Date: 2026-07-26
+- Status: time/state invariants - **NORMATIVE-DRAFT / HYPOTHESIS**; original
+  hard-support/composition formula - **PARTIALLY SUPERSEDED** D-021/D-022
+- Candidate solution:- frame remains only compatible `PresentationSample`, that is, a request
+    result at a point in time, but does not change the state itself;
+  - bitstream is a stream of asynchronous state events;
+  - single primitive - long-lived `MOSAIC Cell`:
 
     \[
     Cell_i=(Content_i,\ Support_i,\ MotionLaw_i(t),\
             Lifetime_i,\ Order_i);
     \]
 
-  - `Lifetime` устраняет per-frame сигнализацию `unchanged`;
-  - `MotionLaw(t)` амортизирует motion на интервал, а не передаёт vector на
-    каждый output sample;
-  - `Content` хранится в compact coordinate-independent memory, а не требует
+  - `Lifetime` eliminates per-frame signaling `unchanged`;
+  - `MotionLaw(t)` amortizes motion by interval, rather than transmitting vector to
+    each output sample;
+  - `Content` is stored in compact coordinate-independent memory, and does not require
     frame-sized reference;
-  - форма не выбирается из zoo `rectangle/circle/polygon`: `Support` является
-    объединением фиксированных dyadic microtiles; точность границы повышается
-    только там, где это окупается;
-  - state, motion knots, Truth Innovation и display sampling имеют независимые
+  - the form is not selected from zoo `rectangle/circle/polygon`: `Support` is
+    combining fixed dyadic microtiles; boundary accuracy increases
+    only where it pays off;
+  - state, motion knots, Truth Innovation and display sampling have independent
     clocks;
-  - статичная cell не получает событий, а её уже скомпозированный output tile
-    MAY сохраняться без повторной записи;
-  - движение вычисляется из absolute fixed-point law относительно неизменного
-    content, а не рекурсивным warp предыдущего output;
-  - физический display всё равно меняет свет дискретно или непрерывно во
-    времени; цель — убрать frame clock из transport/state/decode, а не
-    заявлять невозможное отсутствие временного sampling.
-- DPM становится baseline/component, а не окончательным Main v0.
-- Полная проработка: `14_CONTINUOUS_TIME_CELLS.md`.
+  - a static cell does not receive events, but its already composed output tile
+    MAY be saved without re-writing;
+  - movement is calculated from the absolute fixed-point law relative to the unchanged
+    content, not the recursive warp of the previous output;
+  - the physical display still changes the light discretely or continuously during
+    time; the goal is to remove frame clock from transport/state/decode, not
+    state the impossible absence of temporary sampling.
+- DPM becomes baseline/component rather than final Main v0.
+- Full development: `14_CONTINUOUS_TIME_CELLS.md`.
 
-## D-018 — Момент регистрации и статус заявителя
+## D-018 – Time of registration and applicant status
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED** как порядок проекта; внешняя допустимость
-  **OPEN / UNVERIFIED**
-- Решение:
-  - сначала выбрать архитектуру для реализации, затем вернуться к Annex E и
-    другим внешним действиям;
-  - план владельца — подаваться как независимый частный заявитель;
-  - юридическое имя владельца не записывается в публичную техническую
-    документацию до необходимости оформления;
-  - при принятии architecture implementation candidate обязательно напомнить
-    о регистрации.
-- Ограничение: текущий CfP адресован companies/organizations, а Annex E требует
-  поле `organization`. Поэтому до обещания подачи от физического лица нужно
-  получить письменное подтверждение chair/test coordinator либо согласовать
-  допустимое обозначение независимого заявителя.
+- Date: 2026-07-26
+- Status: **ACCEPTED** as project order; external validity
+  **OPEN/UNVERIFIED**
+- Solution:
+  - first select the architecture to implement, then return to Annex E and
+    other external actions;
+  - owner plan - apply as an independent private applicant;
+  - the legal name of the owner is not recorded in the public technical register
+    documentation before registration is required;
+  - when accepting the architecture implementation candidate, be sure to remind
+    about registration.
+- Restriction: the current CfP is addressed to companies/organizations, and Annex E requires
+  field `organization`. Therefore, before promising to submit from an individual, you need
+  receive written confirmation from the chair/test coordinator or agree
+  valid designation of an independent applicant.
 
-## D-019 — Public repository как portfolio и точка сборки команды
+## D-019 — Public repository as portfolio and team assembly point
 
-- Дата: 2026-07-26
-- Статус: **TARGET**
-- Цель:
-  - repository, proposal, architecture paper и demo должны доказуемо показывать
-    авторство и уровень systems/research engineering владельца;
-  - проект должен быть подготовлен для привлечения сильных external
-    contributors.
-- Ограничение: одна заявка или громкая идея не гарантирует рост рыночной
-  стоимости. Нужны воспроизводимые результаты, работающий decoder, benchmark,
-  conformance, честный статус `submitted/evaluated/adopted` и понятный
+- Date: 2026-07-26
+- Status: **TARGET**
+- Goal:
+  - repository, proposal, architecture paper and demo must demonstrate provably
+    authorship and level of systems/research engineering of the owner;
+  - the project must be prepared to attract strong external
+    contributors.- Limitation: one application or big idea does not guarantee market growth
+  cost. We need reproducible results, a working decoder, benchmark,
+  conformance, honest status `submitted/evaluated/adopted` and understandable
   contribution path.
 
-## D-020 — Baselines и двойная революционная цель
+## D-020 - Baselines and a double revolutionary goal
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - primary compression baselines всегда отчётны отдельно:
-    **AV2 v1.0 / AVM v1.0.0** и **VVC / H.266 (2026) / VTM**;
-  - запись `AV2/VVC` без двух отдельных результатов запрещена в claims и
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - primary compression baselines are always reported separately:
+    **AV2 v1.0 / AVM v1.0.0** and **VVC / H.266 (2026) / VTM**;
+  - entry `AV2/VVC` without two separate results is prohibited in claims and
     benchmark tables;
-  - применимые BRU, long-term-reference, Show Existing Frame, Atlas, affine,
-    merge и другие baseline tools должны быть включены;
-  - цель QINTRA — радикально превзойти оба baseline не только по bitrate, но и
-    по простоте нормативного decoder code;
-  - AV1/HEVC/AVC и быстрые hardware presets могут быть secondary baselines, но
-    победа над ними не доказывает достижение frontier target.
+  - applicable BRU, long-term-reference, Show Existing Frame, Atlas, affine,
+    merge and other baseline tools must be enabled;
+  - QINTRA’s goal is to radically surpass both baselines not only in bitrate, but also
+    due to the simplicity of the normative decoder code;
+  - AV1/HEVC/AVC and fast hardware presets can be secondary baselines, but
+    defeating them does not prove achievement of the frontier goal.
 
-## D-021 — One-equation Spacetime Basis Cell
+## D-021 - One-equation Spacetime Basis Cell
 
-- Дата: 2026-07-26
-- Статус: **ARCHITECTURE CANDIDATE / HYPOTHESIS**
-- Причина:
-  - paper sensitivity model отвергает lifetime/HOLD-only как путь к
-    революционному mixed-natural compression;
-  - против representative AV2 ledger для total gain 25% требуется устранить
-    около 31.8% всех оставшихся AV2 innovation bits; при 50% cell coverage это
-    63.6% residual в покрытой части, а при coverage ниже 31.8% цель
-    математически невозможна для данного ledger.
-- Кандидат:
+- Date: 2026-07-26
+- Status: **ARCHITECTURE CANDIDATE / HYPOTHESIS**
+- Reason:
+  - paper sensitivity model rejects lifetime/HOLD-only as a path to
+    revolutionary mixed-natural compression;
+  - against representative AV2 ledger for total gain 25% needs to be eliminated
+    about 31.8% of all remaining AV2 innovation bits; at 50% cell coverage this is
+    63.6% residual in the covered part, and with coverage below 31.8% the target
+    is mathematically impossible for a given ledger.
+- Candidate:
 
   \[
   (g_i,c_i)(p,t)=\sum_k a_{i,k}(t)B_{i,k}(W_i(p,t)),
   \]
 
-  - одна Cell должна описывать static, motion, appearance variation и
+  - one Cell should describe static, motion, appearance variation and
     persistent/transient Truth Innovation;
-  - единственная composition operation:
+  - the only composition operation:
     \(Y_{j+1}=Clip(g_jY_j+c_j)\);
-  - Cell является bounded rate-distortion atom, не semantic object;
-  - `RESET/SET` являются достаточной state grammar; presentation — read-only
+  - Cell is a bounded rate-distortion atom, not a semantic object;
+  - `RESET/SET` are sufficient state grammar; presentation - read-only
     container/API query;
-  - normative evaluation должен быть fixed-point, bounded и data-parallel;
-  - unrestricted neural graph, semantic world, depth/mesh и generative Truth
-    не входят в Main;
-  - payload synthesizer остаётся главным **OPEN** выбором.
-- Полная аргументация и воспроизводимая sensitivity model:
-  `15_PAPER_KILL_TEST_AND_FREEZE.md` и
+  - normative evaluation must be fixed-point, bounded and data-parallel;
+  - unrestricted neural graph, semantic world, depth/mesh and generative Truth
+    not included in Main;
+  - payload synthesizer remains the main **OPEN** choice.
+- Full argumentation and reproducible sensitivity model:
+  `15_PAPER_KILL_TEST_AND_FREEZE.md` and
   `../experiments/paper_kill_test.py`.
 
-## D-022 — Visible shape не равна storage tile
+## D-022 — Visible shape is not equal to storage tile
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED REQUIREMENT / CANDIDATE MECHANISM**
-- Требование:
-  - rectangle, dyadic tile и texture allocation MAY использоваться только как
-    невидимые storage, scheduling и culling bounds;
-  - граница storage unit MUST NOT становиться видимой границей изображения;
-  - QINTRA MUST поддерживать arbitrary binary и soft coverage, включая
-    antialiasing, hair, transparency и motion blur;
-  - lossless profile MUST иметь pixel-exact fallback;
-  - lossy profiles MUST иметь RDO fallback и отдельную boundary-quality
-    проверку.
-- Кандидат-механизм:
-  - Cell синтезирует scalar gate \(g\) и color contribution \(c\);
-  - вне support неявно \(g=1,c=0\);
-  - единый affine compositor \(Y'=Clip(gY+c)\) покрывает replace, alpha-over и
-    additive correction без shape primitive zoo;
-  - conservative padding и texture apron запрещают sampling seams.
-- Физическое ограничение:
-  - отсутствие любых artifacts нельзя гарантировать при произвольно малом
+- Date: 2026-07-26
+- Status: **ACCEPTED REQUIREMENT / CANDIDATE MECHANISM**
+- Requirement:
+  - rectangle, dyadic tile and texture allocation MAY are used only as
+    invisible storage, scheduling and culling bounds;
+  - the border of the storage unit MUST NOT become the visible border of the image;
+  - QINTRA MUST support arbitrary binary and soft coverage, includingantialiasing, hair, transparency and motion blur;
+  - lossless profile MUST have pixel-exact fallback;
+  - lossy profiles MUST have RDO fallback and separate boundary-quality
+    check.
+- Candidate mechanism:
+  - Cell synthesizes scalar gate \(g\) and color contribution \(c\);
+  - outside support implicitly \(g=1,c=0\);
+  - a single affine compositor \(Y'=Clip(gY+c)\) covers replace, alpha-over and
+    additive correction without shape primitive zoo;
+  - conservative padding and texture apron prohibit sampling seams.
+- Physical limitation:
+  - the absence of any artifacts cannot be guaranteed at an arbitrarily small
     lossy bitrate;
-  - гарантируются отсутствие tile-shape artifacts и exact lossless path.
+  - the absence of tile-shape artifacts and exact lossless path are guaranteed.
 
-## D-023 — Ведущий payload candidate: cached integer basis synthesis
+## D-023 — Leading payload candidate: cached integer basis synthesis
 
-- Дата: 2026-07-26
-- Статус: **RESEARCH CANDIDATE / OPEN**
-- Кандидат:
-  - один fixed bounded int8/int16 synthesis graph декодирует quantized latents
-    в immutable Basis Content;
-  - необязательный per-shot adaptation ограничен low-rank integer matrices;
-  - все latents/adapters входят в bitrate;
-  - synthesis выполняется на `SET`, а не на каждом Presentation Query;
-  - renderer остаётся texture-sample + temporal MAC + \(gY+c\);
-  - sparse exact correction сохраняет objective/lossless Truth.
-- Причина:
-  - обычный AV2/VVC intra payload сохранил бы их decoder code complexity;
-  - простой linear wavelet наиболее лёгок, но имеет меньший шанс радикально
-    уменьшить innovation;
-  - fixed integer nonlinear synthesis имеет лучший теоретический баланс
-    compression, small normative code и GPU/ASIC regularity.
-- Это не означает принятия neural renderer: arbitrary graph, floating point,
-  generative Truth и per-presentation inference остаются запрещены.
+- Date: 2026-07-26
+- Status: **RESEARCH CANDIDATE / OPEN**
+- Candidate:
+  - one fixed bounded int8/int16 synthesis graph decodes quantized latents
+    in immutable Basis Content;
+  - optional per-shot adaptation is limited to low-rank integer matrices;
+  - all latents/adapters are included in bitrate;
+  - synthesis is performed on `SET`, and not on each Presentation Query;
+  - renderer remains texture-sample + temporal MAC + \(gY+c\);
+  - sparse exact correction preserves objective/lossless Truth.
+- Reason:
+  - a regular AV2/VVC intra payload would retain their decoder code complexity;
+  - a simple linear wavelet is the easiest, but has a lower chance of radical
+    reduce innovation;
+  - fixed integer nonlinear synthesis has better theoretical balance
+    compression, a small normative decoder, and GPU/ASIC regularity.
+- This does not mean adopting neural renderer: arbitrary graph, floating point,
+  generative Truth and per-presentation inference remain prohibited.
 
-## D-024 — Численная планка радикального превосходства
+## D-024 - Numerical Radical Superiority Bar
 
-- Дата: 2026-07-26
-- Статус: **TARGET**
+- Date: 2026-07-26
+- Status: **TARGET**
 - Minimum architecture-success target:
-  - не менее 25% net BD-rate reduction отдельно против AV2 v1.0/AVM и
-    VVC/H.266/VTM на broad mixed corpus;
-  - одновременно более простой bounded normative decoder.
+  - at least 25% net BD-rate reduction separately against AV2 v1.0/AVM and
+    VVC/H.266/VTM on broad mixed corpus;
+  - at the same time a simpler bounded normative decoder.
 - Stretch North Star:
-  - 40% против более сильного из двух anchors на broad mixed/coherent corpus;
-  - 50% на broad screen/UI corpus;
-  - отсутствие tile-shape artifacts и exact lossless path.
-- 5–10% universal gain полезен, но недостаточен для заявления о новом
-  революционном стандарте.
+  - 40% against the stronger of two anchors on broad mixed/coherent corpus;
+  - 50% on broad screen/UI corpus;
+  - absence of tile-shape artifacts and exact lossless path.
+- 5–10% universal gain is useful, but not enough to make a new claim
+  revolutionary standard.
 
-## D-025 — CBF Visual ISA принят как implementation architecture
+## D-025 - CBF Visual ISA adopted as implementation architecture
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - QINTRA Main строится как **CBF — Causal Basis Field visual ISA** внутри
-    MOSAIC;
-  - CBF Cell является bounded spacetime basis atom, а не semantic object;
-  - одна формула
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - QINTRA Main is built as **CBF - Causal Basis Field visual ISA** inside
+    MOSAIC;- CBF Cell is a bounded spacetime basis atom, not a semantic object;
+  - one formula
     \[
     (g_i,c_i)(p,t)=\sum_k a_{i,k}(t)B_{i,k}(W_i(p,t))
     \]
-    описывает static, motion, appearance variation, arbitrary soft visible
-    shape и persistent/transient Truth Innovation;
-  - единая state grammar — `STATE_RESET / CELL_SET`; presentation является
+    describes static, motion, appearance variation, arbitrary soft visible
+    shape and persistent/transient Truth Innovation;
+  - unified state grammar - `STATE_RESET / CELL_SET`; presentation is
     read-only query;
   - immutable Basis, absolute-time coordinate/parameter laws, implicit
-    persistence и objective fallback являются замороженным semantic spine;
-  - unrestricted neural renderer, semantic world graph и generative Truth не
-    входят в Main;
-  - D-021 меняет статус с architecture candidate на **ACCEPTED** в части
-    semantic spine; payload synthesizer и точные limits остаются
-    **NORMATIVE-DRAFT / HYPOTHESIS**.
+    persistence and objective fallback are frozen semantic spine;
+  - unrestricted neural renderer, semantic world graph and generative Truth are not
+    are included in Main;
+  - D-021 changes status from architecture candidate to **ACCEPTED** in part
+    semantic spine; payload synthesizer and exact limits remain
+    **NORMATIVE-DRAFT/HYPOTHESIS**.
 
-## D-026 — Bounded composition algebra и mobile decode envelope
+## D-026 — Bounded composition algebra and mobile decode envelope
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED / NORMATIVE-DRAFT**
-- Решение:
-  - Cell описывает affine color pair \((g,c)\);
-  - последовательная композиция pair является ассоциативной:
+- Date: 2026-07-26
+- Status: **ACCEPTED / NORMATIVE-DRAFT**
+- Solution:
+  - Cell describes affine color pair \((g,c)\);
+  - the sequential composition pair is associative:
     \[
     (g_2,c_2)\circ(g_1,c_1)=
     (g_2g_1,\ g_2c_1+c_2);
     \]
-  - parallel reduction MAY использоваться при сохранении coded order;
-  - внутренний clip после каждой Cell запрещается там, где profile-defined
-    wide accumulator и range proof позволяют clip на фиксированной layer
-    boundary; это уменьшает serial dependency и GPU traffic;
-  - Main general target: не более 4 non-identity Cell contributions на
-    output pixel, не более 4 fixed composition layers, не более 8 texture
-    samples и порядка 128 simple integer operations/pixel;
-  - точные absolute limits задаёт profile/level; всё сверх них кодируется
+  - parallel reduction MAY be used while preserving coded order;
+  - internal clip after each Cell is prohibited where profile-defined
+    wide accumulator and range proof allow clip on a fixed layer
+    boundary; this reduces serial dependency and GPU traffic;
+  - Main general target: no more than 4 non-identity Cell contributions per
+    output pixel, no more than 4 fixed composition layers, no more than 8 texture
+    samples and about 128 simple integer operations/pixel;
+  - exact absolute limits are set by profile/level; everything above them is encoded
     objective Innovation fallback;
-  - Main MAY разрешать bounded translation, affine и projective coordinate
-    laws, но первая reference implementation начинает со static/translation.
+  - Main MAY allow bounded translation, affine and projective coordinate
+    laws, but the first reference implementation starts with static/translation.
 
-## D-027 — Consumer encoder и hardware targets
+## D-027 — Consumer encoder and hardware targets
 
-- Дата: 2026-07-26
-- Статус: **TARGET / HYPOTHESIS**
-- Решение:
-  - reference Consumer/Studio encoder должен работать на одном обычном PC и
-    8 GB-class GPU посредством spatial/temporal tiling и выгрузки long-term
-    state в host RAM;
-  - RTX 2080 Super является первым practical development target, но не
-    нормативной зависимостью формата;
-  - для одной минуты 1080p30 рабочие гипотезы:
+- Date: 2026-07-26
+- Status: **TARGET / HYPOTHESIS**
+- Solution:
+  - reference Consumer/Studio encoder must run on one regular PC and
+    8 GB-class GPU via spatial/temporal tiling and long-term offloading
+    state in host RAM;
+  - RTX 2080 Super is the first practical development target, but not
+    normative dependence of the format;
+  - for one minute 1080p30 working hypotheses:
     first prototype `1–6 h`, Consumer Fast `3–10 min`, Balanced
     `20–90 min`, Local Foundry `3–12 h`;
-  - 1080p60 ожидается примерно в 2 раза дольше, 4K30 — в 4–6 раз;
-  - software mobile-GPU target: flagship 1080p60 и plausible 4K30,
-    mid-range 1080p30–60; CPU-only target — 720p60/1080p30 при малом overlap;
-  - числа не являются измеренными результатами и не входят в conformance.
+  - 1080p60 is expected to take about 2 times longer, 4K30 - 4–6 times;
+  - software mobile-GPU target: flagship 1080p60 and plausible 4K30,
+    mid-range 1080p30–60; CPU-only target: 720p60 or 1080p30 with low
+    overlap;
+  - these figures are hypotheses, not measured results or conformance
+    requirements.
 
-## D-028 — Последний red-team: сильные идеи без расширения ISA
+## D-028 — The last red-team: strong ideas without ISA extension
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED / RESEARCH**
-- Принимается в encoder/core discipline:
-  - conditional-description-length RDO вместо простого detector `changed`;
-  - whole-shot bidirectional analysis и time-symmetric Foundry search,
-    компилируемые в те же absolute laws;
-  - content-addressed dedup immutable Basis внутри self-contained asset;
-  - persistent и ephemeral Truth используют одну Cell с разным Lifetime;
-  - новые модели обязаны компилироваться в `B/W/a/g/c/SET`.
-- Остаётся **RESEARCH** до отдельного net-gain gate:
-  - deterministic stochastic microtexture predictor плюс exact residual;
-  - state-only hidden observer для будущего prediction;
+- Date: 2026-07-26
+- Status: **ACCEPTED / RESEARCH**
+- Accepted in encoder/core discipline:
+  - conditional-description-length RDO instead of simple detector `changed`;
+  - whole-shot bidirectional analysis and time-symmetric Foundry search,
+    compiled into the same absolute laws;
+  - content-addressed dedup immutable Basis inside self-contained asset;
+  - persistent and ephemeral Truth use the same Cell with different Lifetime;
+  - new models must be compiled in `B/W/a/g/c/SET`.
+- **RESEARCH** remains until a separate net-gain gate:
+  - deterministic stochastic microtexture predictor plus exact residual;
+  - state-only hidden observer for future prediction;
   - shared cross-asset dictionaries;
   - learned integer Basis synthesis.
-- Не добавляется:
+- Not added:
   - primitive zoo;
-  - обязательная 3D reconstruction;
+  - mandatory 3D reconstruction;
   - semantic object truth;
   - external mandatory model;
   - recursive presentation reference.
 
-## D-029 — Video, audio и AV binding являются отдельными объектами
+## D-029 - Video, audio and AV binding are separate objects
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - QINTRA — standalone video codec;
-  - самостоятельный audio codec с архитектурой MAF разрабатывается отдельно;
-    `Resonith` является ведущим, но не финальным кандидатом его имени;
-  - SceneLith AV Bridge — отдельная binding specification;
-  - ни один standalone Truth bitstream не зависит от другой modality;
-  - AV Bridge MAY разделять timeline, entity IDs, trajectories и
-    room/geometry hints, но не смешивает Truth reference graphs.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - QINTRA was the then-current standalone video-codec name;
+  - an independent audio codec with MAF architecture is developed separately;
+    `Resonith` was the leading but not yet final name candidate;
+  - SceneLith AV Bridge is a separate binding specification;
+  - no standalone Truth bitstream depends on another modality;
+  - AV Bridge MAY separate timeline, entity IDs, trajectories and
+    room/geometry hints, but does not mix Truth reference graphs.
 
-## D-030 — Точка напоминания о внешней регистрации достигнута
+## D-030 - External registration reminder point reached
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED / ACTION DEFERRED**
-- Событие:
-  - D-025 принял architecture implementation candidate, поэтому условие
-    напоминания из D-018 выполнено;
-  - до внешней подачи требуется подтвердить у chair/test coordinator
-    допустимость независимого частного заявителя и заполнение поля
+- Date: 2026-07-26
+- Status: **ACCEPTED / ACTION DEFERRED**
+- Event:
+  - D-025 accepted the architecture implementation candidate, so the condition
+    reminder from D-018 completed;
+  - before external submission requires confirmation from the chair/test coordinator
+    Admissibility of an independent private applicant and completion of the field
     `organization`;
-  - техническая разработка audio-first продолжается без ожидания этого
-    внешнего ответа.
+  - technical development of audio-first continues without waiting for this
+    external response.
 
-## D-031 — Имя самостоятельного аудиокодека утверждено
+## D-031 - Standalone audio codec name approved
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - самостоятельный MAF Audio codec окончательно называется **Resonith**;
-  - формулировка D-029 о кандидатном статусе имени **SUPERSEDED**;
-  - QINTRA и Resonith сохраняют отдельные repositories и bitstreams;
-  - SceneLith AV Bridge остаётся отдельным binding.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - the independent MAF Audio codec is finally called **Resonith**;
+  - wording D-029 about the candidate status of the name **SUPERSEDED**;
+  - QINTRA and Resonith maintain separate repositories and bitstreams;
+  - SceneLith AV Bridge remains a separate binding.
 
-## D-032 — Видеокодек окончательно называется SceneLith
+## D-032 - The video codec is finally called SceneLith
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение владельца:
-  - окончательное продуктовое имя standalone video codec и его bitstream
-    family — **SceneLith**;
-  - имя **QINTRA** выводится из актуального брендинга из-за коллизии с
-    существующей компанией в Германии;
-  - D-011 и D-016 в части принятия QINTRA становятся **SUPERSEDED**;
-  - внутреннее имя архитектуры остаётся
-    **MOSAIC — Memory-Oriented Scalable Asymmetric Integer Codec**;
-  - первый нормативный черновик называется **SceneLith-0**;
-  - отдельные продукты называются **SceneLith Video** и **Resonith Audio**;
-  - SceneLith AV Bridge связывает их, не объединяя bitstreams или Truth
+- Date: 2026-07-26
+- Status: **ACCEPTED**- Owner's decision:
+  - final product name standalone video codec and its bitstream
+    family - **SceneLith**;
+  - the name **QINTRA** is removed from the current branding due to a conflict with
+    an existing company in Germany;
+  - D-011 and D-016 regarding the adoption of QINTRA become **SUPERSEDED**;
+  - the internal name of the architecture remains
+    **MOSAIC - Memory-Oriented Scalable Asymmetric Integer Codec**;
+  - the first normative draft is called **SceneLith-0**;
+  - individual products are called **SceneLith Video** and **Resonith Audio**;
+  - SceneLith AV Bridge links them without merging bitstreams or Truth
     reference graphs;
-  - рекомендуемое имя публичного GitHub repository видеокодека —
+  - recommended name of the public GitHub repository video codec -
     `scenelith`.
 
-## D-033 — Публичный GitHub и безопасная автосинхронизация
+## D-033 - Public GitHub and secure auto-sync
 
-- Дата: 2026-07-26
-- Статус: **ACCEPTED**
-- Решение:
-  - SceneLith Video и Resonith Audio публикуются в отдельных public GitHub
-    repositories `scenelith` и `resonith`;
-  - каждый явно созданный локальный commit автоматически отправляется в
-    `origin` repo-local hook-ом;
-  - фоновое автоматическое добавление файлов или создание commits запрещено,
-    чтобы незавершённые данные и секреты не попадали в public history;
-  - перед каждым первым public push выполняются secret/PII scan, тесты и
-    проверка состава tracked files;
-  - после clone автосинхронизация включается явным bootstrap script.
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Solution:
+  - SceneLith Video and Resonith Audio are published in separate public GitHub
+    repositories `scenelith` and `resonith`;
+  - every explicitly created local commit is automatically sent to
+    `origin` repo-local hook;
+  - background automatic addition of files or creation of commits is prohibited,
+    so that incomplete data and secrets do not end up in public history;
+  - before each first public push, secret/PII scan, tests and
+    checking the composition of tracked files;
+  - after clone, auto-synchronization is enabled by an explicit bootstrap script.
 
-## D-034 — Публичный repository SceneLith создан
+## D-034 — Public repository SceneLith created
 
-- Дата: 2026-07-26
-- Статус: **IMPLEMENTED**
-- Результат:
+- Date: 2026-07-26
+- Status: **IMPLEMENTED**
+- Result:
   - public repository:
     `https://github.com/moshkinyevhen/scenelith`;
   - default branch: `main`;
   - initial public commit: `343eb92`;
-  - CI запускает deterministic paper sensitivity model;
-  - repo-local `post-commit` auto-push включён и подлежит проверке этим
-    последующим commit.
+  - CI launches deterministic paper sensitivity model;
+  - repo-local `post-commit` auto-push is enabled and subject to verification by this
+    subsequent commit.
+
+## D-035 — English is the sole public repository language
+
+- Date: 2026-07-26
+- Status: **ACCEPTED / IMPLEMENTED**
+- Decision:
+  - all public specifications, documentation, code comments, commit messages,
+    issue and pull-request templates, and GitHub metadata use English;
+  - conversation with the project owner may use another language, but the
+    repository is the international canonical record;
+  - historical material in another language remains outside the public
+    repository or receives a complete English record;
+  - the existing public working tree is migrated to English without rewriting
+    published Git history.
+
+## D-036 — Portable Golden Core and safe player runtime
+
+- Date: 2026-07-26
+- Status: **ACCEPTED / ENGINEERING DECISION**
+- Decision:
+  - the bit-exact Golden Core and production codec kernels use restricted,
+    dependency-free C++20 behind a stable versioned C ABI;
+  - Rust owns untrusted parsing, streaming, scheduling, capability
+    negotiation, sandbox boundaries, and the cross-platform player runtime;
+  - Python/PyTorch remain the research and training environment;
+  - the first accelerated Studio/Foundry encoder uses C++/CUDA, while the
+    format never depends on CUDA or any GPU API;
+  - scalar C++ is mandatory, and SIMD, WASM, D3D12, Vulkan, and Metal are
+    exactly equivalent optional acceleration backends;
+  - the Core has no mandatory operating-system, filesystem, network, UI,
+    machine-learning-runtime, or third-party runtime dependency;
+  - supported deployment targets include Windows, Linux, macOS, iOS, Android,
+    browsers, embedded/DSP systems, and future ASIC implementations;
+  - cross-compiler conformance hashes, sanitizers, fuzzing, static analysis,
+    reproducible builds, ABI tests, and CPU/GPU differential tests are release
+    gates.
+- Canonical engineering document:
+  `17_IMPLEMENTATION_LANGUAGE_AND_RUNTIME.md`.

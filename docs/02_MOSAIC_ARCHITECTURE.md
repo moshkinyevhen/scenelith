@@ -1,99 +1,99 @@
-# Архитектура MOSAIC
+# MOSAIC architecture
 
-Статус: смесь **ACCEPTED**, **NORMATIVE-DRAFT** и **HYPOTHESIS**.  
-Нормативные формулировки уточняются в `../spec/SCENELITH-0.md`.
+Status: mixture of **ACCEPTED**, **NORMATIVE-DRAFT** and **HYPOTHESIS**.
+Regulatory language is specified in `../spec/SCENELITH-0.md`.
 
-## 1. Общая модель
+## 1. General model
 
-MOSAIC — ограниченная visual scene machine. Encoder компилирует видео в:
+MOSAIC is a limited visual scene machine. Encoder compiles video to:
 
-1. снимки и дельты `WorldState`;
-2. непрерывные или кусочно-непрерывные `Trajectories`;
-3. проверяемый `TruthInnovation`;
-4. необязательный `PerceptualDetail`.
+1. snapshots and deltas `WorldState`;
+2. continuous or piecewise continuous `Trajectories`;
+3. checked `TruthInnovation`;
+4. optional `PerceptualDetail`.
 
-Декодер выполняет небольшой фиксированный набор integer render/tensor
-операций. Сложные depth, segmentation, tracking, re-identification и global
-optimization являются encoder-only.
+The decoder performs a small fixed set of integer render/tensor
+operations. Complex depth, segmentation, tracking, re-identification and global
+optimizations are encoder-only.
 
-**ACCEPTED — D-025:** MOSAIC использует
-**CBF — Causal Basis Field visual ISA**. Долгосрочная формула не означает
-тяжёлый world model. Один unified primitive — долгоживущая `MOSAIC Cell` —
-объединяет immutable Basis, invisible tiled Support, arbitrary soft Gate,
-absolute coordinate/appearance laws, Lifetime и Truth contribution. Frame
-является только read-only presentation sample. 2.5D, tensor renderer и
-semantic scene graph не входят в Main.
+**ACCEPTED - D-025:** MOSAIC uses
+**CBF - Causal Basis Field visual ISA**. Long term formula does not mean
+heavy world model. One unified primitive - long-lived `MOSAIC Cell` -
+combines immutable Basis, invisible tiled Support, arbitrary soft Gate,
+absolute coordinate/appearance laws, Lifetime and Truth contribution. Frame
+is a read-only presentation sample. 2.5D, tensor renderer and
+semantic scene graph are not included in Main.
 
 ## 2. WorldState
 
-### 2.1 Состав состояния
+### 2.1 State composition
 
 Main v0:
 
 - bounded table `MOSAIC Cells`;
 - bounded coordinate-independent `Content Bank`;
 - fixed microtile Support;
-- bounded absolute `STATIC`, `LINEAR_TRANSLATION` и profile-gated
+- bounded absolute `STATIC`, `LINEAR_TRANSLATION` and profile-gated
   affine/projective coordinate laws;
 - arbitrary-lifetime state events;
-- compatibility PRESENT и objective fallback;
+- compatibility PRESENT and objective fallback;
 - integrity metadata;
-- полный state reset в RAP.
+- full state reset in RAP.
 
-Research после положительного cell gate:
+Research after positive cell gate:
 
-- fine persistent masks и partial content updates;
+- fine persistent masks and partial content updates;
 - canonical surface atlas;
 - 2.5D/depth/visibility;
 - feature planes/latent tokens;
 - surfels/Gaussian splats;
 - semantic object/surface identifiers;
-- state snapshots и partial repair.
+- state snapshots and partial repair.
 
-**NORMATIVE-DRAFT:** ненаблюдавшийся fragment не получает Content вообще.
-Main-0 не представляет «неизвестную часть объекта»; Support перечисляет только
-определённые microtiles. Undefined output обязан получить objective fallback.
+**NORMATIVE-DRAFT:** An unobserved fragment does not receive Content at all.
+Main-0 does not represent the "unknown part of the object"; Support only lists
+certain microtiles. Undefined output must receive an objective fallback.
 
-### 2.2 Ограничения
+### 2.2 Limitations
 
 **TARGET:**
 
-- persistent state: не более 64 MB для 4K profile;
-- строго ограниченное число recent frames;
-- никаких внешних state/model files;
-- полный state reset в random-access point.
+- persistent state: no more than 64 MB for 4K profile;
+- strictly limited number of recent frames;
+- no external state/model files;
+- full state reset at random-access point.
 
-Пределы должны задаваться level/profile, чтобы аппаратный декодер мог заранее
-выделить SRAM/DRAM.
+The limits must be set level/profile so that the hardware decoder can advance
+allocate SRAM/DRAM.
 
-### 2.3 Изменение состояния
+### 2.3 State change
 
-Только проверенные mutation `EventBlock` могут применять State Events.
-Read-only presentation/quality blocks используют уже подтверждённое состояние
-и могут декодироваться параллельно или отбрасываться.
+Only verified mutation `EventBlock` can use State Events.
+Read-only presentation/quality blocks use already confirmed state
+and can be decoded in parallel or discarded.
 
-Порядок mutation:
+Order of mutation:
 
-1. Проверить EventBlock/payload integrity.
-2. Восстановить Truth Core.
-3. Проверить state hash.
-4. Применить подтверждённый `MemoryDelta`.
-5. Вычислить новый state hash.
-6. Только после этого разрешить зависимые EventBlocks/Presentation Queries.
+1. Check EventBlock/payload integrity.
+2. Restore Truth Core.
+3. Check the state hash.
+4. Apply the confirmed `MemoryDelta`.
+5. Calculate the new state hash.
+6. Only after this allow dependent EventBlocks/Presentation Queries.
 
-Повреждённый или concealment-generated материал не применяется к state.
+Damaged or concealment-generated material is not applied to state.
 
 ## 3. Representation primitives
 
-Encoder выбирает один или комбинацию режимов на tile/region/chunk.
+Encoder selects one or a combination of modes per tile/region/chunk.
 
 ### 3.1 Structural modes
 
 Main v0:
 
-- active MOSAIC Cell с static/linear absolute mapping;
-- compact Content capture из подтверждённого Truth;
-- recent-frame fallback, если он оставлен экспериментальным profile;
+- active MOSAIC Cell with static/linear absolute mapping;
+- compact Content capture from confirmed Truth;
+- recent-frame fallback, if it was left by the experimental profile;
 - state-independent replacement.
 
 Research extensions:
@@ -110,123 +110,121 @@ Research extensions:
 - transform/residual fallback;
 - optional exact/lossless residual.
 
-Research после core gate:
+Research after core gate:
 
 - shallow learned latent transform;
 - progressive objective refinement.
 
 ### 3.3 Continuous-Time MOSAIC Cells
 
-Main-0 имеет три semantic records:
+Main-0 has three semantic records:
 
 - `STATE_RESET`;
-- `CELL_SET`: атомарно создать/изменить/завершить cell;
-- `PRESENT`: read-only sample state в timestamp.
+- `CELL_SET`: atomically create/modify/end cell;
+- `PRESENT`: read-only sample state in timestamp.
 
-`CELL_SET` объединяет Content, Support, MotionLaw, Lifetime, Order и Mode.
-Отсутствие события означает implicit persistence; отдельный per-frame HOLD не
-кодируется. `CAPTURE_TRUTH` сохраняет уже восстановленные objective samples без
-повторной texture. Полная семантика:
+`CELL_SET` combines Content, Support, MotionLaw, Lifetime, Order and Mode.
+The absence of an event means implicit persistence; separate per-frame HOLD not
+encoded. `CAPTURE_TRUTH` saves already restored objective samples without
+re-texture. Full semantics:
 [14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).
 
-DPM остаётся отдельным spatial-memory baseline:
+DPM remains a separate spatial-memory baseline:
 [13_MINIMAL_PATCH_CORE.md](13_MINIMAL_PATCH_CORE.md).
 
 ### 3.4 Representation routing
 
-Решение encoder оценивается по полному функционалу:
+The encoder solution is evaluated based on its full functionality:
 
 \[
 J=R+\lambda D+\mu C_{decode}+\nu B_{memory}
-  +\rho L_{seek}+\sigma Risk_{loss}
+  + \rho L_{seek}+\sigma Risk_{loss}
 \]
 
-где учитываются все address, mask, model, adapter, checkpoint и side-information
+where all address, mask, model, adapter, checkpoint and side-information are taken into account
 bits.
 
 ### 3.5 Bounded affine-pair composition
 
-CBF Cell синтезирует пару \((g,c)\). Pair composition ассоциативна:
+CBF Cell synthesizes the pair \((g,c)\). Pair composition is associative:
 
 \[
 (g_2,c_2)\circ(g_1,c_1)=(g_2g_1,\ g_2c_1+c_2).
 \]
 
-Decoder MAY выполнять order-preserving tree reduction в wide integer
-accumulator и clip только на fixed layer boundary. Main target ограничивает
-весь active overlap четырьмя non-identity contributions/output pixel, четырьмя
-composition layers, восемью texture samples и примерно 128 simple integer
-operations/pixel. Точные значения определяет level.
+Decoder MAY perform order-preserving tree reduction in wide integer
+accumulator and clip only on fixed layer boundary. Main target limits
+entire active overlap by four non-identity contributions/output pixel, four
+composition layers, eight texture samples and approximately 128 simple integers
+operations/pixel. The exact values ​​are determined by level.
 
-Полная фиксация:
+Full fixation:
 [16_CBF_ACCEPTANCE_AND_FINAL_RED_TEAM.md](16_CBF_ACCEPTANCE_AND_FINAL_RED_TEAM.md).
 
-## 4. Chunk-native temporal model — после cell gates
+## 4. Chunk-native temporal model - after cell gates
 
-**RESEARCH:** Main-0 уже имеет bounded static/linear MotionLaw, но не требует
-multi-frame latent, deformable trajectories или temporal tensor graph.
-Следующие подразделы описывают возможный следующий этап.
+**RESEARCH:** Main-0 already has bounded static/linear MotionLaw, but does not require
+multi-frame latent, deformable trajectories or temporal tensor graph.
+The following subsections describe a possible next step.
 
-### 4.1 Chunk
+### 4.1 Chunk**NORMATIVE-DRAFT:** main multi-frame chunk contains 8–16 display frames
+in the Main RA profile. The specific range is not frozen yet.
 
-**NORMATIVE-DRAFT:** основной multi-frame chunk содержит 8–16 display frames
-в Main RA-профиле. Конкретный диапазон ещё не заморожен.
+Chunk uses:
 
-Chunk использует:
-
-- общий spatiotemporal latent;
-- полностью вычисляемый до entropy decoding hyperprior;
-- параллельное восстановление read-only frames;
-- отдельно обозначенный spine output/state update.
+- general spatiotemporal latent;
+- fully computable to entropy decoding hyperprior;
+- parallel recovery of read-only frames;
+- separately designated spine output/state update.
 
 ### 4.2 Low-delay
 
-Для Live/LB применяется causal variant:
+For Live/LB the causal variant is used:
 
-- кадры поступают в display order;
-- lookahead отсутствует там, где запрещён configuration;
-- state update ограничен уже полученными кадрами;
-- decoder output reordering не требуется.
+- frames arrive in display order;
+- lookahead is missing where configuration is prohibited;
+- state update is limited to frames already received;
+- decoder output reordering is not required.
 
 ### 4.3 Time-continuous trajectories
 
-Для когерентного движения Main-0 передаёт редкие absolute linear knots вместо
-per-frame vectors. Возможные расширения:
+For coherent motion, Main-0 transmits rare absolute linear knots instead
+per-frame vectors. Possible extensions:
 
 - camera/global motion;
 - rigid object motion;
 - deformable mesh/surface motion;
 - lighting/exposure trajectory.
 
-Decoder интерполирует их нормативной integer-функцией. Для участков, где
-trajectory representation дороже residual, encoder выбирает fallback.
+Decoder interpolates them with a normative integer function. For areas where
+trajectory representation is more expensive than residual, encoder chooses fallback.
 
-## 5. Два контракта качества
+## 5. Two quality contracts
 
 ### 5.1 Fidelity/Truth Core
 
 **ACCEPTED:**
 
-- детерминирован и bit-exact;
-- единственный источник reference/state;
-- сохраняет структуру, текст, лица и измеряемые детали настолько, насколько
-  это обеспечивает выбранный rate;
-- поддерживает objective enhancement;
-- декодируется без Perceptual Shell.
+- deterministic and bit-exact;
+- the only source reference/state;
+- preserves structure, text, faces and measurable details as much as possible
+  this provides the selected rate;
+- supports objective enhancement;
+- decoded without Perceptual Shell.
 
 ### 5.2 Optional Perceptual Detail
 
 **RESEARCH / NORMATIVE-DRAFT:**
 
-- одношаговый distilled diffusion или rectified-flow renderer;
+- one-step distilled diffusion or rectified-flow renderer;
 - display-only;
-- seeded deterministically внутри конкретного model-set;
-- не влияет на base entropy contexts;
-- сопровождается provenance/uncertainty mask;
-- отключается в evidence, medical, scientific и archive profiles.
+- seeded deterministically within a specific model-set;
+- does not affect base entropy contexts;
+- accompanied by a provenance/uncertainty mask;
+- disabled in evidence, medical, scientific and archive profiles.
 
-Perceptual-выигрыш измеряется blind MOS и специализированными identity/OCR/
-flicker gates, отдельно от PSNR/MS-SSIM fidelity.
+Perceptual gain is measured by blind MOS and specialized identity/OCR/
+flicker gates, separate from PSNR/MS-SSIM fidelity.
 
 ## 6. Decoder ISA
 
@@ -240,9 +238,9 @@ Main v0:
 - integer transform/lifting fallback;
 - normative in-loop filter;
 - multi-lane rANS;
-- STATE_RESET, CELL_SET и PRESENT.
+- STATE_RESET, CELL_SET and PRESENT.
 
-Research после cell gate:
+Research after cell gate:
 
 - INT8/INT4 tensor operators;
 - integer bilinear/affine warp;
@@ -251,24 +249,23 @@ Research после cell gate:
 - pixel shuffle;
 - finite scalar/lattice/vector quantization.
 
-Запрещается в Main:
+Prohibited in Main:
 
 - arbitrary downloadable graph;
 - device-dependent floating-point reference loop;
 - full-resolution attention;
 - softmax-dependent normative reconstruction;
-- динамические неограниченные циклы;
-- обязательный многошаговый diffusion decoder;
-- full-resolution autoregressive entropy.
+- dynamic unlimited cycles;
+- mandatory multi-step diffusion decoder;- full-resolution autoregressive entropy.
 
-## 7. Entropy и quantization
+## 7. Entropy and quantization
 
 ### Main v0
 
 - scalar quantization;
 - independent/interleaved rANS lanes;
-- chunk/tile directory с точными offsets;
-- CDF, доступные до начала соответствующего entropy decode.
+- chunk/tile directory with exact offsets;
+- CDFs available before the start of the corresponding entropy decode.
 
 ### Research only
 
@@ -279,16 +276,16 @@ Research после cell gate:
 - reverse-channel coding;
 - shared-prior sample indices.
 
-Эти методы допускаются только для restartable low-KL microblocks/adapters,
-пока не доказана ограниченная worst-case complexity.
+These methods are only allowed for restartable low-KL microblocks/adapters,
+limited worst-case complexity has not yet been proven.
 
 ## 8. Loss-native resilience
 
-- Независимые tile/chunk entropy streams.
-- CRC или более сильная integrity check для state/base.
-- Unequal FEC: state и Truth Base защищаются сильнее enhancement.
-- полный Cell/Content state reset в каждом Main v0 RAP.
-- Concealment никогда не становится reference.
+- Independent tile/chunk entropy streams.
+- CRC or stronger integrity check for state/base.
+- Unequal FEC: state and Truth Base are protected more strongly than enhancement.
+- complete Cell/Content state reset in each Main v0 RAP.
+- Concealment never becomes reference.
 
 Research:
 
@@ -296,38 +293,38 @@ Research:
 - Erasure-trained concealment.
 - Partial repair access unit.
 
-**TARGET:** восстановление после рассинхронизации состояния не более 250 мс в
+**TARGET:** recovery from state desynchronization no more than 250 ms per
 Live profile.
 
 ## 9. Hardware mapping
 
-Предполагаемые аппаратные блоки:
+Suggested hardware blocks:
 
-- multi-lane rANS engine;
+- multi-lane RANS engine;
 - exact-copy/translation compositor;
-- bounded SRAM cell table и DRAM Content Bank;
+- bounded SRAM cell table and DRAM Content Bank;
 - support/dirty-tile scheduler;
 - optional display/overlay trajectory handoff;
 - wavelet/lifting block;
 - residual compositor;
 - integrity/reset engine.
 
-Research extensions MAY reuse texture/warp, tensor и splat hardware только
-после измеренного marginal gain.
+Research extensions MAY reuse texture/warp, tensor and splat hardware only
+after the measured marginal gain.
 
-Главные ограничения проектируются по MAC/pixel, state memory и off-chip
-traffic, а не только по числу синтаксических tools.
+The main restrictions are designed on MAC/pixel, state memory and off-chip
+traffic, and not just by the number of syntactic tools.
 
-## 10. Скалируемость
+## 10. Scalability
 
-Один stream должен в перспективе позволять:
+One stream should eventually allow:
 
 - temporal scalability;
 - spatial scalability;
 - quality scalability;
 - compute scalability;
 - ROI/tile decode;
-- отключение Perceptual Shell;
+- disabling Perceptual Shell;
 - discardable enhancement;
-- разные resolution/FPS outputs из одного truth state без объявления
-  синтезированного novel view достоверным исходником.
+- different resolution/FPS outputs from the same truth state without declaration
+  synthesized novel view with a reliable source.

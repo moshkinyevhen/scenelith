@@ -1,126 +1,125 @@
-# Устав проекта SceneLith
+# SceneLith Project Charter
 
-Статус: **ACCEPTED**  
-Дата первоначального утверждения: 2026-07-26
+Status: **ACCEPTED**
+Initial approval date: 2026-07-26
 
-## Миссия
+## Mission
 
-Создать новый открытый формат видеокодирования, в котором основной единицей
-компрессии является не прямоугольный блок отдельного кадра, а ограниченное
-динамическое состояние визуальной сцены и поток новой информации о ней.
+Create a new open video encoding format in which the main unit
+compression is not a rectangular block of a single frame, but a limited
+the dynamic state of the visual scene and the flow of new information about it.
 
-SceneLith должен:
+SceneLith should:
 
-1. Давать качественно новый прирост компрессии, а не однозначное процентное
-   улучшение H.266/VVC или AV2.
-2. Иметь детерминированный, безопасный и аппаратно реализуемый декодер.
-3. Эффективно работать на современных GPU и иметь прямой путь к ASIC.
-4. Поддерживать бытовой real-time encoder и не зависеть исключительно от
-   облачного суперкомпьютера.
-5. Допускать чрезвычайно тяжёлый offline encoder, извлекающий максимальное
-   качество из того же нормативного bitstream.
-6. Чётко отделять достоверную реконструкцию от синтезированных деталей.
-7. Иметь открытый decoder/bitstream и многолетний конкурентный отрыв в
-   ненормативном encoder-компиляторе.
+1. Give a qualitatively new increase in compression, and not a single-digit percentage
+   H.266/VVC or AV2 enhancement.
+2. Have a deterministic, secure and hardware-implemented decoder.
+3. Run efficiently on modern GPUs and have a direct path to ASIC.
+4. Support household real-time encoder and do not depend solely on
+   cloud supercomputer.
+5. Allow extremely heavy offline encoder to extract maximum
+   quality from the same standard bitstream.
+6. Clearly separate reliable reconstruction from synthesized parts.
+7. Have an open decoder/bitstream and a long-term competitive lead in
+   non-standard encoder compiler.
 
-## Названия
+## Titles
 
-- Standalone video codec, bitstream family и проект: **SceneLith**.
-- Архитектура:
-  **MOSAIC — Memory-Oriented Scalable Asymmetric Integer Codec**.
-- Имя первого нормативного черновика: **SceneLith-0**.
-- Маркетинговая формулировка:
-  **“SceneLith Video — powered by MOSAIC.”**
+- Standalone video codec, bitstream family and project: **SceneLith**.
+- Architecture:
+  **MOSAIC - Memory-Oriented Scalable Asymmetric Integer Codec**.
+- First normative draft name: **SceneLith-0**.
+- Marketing wording:
+  **“SceneLith Video – powered by MOSAIC.”**
 
-FourCC, MIME type и расширение контейнера пока не утверждены.
+FourCC, MIME type and container extension are not yet approved.
 
-## Главная формула
+## Main formula
 
 \[
 Video(t)=Render(WorldState_t,\ Trajectories_t)
-       +TruthInnovation_t
-       +OptionalPerceptualDetail_t
+       + TruthInnovation_t
+       + OptionalPerceptualDetail_t
 \]
 
-Смысл формулы:
+The meaning of the formula:
 
-- `WorldState` хранит ограниченное детерминированное знание декодера о сцене;
-- `Trajectories` описывает движение камеры, объектов и деформаций;
-- `TruthInnovation` передаёт новую проверяемую информацию и исправляет ошибки
-  модели сцены;
-- `OptionalPerceptualDetail` синтезирует только необязательные визуальные
-  детали и никогда не влияет на дальнейшее предсказание.
+- `WorldState` stores limited deterministic knowledge of the decoder about the scene;
+- `Trajectories` describes the movement of the camera, objects and deformations;
+- `TruthInnovation` transmits new verifiable information and corrects errors
+  scene models;
+- `OptionalPerceptualDetail` synthesizes only optional visuals
+  details and never affects further prediction.
 
-## Новый объект времени
+## New time object
 
-**NORMATIVE-DRAFT / HYPOTHESIS:** frame не является единицей state, reference
-или motion. SceneLith описывает долгоживущие `MOSAIC Cells` и асинхронные события,
-а output frame является лишь совместимым `PresentationQuery(t)`.
+**NORMATIVE-DRAFT / HYPOTHESIS:** frame is not a unit of state, reference
+or motion. SceneLith describes long-lived `MOSAIC Cells` and asynchronous events,
+and the output frame is only compatible with `PresentationQuery(t)`.
 
-Статика сохраняется без повторных команд. Движение задаётся absolute
-fixed-point law на интервал. Display sampling имеет собственный clock и не
-заставляет bitstream повторять unchanged state. Полная модель:
+The statics are preserved without repeated commands. The movement is set absolute
+fixed-point law for the interval. Display sampling has its own clock and is not
+causes bitstream to repeat unchanged state. Full model:
 [14_CONTINUOUS_TIME_CELLS.md](14_CONTINUOUS_TIME_CELLS.md).
 
-## Критерий революционности
+## Criterion of revolutionaryness
 
-**TARGET:** новый стандарт оправдан, если на независимых одинаково настроенных
-тестах он показывает не менее 25% универсального преимущества **отдельно**
-против AV2 v1.0/AVM и VVC/H.266/VTM. Stretch North Star — 40% против более
-сильного из двух anchors и 50% на broad screen/UI corpus, без смешивания
-Fidelity и Perceptual claims.
+**TARGET:** the new standard is justified if independently configured
+in tests it shows at least 25% universal advantage **standalone**
+against AV2 v1.0/AVM and VVC/H.266/VTM. Stretch North Star - 40% against morethe stronger of the two anchors and 50% on the broad screen/UI corpus, no mixing
+Fidelity and Perceptual claims.
 
-Улучшение на 5–10% само по себе недостаточно для создания нового стандарта.
+An improvement of 5–10% by itself is not enough to create a new standard.
 
-## Стратегия открытости и отрыва
+## Strategy of openness and separation
 
-> Открытый и простой декодер; чрезвычайно сильный, постоянно улучшающийся
-> encoder.
+> Open and simple decoder; extremely strong, constantly improving
+>encoder.
 
-Открытый стандарт нельзя сделать недоступным конкурентам. Цель — обеспечить
-3–5-летний практический отрыв за счёт:
+An open standard cannot be made inaccessible to competitors. The goal is to provide
+3–5 year practical lead due to:
 
-- world extraction и representation routing;
-- накопленных RDO-решений;
-- corpus и субъективных данных;
-- per-title адаптации;
+- world extraction and representation routing;
+- accumulated RDO solutions;
+- corpus and subjective data;
+- per-title adaptation;
 - GPU/ASIC kernels;
-- conformance и fuzzing ecosystem;
-- узкой и стандарто-дружественной IP-стратегии.
+- conformance and fuzzing ecosystem;
+- narrow and standard-friendly IP strategy.
 
-## Публичный инженерный результат
+## Public engineering result
 
-**TARGET:** независимо от исхода стандартизации repository и proposal должны
-стать проверяемым профессиональным portfolio владельца и точкой сборки команды.
-Для этого нужны не только амбициозные claims, а:
+**TARGET:** Regardless of the outcome of standardization, the repository and proposal must
+become a verifiable professional portfolio owner and a team assembly point.
+This requires not only ambitious claims, but:
 
-- публичная спецификация и decision log;
-- воспроизводимый benchmark harness;
-- bit-exact reference decoder и conformance vectors;
-- честные positive/negative RD results;
+- public specification and decision log;
+- reproducible benchmark harness;
+- bit-exact reference decoder and conformance vectors;
+- honest positive/negative RD results;
 - architecture paper/demo;
-- прозрачная история авторства и contributions;
-- contribution guide, roadmap и ограниченные первые задачи.
+- transparent history of authorship and contributions;
+- contribution guide, roadmap and limited first tasks.
 
-Подача proposal сама по себе не гарантирует карьерный эффект или команду.
-Ценность создаёт доказанный объём системной работы, воспроизводимость и
-корректное различение `submitted`, `evaluated` и `adopted`.
+Submitting a proposal does not in itself guarantee a career impact or a team.
+Value comes from proven system performance, reproducibility and
+correct distinction between `submitted`, `evaluated` and `adopted`.
 
-## Текущая deadline-миссия
+## Current deadline mission
 
-**ACCEPTED:** подготовить полный unrestricted improved-compression response для
-JVET CfP beyond VVC к 26 октября 2026 года.
+**ACCEPTED:** prepare a full unrestricted improved-compression response for
+JVET CfP beyond VVC by October 26, 2026.
 
-Для этого создаётся узкая экспериментальная ветка `SceneLith-CfP-2026`.
-Она не обязана содержать все будущие возможности MOSAIC, но должна быть
-настоящим self-contained codec proposal.
+For this purpose, a narrow experimental branch `SceneLith-CfP-2026` is being created.
+It does not need to contain all future MOSAIC features, but it should be
+This is a self-contained codec proposal.
 
-## Что не считается успехом
+## What is not considered success
 
-- красивые демонстрации без полного учёта битрейта;
-- сравнение только с устаревшим AV1;
-- perceptual-выигрыш, выдаваемый за fidelity;
-- внешние скрытые decoder weights;
-- результаты на обучающих или вручную подогнанных тестовых сценах;
-- кодек, пригодный только для неограниченного облачного encoder;
-- ускорение за счёт несовпадающих GOP, latency, random access или color format.
+- beautiful demonstrations without taking into account the full bitrate;
+- comparison only with the outdated AV1;
+- perceptual gain, given as fidelity;
+- external hidden decoder weights;
+- results on training or manually adjusted test scenes;
+- codec suitable only for unlimited cloud encoder;
+- acceleration due to non-matching GOP, latency, random access or color format.
