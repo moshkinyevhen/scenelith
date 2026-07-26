@@ -530,3 +530,16 @@ Video(t)=Render(WorldState_t,\ Trajectories_t)
   - перед каждым первым public push выполняются secret/PII scan, тесты и
     проверка состава tracked files;
   - после clone автосинхронизация включается явным bootstrap script.
+
+## D-034 — Публичный repository SceneLith создан
+
+- Дата: 2026-07-26
+- Статус: **IMPLEMENTED**
+- Результат:
+  - public repository:
+    `https://github.com/moshkinyevhen/scenelith`;
+  - default branch: `main`;
+  - initial public commit: `343eb92`;
+  - CI запускает deterministic paper sensitivity model;
+  - repo-local `post-commit` auto-push включён и подлежит проверке этим
+    последующим commit.
