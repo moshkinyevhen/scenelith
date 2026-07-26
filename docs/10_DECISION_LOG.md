@@ -602,3 +602,21 @@ Video(t)=Render(WorldState_t,\ Trajectories_t)
     commit.
 - Canonical contract:
   section 9 of `17_IMPLEMENTATION_LANGUAGE_AND_RUNTIME.md`.
+
+## D-038 — Canonical public names and filename extensions
+
+- Date: 2026-07-26
+- Status: **ACCEPTED**
+- Decision:
+  - the standalone video codec is **SceneLith**, pronounced `seen-lit`;
+  - `.scenelith` is the canonical filename extension for an independent
+    SceneLith visual bitstream;
+  - the standalone audio codec is **Resonith**, pronounced `re-zo-nit`, and
+    uses `.resonith`;
+  - the standalone player is **Orkela**, pronounced `or-ke-la`;
+  - `.orka` is reserved for an Orkela synchronized media package that binds
+    independent streams through the SceneLith AV Bridge;
+  - an `.orka` package MUST NOT merge the Resonith and SceneLith Truth
+    reference graphs or make either standalone codec depend on the other;
+  - FourCC, MIME type, codec string, and package binary layout remain
+    unassigned until their respective registry and conformance gates pass.

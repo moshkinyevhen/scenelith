@@ -5,6 +5,7 @@ Architecture: MOSAIC
 Version: 0.0.4
 Status: **NORMATIVE-DRAFT**
 Date: 2026-07-26
+Canonical standalone filename extension: `.scenelith`
 
 This document currently captures the semantic contract, not the final
 bit layout.
@@ -14,6 +15,10 @@ bit layout.
 SceneLith-0 defines a self-contained visual-state bitstream and a
 deterministic decoding process for bounded continuous-time MOSAIC Cells and
 objective Innovation.
+
+The stable public filename extension is `.scenelith`. A synchronized `.orka`
+package belongs to the separate Orkela/SceneLith AV Bridge mapping and does
+not change standalone SceneLith decoding semantics.
 
 A frame is not a unit of state mutation, motion, or reference memory. A
 `Presentation Query` is a read-only sample of the current state. The accepted

@@ -32,7 +32,10 @@ SceneLith should:
 - Marketing wording:
   **“SceneLith Video – powered by MOSAIC.”**
 
-FourCC, MIME type and container extension are not yet approved.
+The canonical standalone filename extension is `.scenelith`. `.resonith`
+identifies independent Resonith audio, and `.orka` is reserved for a
+synchronized Orkela package using the separate SceneLith AV Bridge. FourCC,
+MIME type, codec string, and package binary layout are not yet approved.
 
 ## Main formula
 

@@ -11,6 +11,8 @@ Status: names - **ACCEPTED**, IP model - **NORMATIVE-DRAFT**.
   **Memory-Oriented Scalable Asymmetric Integer Codec**.
 - Marketing wording:
   **“SceneLith Video – powered by MOSAIC.”**
+- International pronunciation: `seen-lit`.
+- Canonical standalone filename extension: `.scenelith`.
 
 The meaning of SceneLith: a scene "carved" into a compact flow and suitable for
 implementation in silicon.
@@ -47,6 +49,9 @@ and the open project around it.
 - **Resonith Audio** — standalone audio codec;
 - **MOSAIC** — internal architecture of SceneLith Video;
 - **SceneLith AV Bridge** is a separate binding specification.
+- **Orkela** (`or-ke-la`) is the standalone player.
+- `.resonith`, `.scenelith`, and `.orka` identify standalone audio,
+  standalone visual, and synchronized-package files respectively.
 
 > SceneLith - video codec
 > Resonith - audio codec
@@ -56,12 +61,17 @@ The QINTRA name is retained only in historical materials and superseded records.
 The product solution is not a substitute for professional SceneLith inspection and
 Resonith before registration and public launch.
 
-## 3. Unapproved identifiers
+## 3. Identifier status
+
+Accepted:
+
+- Resonith standalone audio extension: `.resonith`;
+- SceneLith standalone visual extension: `.scenelith`;
+- Orkela synchronized-package extension: `.orka`.
 
 Do not select without checking yet:
 
 - FourCC;
-- file extension;
 - MIME type;
 - codec string;
 - product logo;
